@@ -45,7 +45,7 @@ namespace TD_1
                 colonne = 0;
                 for(int j = i; j <i+ width * 3; j=j+3)
                 {
-                    ligne = ligne;
+                    ligne = ligne;  //??????
                     this.image[ligne, colonne] = new Pixel(file_tab[j], file_tab[j + 1], file_tab[j + 2]);
                     Console.WriteLine(this.image[ligne, colonne].ToString());
                     colonne++;
