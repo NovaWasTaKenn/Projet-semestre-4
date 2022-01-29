@@ -107,7 +107,7 @@ namespace TD_1
             #endregion
 
 
-            byte[] myFile = File.ReadAllBytes("fleur.bmp");
+            /*byte[] myFile = File.ReadAllBytes("fleur.bmp");
 
             Image = new Bitmap("fleur.bmp");
             Console.WriteLine("Header");
@@ -120,22 +120,25 @@ namespace TD_1
             {
                 Console.Write(myFile[i] + " ");
             }
-            //Console.WriteLine("Image");
-            //for (int i = 54; i <myFile.Length; i = i + Image.Width * 3)
-            //{
-            //    for (int j = i; j < i + Image.Width * 3; j++)
-            //    {
-            //        Console.Write(myFile[i] + " ");
-            //    }
-            //    Console.WriteLine();
-            //}
+            Console.WriteLine("Image");
+            for (int i = 54; i <myFile.Length; i = i + Image.Width * 3)
+            {
+                for (int j = i; j < i + Image.Width * 3; j++)
+                {
+                    Console.Write(myFile[i] + " ");
+                }
+                Console.WriteLine();
+            }*/
 
-            MyImage image = new MyImage("fleur.bmp");
+            MyImage image = new MyImage("voiture.bmp");
             Console.WriteLine(image.Type);
             Console.WriteLine(image.Size);
             Console.WriteLine(image.Width);  //verif taille correcte
             Console.WriteLine(image.Height);
             Console.WriteLine(image.Bits_per_color);
+            image.Rotation(90, true);
+            image.AfficherImage();
+            
             Console.ReadLine();
         }
     }

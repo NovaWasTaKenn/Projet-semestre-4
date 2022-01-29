@@ -76,6 +76,21 @@ namespace TD_1
         {
             get { return bits_per_color; }
         }
+        public Pixel[,] Image
+        {
+            get { return image; }
+        }
+        public void AfficherImage()
+        {
+            for(int i = 0; i< image.GetLength(0); i++)
+            {
+                for(int j = 0; j< image.GetLength(1); j++)
+                {
+                    Console.WriteLine(Image[i, j].ToString());
+                }
+                Console.WriteLine("-------------------------------------------------------------------------------------------------");
+            }
+        }
         public string ConvertToType(string letters)
         {
             string type = "";
@@ -105,5 +120,47 @@ namespace TD_1
         }
 
 
+        public void CouleurToNoiretBlanc()
+        {
+            for(int i = 0 ; i< image.GetLength(0);i ++)
+            {
+                for(int j = 0 ; j< image.GetLength(1);j++)
+                {
+                    int new_color = (image[i,j].R + image[i,j].G+ image[i,j].B)/3 ;
+                    image[i,j].R = image[i,j].G = image[i,j].B = new_color;
+                }
+            }
+        }
+         /*L'image n'est pas forcément un carré a prendre en cpt*/
+        public void Rotation(int angle , bool sens_horaire)
+        {
+            Pixel[,] copie = new Pixel[image.GetLength(0), image.GetLength(1)];
+            for (int i = 0; i < image.GetLength(0); i++)
+            {
+                for (int j = 0; j < image.GetLength(1); j++)
+                {
+                    copie[i, j] = image[i, j];
+                }
+            }
+            int nb_rotation = angle / 90;
+            for(int k = 0; k< nb_rotation; k++)
+            {
+                for (int i = 0; i < image.GetLength(0); i++)
+                {
+                    for (int j = 0; j < image.GetLength(1); j++)
+                    {
+                        if (sens_horaire)
+                        {
+                            image[j, image.GetLength(1)-i] = copie[i, j]; // Index out of bound par ici probablement du a image rectangle
+                        }
+                        else
+                        {
+                            image[j,i] = copie[i, image.GetLength(1)-j];
+                        }
+                    }
+                }
+            }
+            
+        }
     }
 }
