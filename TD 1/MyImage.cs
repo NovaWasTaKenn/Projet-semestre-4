@@ -21,7 +21,7 @@ namespace TD_1
         {
             byte[] file_tab = File.ReadAllBytes(file);
 
-            byte[] test = Convertir_Int_to_Endian2(1494);
+            //byte[] test = Convertir_Int_to_Endian2(1494);
 
             string type_input = Convert.ToString(Convert.ToChar(file_tab[0])) + Convert.ToString(Convert.ToChar(file_tab[1]));
             this.type = ConvertToType(type_input);
