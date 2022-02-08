@@ -130,13 +130,13 @@ namespace TD_1
                 Console.WriteLine();
             }*/
 
-            MyImage image = new MyImage("voiture.bmp");
+            MyImage image = new MyImage("bmp-icon.bmp");
             Console.WriteLine(image.Type);
             Console.WriteLine(image.Size);
             Console.WriteLine(image.Width);  //verif taille correcte
             Console.WriteLine(image.Height);
             Console.WriteLine(image.Bits_per_color);
-            image.Rotation(90, true);
+            //image.Rotation(90, true);
             image.AfficherImage();
             
             Console.ReadLine();
