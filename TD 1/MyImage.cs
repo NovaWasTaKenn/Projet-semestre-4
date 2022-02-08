@@ -21,6 +21,8 @@ namespace TD_1
         {
             byte[] file_tab = File.ReadAllBytes(file);
 
+            byte[] test = Convertir_Int_to_Endian2(1494);
+
             string type_input = Convert.ToString(Convert.ToChar(file_tab[0])) + Convert.ToString(Convert.ToChar(file_tab[1]));
             this.type = ConvertToType(type_input);
 
@@ -157,7 +159,50 @@ namespace TD_1
             return retour;
         }
 
+        public byte[] Convertir_Int_to_Endian2(int nb)
+        {
+            byte[] retour;
+            int[] binaire = new int[32];
+            for(int i = 0; i < binaire.Length; i++)
+            {
+                int puissance = (int)Math.Pow((double)2, (double)binaire.Length - 1 - i);
+                if(nb - puissance >= 0)
+                {
+                    binaire[i] = 1;
+                    nb -= puissance;
+                }
 
+                else
+                {
+                    binaire[i] = 0;
+                }
+                //Console.Write(binaire[i]);
+            }
+
+            retour = new byte[binaire.Length / 8];
+            byte stock;
+            int index = 0;
+            for(int j = binaire.Length - 1; j >= 0; j -= 8)
+            {
+                stock = 0;
+                for (int p = 0; p < 8; p++)
+                {
+                    if(binaire[j - p] == 1)
+                    {
+                        stock += (byte)Math.Pow((double)2, (double)p);
+                    }
+
+                    retour[index] = stock;
+                }
+                index++;
+            }
+            
+            //for(int i = 0; i < retour.Length; i++)
+            //{
+            //    Console.WriteLine(retour[i]);
+            //}
+            return retour;
+        }
         public void CouleurToNoiretBlanc()
         {
             for(int i = 0 ; i< image.GetLength(0);i ++)
