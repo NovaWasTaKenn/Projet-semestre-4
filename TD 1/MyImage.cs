@@ -20,39 +20,41 @@ namespace TD_1
         public MyImage(string file)
         {
             byte[] file_tab = File.ReadAllBytes(file);
+
             string type_input = Convert.ToString(Convert.ToChar(file_tab[0])) + Convert.ToString(Convert.ToChar(file_tab[1]));
             this.type = ConvertToType(type_input);
-            byte[] size_input = { file_tab[2], file_tab[3], file_tab[4], file_tab[5] };
-            //for(int i = 0; i< 4; i++)
-            //{
-            //    Console.WriteLine(size_input[i]);
-            //}
-            this.size = Convertir_Endian_To_Int32(size_input);
-            byte[] width_input = { file_tab[18], file_tab[19], file_tab[20], file_tab[21] };
-            this.width = Convertir_Endian_To_Int32(width_input);
-            byte[] height_input = { file_tab[22], file_tab[23], file_tab[24], file_tab[25] };
-            this.height = Convertir_Endian_To_Int32(height_input);
 
-            image = new Pixel[height, width];
-            Console.WriteLine();
+            byte[] size_input = { file_tab[2], file_tab[3], file_tab[4], file_tab[5] };
+            this.size = Convertir_Endian_To_Int(size_input);
+
+            byte[] offset_input = {file_tab[10], file_tab[11],file_tab[12],file_tab[13]};
+            this.offset = Convertir_Endian_To_Int(offset_input);
+
+            byte[] width_input = { file_tab[18], file_tab[19], file_tab[20], file_tab[21] };
+            this.width = Convertir_Endian_To_Int(width_input);
+
+            byte[] height_input = { file_tab[22], file_tab[23], file_tab[24], file_tab[25] };
+            this.height = Convertir_Endian_To_Int(height_input);
 
             byte[] bits_per_color_input = { file_tab[28], file_tab[29] };
-            this.bits_per_color = Convertir_Endian_To_Int16(bits_per_color_input);
-            int ligne = 0;
+            this.bits_per_color = Convertir_Endian_To_Int(bits_per_color_input);
+            
+            this.image = new Pixel[height, width];
+            //Console.WriteLine();
+            int ligne = height-1;
             int colonne = 0;
-            for(int i =54; i<file_tab.Length;i=i+width*3)
+            for(int i =54; i<file_tab.Length && ligne >=  0;i=i+width*3)
             {
                 colonne = 0;
                 for(int j = i; j <i+ width * 3; j=j+3)
                 {
-                    ligne = ligne;  //??????
-                    this.image[ligne, colonne] = new Pixel(file_tab[j], file_tab[j + 1], file_tab[j + 2]);
-                    Console.WriteLine(this.image[ligne, colonne].ToString());
+                    this.image[ligne, colonne] = new Pixel(file_tab[j+2], file_tab[j + 1], file_tab[j]);
+                    //Console.WriteLine(this.image[ligne, colonne].ToString());
                     colonne++;
                     
                 }
-                Console.WriteLine("-------------------------------------------------------------------------------------------------");
-                ligne++;
+                //Console.WriteLine("-------------------------------------------------------------------------------------------------");
+                ligne--;
             }
         }
 
@@ -116,6 +118,42 @@ namespace TD_1
         {
             byte[] retour = BitConverter.GetBytes(nb);
             retour.Reverse<byte>();
+            return retour;
+        }
+        public int Convertir_Endian_To_Int(byte[] tab)
+        {
+            //Valeurs en Little endian
+            
+            int retour = 0;
+            int index = 0;
+            int[] binaire = new int[tab.Length * 8];
+            for(int i = tab.Length-1 ; i>= 0 ; i--)
+            {
+                for(int j =7; j >=0 ; j--)
+                {
+                    byte puissance = (byte) Math.Pow((double) 2,(double) j);
+                    if ((tab[i] - puissance)>=0)
+                    {
+                        binaire[index] = 1;
+                        tab[i] -= puissance;
+                    }
+                    else
+                    {
+                        binaire[index] = 0;
+                    }
+                    index++;
+                }
+            }
+            for(int i = 0 ; i< binaire.Length; i++)
+            {
+                
+                if(binaire[i] == 1)
+                {
+                    retour+= (int) Math.Pow((double) 2, (double) (binaire.Length - 1 -i));
+                }
+            }
+
+           
             return retour;
         }
 
