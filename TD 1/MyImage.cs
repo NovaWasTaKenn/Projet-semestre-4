@@ -22,7 +22,6 @@ namespace TD_1
         {
             byte[] file_tab = File.ReadAllBytes(file);
 
-            //byte[] test = Convertir_Int_to_Endian2(1494);
 
             string type_input = Convert.ToString(Convert.ToChar(file_tab[0])) + Convert.ToString(Convert.ToChar(file_tab[1]));
             this.type = ConvertToType(type_input);
@@ -43,7 +42,6 @@ namespace TD_1
             this.bits_per_color = Convertir_Endian_To_Int(bits_per_color_input);
             
             this.image = new Pixel[height, width];
-            //Console.WriteLine();
             int ligne = height-1;
             int colonne = 0;
             for(int i =54; i<file_tab.Length && ligne >=  0;i=i+width*3)
@@ -52,48 +50,50 @@ namespace TD_1
                 for(int j = i; j <i+ width * 3; j=j+3)
                 {
                     this.image[ligne, colonne] = new Pixel(file_tab[j+2], file_tab[j + 1], file_tab[j]);
-                    //Console.WriteLine(this.image[ligne, colonne].ToString());
                     colonne++;
                     
                 }
-                //Console.WriteLine("-------------------------------------------------------------------------------------------------");
                 ligne--;
             }
         }
         public void ToFile(string name)
         {
             string path = name +".txt";
-            using (File.Create(path));
-            StreamWriter sw = new StreamWriter(path);
-            sw.Write("RHL%?QSDMRKKLDKG?");
-            //File.WriteAllBytes(path, ConvertTypeToHexa(type));
-            sw.Write(Convertir_Int_to_Endian2(size));
-            //File.WriteAllBytes(path, Convertir_Int_to_Endian2(size));
-            byte[] Reserved = {0,0,0,0};
-            File.WriteAllBytes(path, Reserved);
-            File.WriteAllBytes(path, Convertir_Int_to_Endian2(offset));
-            byte[] HeaderSize = {40,0,0,0};
-            File.WriteAllBytes(path, HeaderSize);
-            File.WriteAllBytes(path, Convertir_Int_to_Endian2(width));
-            File.WriteAllBytes(path, Convertir_Int_to_Endian2(height));
-            File.WriteAllBytes(path, Convertir_Int_to_Endian2(size));
-            byte[] wut = {1,0};
-            File.WriteAllBytes(path, wut);
-            File.WriteAllBytes(path, Convertir_Int_to_Endian2(bits_per_color));
-            byte[] bordel = {0,0,0,0,176,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-            File.WriteAllBytes(path, bordel);
+            byte[] bytesToWrite = new byte[size];
+            for(int i = 0; i<54 ; i++)
+            {
+                if (i < 2) {bytesToWrite[i] = ConvertTypeToHexa(type)[i];}
+                if(i<6  && i >= 2) {bytesToWrite[i] = Convertir_Int_to_Endian2(size)[i-2]; }
+                byte[] Reserved = {0,0,0,0};
+                if(i<10  && i >= 6) {bytesToWrite[i] = Reserved[i-6]; }
+                if(i<14  && i >= 10) {bytesToWrite[i] = Convertir_Int_to_Endian2(offset)[i-10]; }
+                byte[] HeaderSize = {40,0,0,0};
+                if(i<18  && i >= 14) {bytesToWrite[i] = HeaderSize[i-14]; }
+                if(i<22  && i >= 18) {bytesToWrite[i] = Convertir_Int_to_Endian2(width)[i-18]; }
+                if(i<26  && i >= 22) {bytesToWrite[i] = Convertir_Int_to_Endian2(height)[i-22]; }
+                byte[] wut = {1,0};
+                if(i<28  && i >= 26) {bytesToWrite[i] = wut[i-26]; }
+                if(i<30  && i >= 28) {bytesToWrite[i] = Convertir_Int_to_Endian2(bits_per_color)[i-28]; }
+                byte[] bordel = {0,0,0,0,176,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+                if(i<54  && i >= 30) {bytesToWrite[i] = bordel[i-30]; }
 
+
+            }
+            int index = 54;
             for(int i = image.GetLength(0)-1; i>= 0 ; i--)
             {
-                Console.WriteLine("rzg,rgrg");
-                Console.WriteLine("_____");
                 for(int j = 0; j< image.GetLength(1); j++)
                 {
-                    byte[] RGB_value = {(byte )image[i,j].B,(byte ) image[i,j].G,(byte ) image[i,j].R};
-                    File.WriteAllBytes(name, RGB_value);
+                    bytesToWrite[index] = (byte) image[i,j].B;
+                    index++;
+                    bytesToWrite[index] = (byte) image[i,j].G;
+                    index++;
+                    bytesToWrite[index] = (byte) image[i,j].R;
+                    index++;
+                    
                 }
             }
-            
+            File.WriteAllBytes(path, bytesToWrite);
 
         }
         public string Type
@@ -223,7 +223,6 @@ namespace TD_1
                 {
                     binaire[i] = 0;
                 }
-                //Console.Write(binaire[i]);
             }
 
             retour = new byte[binaire.Length / 8];
@@ -243,11 +242,6 @@ namespace TD_1
                 }
                 index++;
             }
-            
-            //for(int i = 0; i < retour.Length; i++)
-            //{
-            //    Console.WriteLine(retour[i]);
-            //}
             return retour;
         }
         public void CouleurToNoiretBlanc()

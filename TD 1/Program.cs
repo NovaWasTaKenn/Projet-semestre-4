@@ -136,6 +136,7 @@ namespace TD_1
             Console.WriteLine(image.Width);  //verif taille correcte
             Console.WriteLine(image.Height);
             Console.WriteLine(image.Bits_per_color);
+            Console.WriteLine(image.Convertir_Int_to_Endian2(image.Bits_per_color)[0] +" "+image.Convertir_Int_to_Endian2(image.Bits_per_color)[1]);
             image.ToFile("test");
             
             image.AfficherImage();
