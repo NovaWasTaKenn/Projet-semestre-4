@@ -171,6 +171,7 @@ namespace TD_1
             }
             return retour;
         }
+        #region Conversions avec BitConverter
         public int Convertir_Endian_To_Int32(byte[] tab)
         {
             tab.Reverse<byte>();
@@ -181,12 +182,14 @@ namespace TD_1
             tab.Reverse<byte>();
             return BitConverter.ToInt16(tab, 0);
         }
-        public byte[] Convertir_Int_To_Endian(int nb)
+        public byte[] Convertir_Int_To_Endian2(int nb)
         {
             byte[] retour = BitConverter.GetBytes(nb);
             retour.Reverse<byte>();
             return retour;
         }
+        #endregion
+
         public int Convertir_Endian_To_Int(byte[] tab)
         {
             
@@ -222,7 +225,7 @@ namespace TD_1
            
             return retour;
         }
-        public byte[] Convertir_Int_to_Endian2(int nb)
+        public byte[] Convertir_Int_to_Endian(int nb)
         {
             byte[] retour;
             int[] binaire = new int[32];

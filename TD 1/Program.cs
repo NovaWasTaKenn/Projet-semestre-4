@@ -132,17 +132,22 @@ namespace TD_1
             #endregion
 
             MyImage image = new MyImage("grde image.bmp");
-            Console.WriteLine(image.Type);
-            Console.WriteLine(image.Size);
-            Console.WriteLine(image.Width);  //verif taille correcte
-            Console.WriteLine(image.Height);
-            Console.WriteLine(image.Bits_per_color);
-            Console.WriteLine(image.Convertir_Int_to_Endian2(image.Bits_per_color)[0] +" "+image.Convertir_Int_to_Endian2(image.Bits_per_color)[1]);
+    
+            Console.WriteLine("Type de l'image : "+image.Type);
+            Console.WriteLine("Taille en octets de l'image : " + image.Size);
+            Console.WriteLine("Largeur en pixels de l'image : " + image.Width);
+            Console.WriteLine("Hauteur en pixels de l'image : " + image.Height);
+            Console.WriteLine("Nombre de bits par pixel :" + image.Bits_per_color);
+            Console.WriteLine();
+            Console.WriteLine("Convertir un format little endian en entier : {214 , 5 , 0 , 0} en entier ");
+            byte[] test_convert1 = {214, 5,0,0};
+            Console.WriteLine(image.Convertir_Endian_To_Int(test_convert1));
+            Console.WriteLine();
+            Console.WriteLine("Convertir_Int_To_Endian : convertir 1494 en format little endian ");
+            byte[] test_convert2 = image.Convertir_Int_to_Endian(1494);
+            Console.WriteLine(test_convert2[0]+" "+ test_convert2[1]+ " "+test_convert2[2]+" "+test_convert2[3] );
+            Console.WriteLine();
             image.ToFile("test1", "bmp");
-            
-            //image.Rotation(90, true).ToFile("test2","bmp");
-            
-            //image.AfficherImage();
             
             Console.ReadLine();
         }
