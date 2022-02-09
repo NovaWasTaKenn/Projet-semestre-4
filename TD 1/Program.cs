@@ -14,10 +14,9 @@ namespace TD_1
         static void Main(string[] args)
         {
 
-            Bitmap Image;
             #region TD 1 
             //#region rotate
-
+            //Bitmap Image;
             //Image = new Bitmap("fleur.bmp");
             //Image.RotateFlip(RotateFlipType.Rotate90FlipNone) ;
             //Image.Save("fleur90°.bmp");
@@ -106,7 +105,7 @@ namespace TD_1
             //#endregion
             #endregion
 
-            #region afficher fichier bmp
+            #region Afficher fichier bmp
             /*byte[] myFile = File.ReadAllBytes("bmp-icon.bmp");
 
             Image = new Bitmap("bmp-icon.bmp");
@@ -137,7 +136,7 @@ namespace TD_1
             Console.WriteLine(image.Width);  //verif taille correcte
             Console.WriteLine(image.Height);
             Console.WriteLine(image.Bits_per_color);
-            Console.WriteLine(image.Convertir_Int_to_Endian2(image.Bits_per_color)[0] +" "+image.Convertir_Int_to_Endian2(image.Bits_per_color)[1]);
+            Console.WriteLine(image.Convertir_Int_to_Endian(image.Bits_per_color)[0] +" "+image.Convertir_Int_to_Endian(image.Bits_per_color)[1]);
             image.ToFile("test1", "bmp");
             
             //image.Rotation(90, true).ToFile("test2","bmp");
