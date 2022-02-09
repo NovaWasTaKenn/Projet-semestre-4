@@ -56,9 +56,24 @@ namespace TD_1
                 ligne--;
             }
         }
-        public void ToFile(string name)
+        public MyImage(MyImage myImage, int height, int width)
         {
-            string path = name +".txt";
+            this.type = myImage.type;
+            this.size = myImage.size;
+            this.offset = myImage.offset;
+            this.height = myImage.height;
+            this.width = myImage.width;
+            this.bits_per_color = myImage.bits_per_color;
+            this.image = new Pixel[height, width];
+        }
+        public void ToFile(string name, string type)
+        {
+            
+            string path = name +"."+type;
+            if (!File.Exists(path))
+            {
+                using(File.Create(path));
+            }
             byte[] bytesToWrite = new byte[size];
             for(int i = 0; i<54 ; i++)
             {
@@ -107,10 +122,12 @@ namespace TD_1
         public int Width
         {
             get { return width; }
+            set { width = value;}
         }
         public int Height 
         {
             get { return height; }
+            set { height = value;}
         }
         public int Bits_per_color
         {
@@ -205,7 +222,6 @@ namespace TD_1
            
             return retour;
         }
-
         public byte[] Convertir_Int_to_Endian2(int nb)
         {
             byte[] retour;
@@ -255,18 +271,20 @@ namespace TD_1
                 }
             }
         }
-         /*L'image n'est pas forcément un carré a prendre en cpt*/
-        public void Rotation(int angle , bool sens_horaire)
+        public MyImage Rotation(int angle , bool sens_horaire)
         {
-            Pixel[,] copie = new Pixel[image.GetLength(0), image.GetLength(1)];
-            for (int i = 0; i < image.GetLength(0); i++)
-            {
-                for (int j = 0; j < image.GetLength(1); j++)
-                {
-                    copie[i, j] = image[i, j];
-                }
-            }
+  
             int nb_rotation = angle / 90;
+            MyImage copie = null;
+            if(nb_rotation%2 == 0)
+            {
+                copie = new MyImage(this, this.height, this.width);
+            }
+            else
+            {
+                copie = new MyImage(this, this.width, this.height);
+            }
+            
             for(int k = 0; k< nb_rotation; k++)
             {
                 for (int i = 0; i < image.GetLength(0); i++)
@@ -275,16 +293,16 @@ namespace TD_1
                     {
                         if (sens_horaire)
                         {
-                            image[j, image.GetLength(1)-i] = copie[i, j]; // Index out of bound par ici probablement du a image rectangle
+                            copie.image[j,copie.image.GetLength(1)-i-1] =  this.image[i,j]; 
                         }
                         else
                         {
-                            image[j,i] = copie[i, image.GetLength(1)-j];
+                            copie.image[j,i] = this.image[i, this.image.GetLength(1)-j-1];
                         }
                     }
                 }
             }
-            
+            return copie;
         }
     }
 }

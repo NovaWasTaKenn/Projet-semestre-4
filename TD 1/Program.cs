@@ -137,7 +137,9 @@ namespace TD_1
             Console.WriteLine(image.Height);
             Console.WriteLine(image.Bits_per_color);
             Console.WriteLine(image.Convertir_Int_to_Endian2(image.Bits_per_color)[0] +" "+image.Convertir_Int_to_Endian2(image.Bits_per_color)[1]);
-            image.ToFile("test");
+            image.ToFile("test1", "bmp");
+            
+            image.Rotation(90, true).ToFile("test2","bmp");
             
             image.AfficherImage();
             
