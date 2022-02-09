@@ -233,8 +233,7 @@ namespace TD_1
             }
             return retour;
         }
-
-        public byte[] Convertir_Int_to_Endian(int nb)
+        public byte[] Convertir_Int_to_Endian2(int nb)
         {
             byte[] retour;
             int[] binaire = new int[32];
