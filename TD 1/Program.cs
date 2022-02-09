@@ -15,7 +15,7 @@ namespace TD_1
         {
 
             Bitmap Image;
-            #region ornezg
+            #region TD 1 
             //#region rotate
 
             //Image = new Bitmap("fleur.bmp");
@@ -106,7 +106,7 @@ namespace TD_1
             //#endregion
             #endregion
 
-
+            #region afficher fichier bmp
             /*byte[] myFile = File.ReadAllBytes("bmp-icon.bmp");
 
             Image = new Bitmap("bmp-icon.bmp");
@@ -129,8 +129,9 @@ namespace TD_1
                 }
                 Console.WriteLine();
             }*/
+            #endregion
 
-            MyImage image = new MyImage("bmp-icon.bmp");
+            MyImage image = new MyImage("grde image.bmp");
             Console.WriteLine(image.Type);
             Console.WriteLine(image.Size);
             Console.WriteLine(image.Width);  //verif taille correcte
@@ -139,9 +140,9 @@ namespace TD_1
             Console.WriteLine(image.Convertir_Int_to_Endian2(image.Bits_per_color)[0] +" "+image.Convertir_Int_to_Endian2(image.Bits_per_color)[1]);
             image.ToFile("test1", "bmp");
             
-            image.Rotation(90, true).ToFile("test2","bmp");
+            //image.Rotation(90, true).ToFile("test2","bmp");
             
-            image.AfficherImage();
+            //image.AfficherImage();
             
             Console.ReadLine();
         }
