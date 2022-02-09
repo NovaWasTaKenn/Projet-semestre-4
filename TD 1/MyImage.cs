@@ -206,7 +206,7 @@ namespace TD_1
             int retour = 0;
             int index = 0;
             int[] binaire = new int[tab.Length * 8];
-            for(int i = tab.Length-1 ; i>= 0 ; i--)
+            for(int i = tab.Length - 1 ; i >= 0 ; i--)
             {
                 for(int j = 7; j >= 0; j--)
                 {
@@ -233,7 +233,8 @@ namespace TD_1
             }
             return retour;
         }
-        public byte[] Convertir_Int_to_Endian2(int nb)
+
+        public byte[] Convertir_Int_to_Endian(int nb)
         {
             byte[] retour;
             int[] binaire = new int[32];
