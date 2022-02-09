@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using System.Threading;
 
 namespace TD_1
 {
@@ -59,7 +60,42 @@ namespace TD_1
                 ligne--;
             }
         }
+        public void ToFile(string name)
+        {
+            string path = name +".txt";
+            using (File.Create(path));
+            StreamWriter sw = new StreamWriter(path);
+            sw.Write("RHL%?QSDMRKKLDKG?");
+            //File.WriteAllBytes(path, ConvertTypeToHexa(type));
+            sw.Write(Convertir_Int_to_Endian2(size));
+            //File.WriteAllBytes(path, Convertir_Int_to_Endian2(size));
+            byte[] Reserved = {0,0,0,0};
+            File.WriteAllBytes(path, Reserved);
+            File.WriteAllBytes(path, Convertir_Int_to_Endian2(offset));
+            byte[] HeaderSize = {40,0,0,0};
+            File.WriteAllBytes(path, HeaderSize);
+            File.WriteAllBytes(path, Convertir_Int_to_Endian2(width));
+            File.WriteAllBytes(path, Convertir_Int_to_Endian2(height));
+            File.WriteAllBytes(path, Convertir_Int_to_Endian2(size));
+            byte[] wut = {1,0};
+            File.WriteAllBytes(path, wut);
+            File.WriteAllBytes(path, Convertir_Int_to_Endian2(bits_per_color));
+            byte[] bordel = {0,0,0,0,176,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+            File.WriteAllBytes(path, bordel);
 
+            for(int i = image.GetLength(0)-1; i>= 0 ; i--)
+            {
+                Console.WriteLine("rzg,rgrg");
+                Console.WriteLine("_____");
+                for(int j = 0; j< image.GetLength(1); j++)
+                {
+                    byte[] RGB_value = {(byte )image[i,j].B,(byte ) image[i,j].G,(byte ) image[i,j].R};
+                    File.WriteAllBytes(name, RGB_value);
+                }
+            }
+            
+
+        }
         public string Type
         {
             get { return type; }
@@ -106,6 +142,18 @@ namespace TD_1
             }
             return type;
         }
+        public byte[] ConvertTypeToHexa(string type)
+        {
+            byte[] retour = new byte[2];
+            switch (type)
+            {  
+                case "bmp":
+                    retour[0] = 66;
+                    retour[1] = 77;
+                    break;
+            }
+            return retour;
+        }
         public int Convertir_Endian_To_Int32(byte[] tab)
         {
             tab.Reverse<byte>();
@@ -124,7 +172,6 @@ namespace TD_1
         }
         public int Convertir_Endian_To_Int(byte[] tab)
         {
-            //Valeurs en Little endian
             
             int retour = 0;
             int index = 0;
