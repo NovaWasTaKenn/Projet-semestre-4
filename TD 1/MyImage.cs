@@ -18,6 +18,20 @@ namespace TD_1
         int bits_per_color;
         Pixel[,] image;
 
+        #region Constructeurs
+        public MyImage(MyImage myImage, int height, int width)
+        {
+            this.type = myImage.type;
+            this.size = myImage.size;
+            this.offset = myImage.offset;
+            this.height = height;
+            this.width = width;
+            this.bits_per_color = myImage.bits_per_color;
+            this.image = new Pixel[height, width];
+        }
+        #endregion
+
+        #region Fichier vers classe | Classe vers fichier
         public MyImage(string file)
         {
             byte[] file_tab = File.ReadAllBytes(file);
@@ -46,6 +60,14 @@ namespace TD_1
 
             for(int i = 54; i < file_tab.Length && ligne >=  0; i += width*3)
             {
+                //Prendre en cpt les cas ou la largeur de l'image n'est pas multiple de 4 , on augmente l'index i en conséquence pr sauter les 0 de remplissage
+
+                /*if((width*3)%4 != 0)
+                {
+                    int nb_remplissage_fin_ligne = 4 - (width*3)%4;
+                    i = i+nb_remplissage_fin_ligne; 
+                }*/
+                
                 colonne = 0;
                 for(int j = i; j < i + width * 3; j += 3)
                 {
@@ -55,18 +77,7 @@ namespace TD_1
                 ligne--;
             }
         }
-
-        public MyImage(MyImage myImage, int height, int width)
-        {
-            this.type = myImage.type;
-            this.size = myImage.size;
-            this.offset = myImage.offset;
-            this.height = myImage.height;
-            this.width = myImage.width;
-            this.bits_per_color = myImage.bits_per_color;
-            this.image = new Pixel[height, width];
-        }
-
+        
         public void ToFile(string name, string type)
         {    
             string path = name + "." + type;
@@ -109,10 +120,38 @@ namespace TD_1
                     bytesToWrite[index] = (byte) image[i,j].R;
                     index++;                 
                 }
+                
+                #region Switch     prendre en cpt les cas ou longueur pas multiple de 4, ajouter des 0 a la fin de chaque ligne pour arriver a un multiple de 4 
+                /*int fin_de_ligne = (this.width*3)%4;
+                switch (fin_de_ligne)
+                {
+                    case 1 : 
+                        bytesToWrite[index] = 0;
+                        index++;
+                        break;
+                    case 2 :
+                        bytesToWrite[index] = 0;
+                        index++;
+                        bytesToWrite[index] = 0;
+                        index++;
+                        break;
+                    case 3 :
+                        bytesToWrite[index] = 0;
+                        index++;
+                        bytesToWrite[index] = 0;
+                        index++;
+                        bytesToWrite[index] = 0;
+                        index++;
+                        break;
+                }*/
+
+                #endregion
             }
             File.WriteAllBytes(path, bytesToWrite);
         }
+        #endregion
 
+        #region accesseurs
         public string Type
         {
             get { return type; }
@@ -144,7 +183,13 @@ namespace TD_1
         {
             get { return image; }
         }
+        #endregion
 
+        #region utilitaire
+        public override string ToString()
+        {
+            return "height : " + height + " | width : " + width + " height matrice : " + image.GetLength(0) + "width matrice : "+ image.GetLength(1); 
+        }
         public void AfficherImage()
         {
             for(int i = 0; i < image.GetLength(0); i++)
@@ -156,7 +201,18 @@ namespace TD_1
                 Console.WriteLine("-------------------------------------------------------------------------------------------------");
             }
         }
+        public int Puissance(int x, int exp, int valeur = 1)
+        {
+            if(exp == 0)
+            {
+                return valeur;
+            }
 
+            return Puissance(x, exp - 1, valeur * x);
+        }
+        #endregion
+
+        #region Conversion
         public string ConvertToType(string letters)
         {
             string type = "";
@@ -210,7 +266,7 @@ namespace TD_1
             {
                 for(int j = 7; j >= 0; j--)
                 {
-                    byte puissance = (byte)Math.Pow((double)2,(double)j);
+                    byte puissance = (byte)Puissance(2, j);
                     if ((tab[i] - puissance) >= 0)
                     {
                         binaire[index] = 1;
@@ -228,7 +284,7 @@ namespace TD_1
                 
                 if(binaire[i] == 1)
                 {
-                    retour += (int)Math.Pow((double)2, (double)(binaire.Length - 1 - i));
+                    retour += Puissance(2,binaire.Length - 1 - i);
                 }
             }
             return retour;
@@ -240,7 +296,7 @@ namespace TD_1
             int[] binaire = new int[32];
             for(int i = 0; i < binaire.Length; i++)
             {
-                int puissance = (int)Math.Pow((double)2, (double)binaire.Length - 1 - i);
+                int puissance = Puissance(2, binaire.Length - 1 - i);
                 if(nb - puissance >= 0)
                 {
                     binaire[i] = 1;
@@ -263,7 +319,7 @@ namespace TD_1
                 {
                     if(binaire[j - p] == 1)
                     {
-                        stock += (byte)Math.Pow((double)2, (double)p);
+                        stock += (byte)Puissance(2, p);
                     }
 
                     retour[index] = stock;
@@ -272,36 +328,31 @@ namespace TD_1
             }
             return retour;
         }
+        #endregion
 
-        public void CouleurToNoiretBlanc()
+        #region TD 3
+        public MyImage CouleurToNoiretBlanc()
         {
-            for(int i = 0 ; i < image.GetLength(0); i ++)
+            MyImage copie = new MyImage(this, this.height, this.width);
+
+            for(int i = 0 ; i < this.image.GetLength(0); i ++)
             {
-                for(int j = 0 ; j < image.GetLength(1); j++)
+                for(int j = 0 ; j < this.image.GetLength(1); j++)
                 {
-                    int new_color = (image[i,j].R + image[i,j].G + image[i,j].B) / 3 ;
-                    image[i,j].R = image[i,j].G = image[i,j].B = new_color;
+                    int new_color = (this.image[i,j].R + this.image[i,j].G + this.image[i,j].B) / 3 ;
+                    copie.image[i,j] = new Pixel(new_color, new_color,new_color);
                 }
             }
+            return copie;
         }
-
         public MyImage Rotation(int angle, bool sens_horaire)
         {
             int nb_rotation = angle / 90;
-            MyImage copie;
-
-            if(nb_rotation % 2 == 0)
-            {
-                copie = new MyImage(this, this.height, this.width);
-            }
-
-            else
-            {
-                copie = new MyImage(this, this.width, this.height);
-            }
+            MyImage copie = new MyImage(this, this.height, this.width);
             
             for(int k = 0; k < nb_rotation; k++)
-            {
+            {              
+                copie = new MyImage(this, this.width, this.height);
                 for (int i = 0; i < image.GetLength(0); i++)
                 {
                     for (int j = 0; j < image.GetLength(1); j++)
@@ -312,13 +363,29 @@ namespace TD_1
                         }
                         else
                         {
-                            copie.image[j,i] = this.image[i, this.image.GetLength(1) - j - 1];
+                            copie.image[copie.image.GetLength(0)-j-1, i] = this.image[i,j];
                         }
                     }
                 }
+
+                this.image = copie.image;
             }
 
             return copie;
         }
+        public MyImage EffetMiroir()
+        {
+            MyImage copie = new MyImage(this, this.height, this.width);
+
+            for(int i = 0; i < this.height; i++)
+            {
+                for(int j = 0; j < this.width; j++)
+                {
+                    copie.image[i, j] = this.image[i, this.width - 1 - j];
+                }
+            }
+            return copie;
+        }
+        #endregion
     }
 }

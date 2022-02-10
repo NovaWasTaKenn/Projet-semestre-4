@@ -130,7 +130,7 @@ namespace TD_1
             }*/
             #endregion
 
-            MyImage image = new MyImage("grde image.bmp");
+            MyImage image = new MyImage("rect.bmp");
     
             Console.WriteLine("Type de l'image : "+image.Type);
             Console.WriteLine("Taille en octets de l'image : " + image.Size);
@@ -148,6 +148,9 @@ namespace TD_1
             Console.WriteLine();
             image.ToFile("test1", "bmp");
             
+            image.Rotation(180, true).ToFile("testRotation","bmp");
+            image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
+            image.EffetMiroir().ToFile("TestMiroir","bmp");
             Console.ReadLine();
         }
     }
