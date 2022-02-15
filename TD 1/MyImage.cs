@@ -22,7 +22,7 @@ namespace TD_1
         public MyImage(MyImage myImage, int height, int width)
         {
             this.type = myImage.type;
-            this.size = myImage.size;
+            this.size = 54 + width*3*height;
             this.offset = myImage.offset;
             this.height = height;
             this.width = width;
@@ -109,15 +109,15 @@ namespace TD_1
 
             int index = 54;
 
-            for(int i = image.GetLength(0) - 1; i >= 0; i--)
+            for(int i = this.image.GetLength(0) - 1; i >= 0; i--)
             {
-                for(int j = 0; j < image.GetLength(1); j++)
+                for(int j = 0; j < this.image.GetLength(1); j++)
                 {
-                    bytesToWrite[index] = (byte) image[i,j].B;
+                    bytesToWrite[index] = (byte)this.image[i,j].B;
                     index++;
-                    bytesToWrite[index] = (byte) image[i,j].G;
+                    bytesToWrite[index] = (byte)this.image[i,j].G;
                     index++;
-                    bytesToWrite[index] = (byte) image[i,j].R;
+                    bytesToWrite[index] = (byte)this.image[i,j].R;
                     index++;                 
                 }
                 
@@ -209,6 +209,16 @@ namespace TD_1
             }
 
             return Puissance(x, exp - 1, valeur * x);
+        }
+        public void FondBlanc()
+        {
+            for(int i = 0; i<this.image.GetLength(0); i++)
+            {
+                for(int j = 0; j< this.image.GetLength(1); j++)
+                {
+                    this.image[i, j] = new Pixel(255,255,255);
+                }
+            }
         }
         #endregion
 
@@ -349,7 +359,9 @@ namespace TD_1
         {
             int nb_rotation = angle / 90;
             MyImage copie = new MyImage(this, this.height, this.width);
+
             
+
             for(int k = 0; k < nb_rotation; k++)
             {              
                 copie = new MyImage(this, this.width, this.height);
@@ -371,6 +383,41 @@ namespace TD_1
                 this.image = copie.image;
             }
 
+            return copie;
+        }
+        public MyImage RotationV2(double angle, bool sens_horaire) // Trouver les formules pour -pi/2 - pi/2   |   fonctionne pas pour les angles quelconques car la taille de l'image sera quelconque (nb octet pas multiple de 4)
+        {
+            double angle_rad = (Math.PI / 180) * angle;
+            int height = Math.Abs((int)Math.Round(Convert.ToDouble(this.width) * Math.Sin(angle_rad) + Convert.ToDouble(this.height) * Math.Cos(angle_rad)));
+            int width = Math.Abs((int)Math.Round(Convert.ToDouble(this.width) * Math.Cos(angle_rad) + Convert.ToDouble(this.height) * Math.Sin(angle_rad)));
+
+            MyImage copie = new MyImage(this, height, width);
+
+            copie.FondBlanc();
+
+            for (int i  = 0; i< this.image.GetLength(0); i++)
+            {
+                for(int j =0;j< this.image.GetLength(1); j++)
+                {
+                    int j_new;
+                    int i_new;
+                    if (sens_horaire)           // Les formules ne fonctionne pas pour une rotation de 180°   probablement besoin de trouver les formules pour -pi/2 - pi/2
+                    {
+                        j_new = (int)(Math.Cos(angle_rad) * Convert.ToDouble(j) + Math.Sin(angle_rad) * Convert.ToDouble(this.height-i-1));
+                        i_new = (int)(Math.Cos(angle_rad) * Convert.ToDouble(i) + Math.Sin(angle_rad) * Convert.ToDouble(j));
+                    }
+                    else
+                    {
+                        j_new = (int)(Math.Cos(angle_rad) * Convert.ToDouble(j) + Math.Sin(angle_rad) * Convert.ToDouble(i));
+                        i_new = (int)(Math.Cos(angle_rad) * Convert.ToDouble(i) + Math.Sin(angle_rad) * Convert.ToDouble(this.width - j));
+                    }
+                    if(i_new>= 0 && i_new < copie.image.GetLength(0) && j_new>= 0 && j_new < copie.image.GetLength(1))
+                    {
+                        copie.image[i_new, j_new] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B);
+                    } 
+                    
+                }
+            }
             return copie;
         }
         public MyImage EffetMiroir()

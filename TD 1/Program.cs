@@ -148,7 +148,7 @@ namespace TD_1
             Console.WriteLine();
             image.ToFile("test1", "bmp");
             
-            image.Rotation(180, true).ToFile("testRotation","bmp");
+            image.RotationV2(180.00, true).ToFile("testRotation","bmp");
             image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
             image.EffetMiroir().ToFile("TestMiroir","bmp");
             Console.ReadLine();
