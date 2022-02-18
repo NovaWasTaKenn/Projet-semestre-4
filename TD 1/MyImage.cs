@@ -18,11 +18,18 @@ namespace TD_1
         int bits_per_color;
         Pixel[,] image;
 
+        //Rotation fct pour les multiples de 90° mais artefacts blancs sur les rotations quelconques
+
         #region Constructeurs
         public MyImage(MyImage myImage, int height, int width)
         {
             this.type = myImage.type;
-            this.size = 54 + width*3*height;
+            int nb_remplissage_fin_ligne = 0;
+            if ((width * 3) % 4 != 0)
+            {
+                nb_remplissage_fin_ligne = 4 - (width * 3) % 4;
+            }
+            this.size = 54 + ((nb_remplissage_fin_ligne+(width*3))*height);
             this.offset = myImage.offset;
             this.height = height;
             this.width = width;
@@ -62,17 +69,16 @@ namespace TD_1
             {
                 //Prendre en cpt les cas ou la largeur de l'image n'est pas multiple de 4 , on augmente l'index i en conséquence pr sauter les 0 de remplissage
 
-                /*if((width*3)%4 != 0)
-                {
-                    int nb_remplissage_fin_ligne = 4 - (width*3)%4;
-                    i = i+nb_remplissage_fin_ligne; 
-                }*/
-                
                 colonne = 0;
                 for(int j = i; j < i + width * 3; j += 3)
                 {
                     this.image[ligne, colonne] = new Pixel(file_tab[j + 2], file_tab[j + 1], file_tab[j]);
                     colonne++;
+                }
+                if ((width * 3) % 4 != 0)
+                {
+                    int nb_remplissage_fin_ligne = 4 - (width * 3) % 4;
+                    i = i + nb_remplissage_fin_ligne;
                 }
                 ligne--;
             }
@@ -103,7 +109,7 @@ namespace TD_1
                 byte[] wut = {1,0};
                 if(i < 28  && i >= 26) {bytesToWrite[i] = wut[i - 26]; }
                 if(i < 30  && i >= 28) {bytesToWrite[i] = Convertir_Int_to_Endian(bits_per_color)[i - 28]; }
-                byte[] bordel = { 0,0,0,0,176,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };
+                byte[] bordel = { 0,0,0,0,176,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };                       //Nom de var bordel a changer
                 if(i < 54  && i >= 30) { bytesToWrite[i] = bordel[i - 30]; }
             }
 
@@ -122,7 +128,7 @@ namespace TD_1
                 }
                 
                 #region Switch     prendre en cpt les cas ou longueur pas multiple de 4, ajouter des 0 a la fin de chaque ligne pour arriver a un multiple de 4 
-                /*int fin_de_ligne = (this.width*3)%4;
+                int fin_de_ligne = 4 - (this.width*3)%4;
                 switch (fin_de_ligne)
                 {
                     case 1 : 
@@ -143,7 +149,7 @@ namespace TD_1
                         bytesToWrite[index] = 0;
                         index++;
                         break;
-                }*/
+                }
 
                 #endregion
             }
@@ -387,9 +393,31 @@ namespace TD_1
         }
         public MyImage RotationV2(double angle, bool sens_horaire) // Trouver les formules pour -pi/2 - pi/2   |   fonctionne pas pour les angles quelconques car la taille de l'image sera quelconque (nb octet pas multiple de 4)
         {
+
+            if (angle > 360)
+            {
+                angle = angle % 360;
+            }
+            if (angle > 180)
+            {
+                angle = 360 - angle;
+                sens_horaire = !sens_horaire;
+            }
+
             double angle_rad = (Math.PI / 180) * angle;
-            int height = Math.Abs((int)Math.Round(Convert.ToDouble(this.width) * Math.Sin(angle_rad) + Convert.ToDouble(this.height) * Math.Cos(angle_rad)));
-            int width = Math.Abs((int)Math.Round(Convert.ToDouble(this.width) * Math.Cos(angle_rad) + Convert.ToDouble(this.height) * Math.Sin(angle_rad)));
+            int height = 0;
+            int width = 0;
+            if (angle <= 90 && 0 <= angle)
+            {
+                 height = Math.Abs((int)Math.Round(Convert.ToDouble(this.width) * Math.Sin(angle_rad) + Convert.ToDouble(this.height) * Math.Cos(angle_rad)));
+                 width = Math.Abs((int)Math.Round(Convert.ToDouble(this.width) * Math.Cos(angle_rad) + Convert.ToDouble(this.height) * Math.Sin(angle_rad)));
+            }
+            else
+            {
+                height = Math.Abs((int)Math.Round(Convert.ToDouble(this.width) * Math.Sin(Math.PI - angle_rad) + Convert.ToDouble(this.height) * Math.Cos(Math.PI - angle_rad)));
+                width = Math.Abs((int)Math.Round(Convert.ToDouble(this.width) * Math.Cos(Math.PI - angle_rad) + Convert.ToDouble(this.height) * Math.Sin(Math.PI - angle_rad)));
+            }
+                
 
             MyImage copie = new MyImage(this, height, width);
 
@@ -399,23 +427,48 @@ namespace TD_1
             {
                 for(int j =0;j< this.image.GetLength(1); j++)
                 {
-                    int j_new;
-                    int i_new;
+                    int j_new = 0;
+                    int i_new = 0;
                     if (sens_horaire)           // Les formules ne fonctionne pas pour une rotation de 180°   probablement besoin de trouver les formules pour -pi/2 - pi/2
                     {
-                        j_new = (int)(Math.Cos(angle_rad) * Convert.ToDouble(j) + Math.Sin(angle_rad) * Convert.ToDouble(this.height-i-1));
-                        i_new = (int)(Math.Cos(angle_rad) * Convert.ToDouble(i) + Math.Sin(angle_rad) * Convert.ToDouble(j));
+                        if (angle<=90 && 0<=angle)
+                        {
+                            j_new = (int)Math.Round(Math.Cos(angle_rad) * Convert.ToDouble(j) + Math.Sin(angle_rad) * Convert.ToDouble(this.height - i - 1));
+                            i_new = (int)Math.Round(Math.Cos(angle_rad) * Convert.ToDouble(i) + Math.Sin(angle_rad) * Convert.ToDouble(j));
+                        }
+                        if(angle <= 180 && 90 < angle)
+                        {
+                            j_new = (int)Math.Round(Convert.ToDouble(copie.width-1) - Math.Cos(Math.PI - angle_rad) * Convert.ToDouble(j) - Math.Sin(Math.PI - angle_rad) * Convert.ToDouble(i));
+                            i_new = (int)Math.Round(Convert.ToDouble(copie.height-1) + Math.Sin(Math.PI - angle_rad) * Convert.ToDouble(j) - Math.Cos(Math.PI - angle_rad) * Convert.ToDouble(i) - Math.Sin(Math.PI - angle_rad) * Convert.ToDouble(this.width - 1));
+                        }
+                        
                     }
                     else
                     {
-                        j_new = (int)(Math.Cos(angle_rad) * Convert.ToDouble(j) + Math.Sin(angle_rad) * Convert.ToDouble(i));
-                        i_new = (int)(Math.Cos(angle_rad) * Convert.ToDouble(i) + Math.Sin(angle_rad) * Convert.ToDouble(this.width - j));
+                        if (angle <= 90 && 0 <= angle)
+                        {
+                            j_new = (int)Math.Round(Math.Cos(angle_rad) * Convert.ToDouble(j) + Math.Sin(angle_rad) * Convert.ToDouble(i));
+                            i_new = (int)Math.Round(Math.Cos(angle_rad) * Convert.ToDouble(i) + Math.Sin(angle_rad) * Convert.ToDouble(this.width - j - 1));
+                        }
+                        if(angle <= 180 && 90 < angle)
+                        {
+                            j_new = (int)Math.Round(Convert.ToDouble(copie.width - 1) - Math.Cos(Math.PI - angle_rad) * Convert.ToDouble(j) + Math.Sin(Math.PI - angle_rad) * Convert.ToDouble(i) - Math.Sin(Math.PI - angle_rad) * Convert.ToDouble(this.height - 1));
+                            i_new = (int)Math.Round(Convert.ToDouble(copie.height - 1) - Math.Sin(Math.PI - angle_rad) * Convert.ToDouble(j) - Math.Cos(Math.PI - angle_rad) * Convert.ToDouble(i));
+                        }
+                        
                     }
                     if(i_new>= 0 && i_new < copie.image.GetLength(0) && j_new>= 0 && j_new < copie.image.GetLength(1))
                     {
                         copie.image[i_new, j_new] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B);
-                    } 
-                    
+                        if(i_new+1 < copie.height) { copie.image[i_new + 1, j_new] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }      //Ici pour chaque pixel orginal rempli un carré 2*2 dirigé en i+1, j+1 ds l'image tournée : voir si adapter la direction en fct de la rotation a un impact (vers i-1, j+1 , .....)
+                        if(j_new + 1< copie.width) { copie.image[i_new, j_new + 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                        if(i_new + 1 < copie.height && j_new + 1 < copie.width) 
+                        {
+                            copie.image[i_new + 1, j_new + 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B);
+                        }
+                    }
+
+
                 }
             }
             return copie;

@@ -129,8 +129,8 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-
-            MyImage image = new MyImage("rect.bmp");
+            string name = "grde image.bmp";
+            MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
             Console.WriteLine("Taille en octets de l'image : " + image.Size);
@@ -146,11 +146,16 @@ namespace TD_1
             byte[] test_convert2 = image.Convertir_Int_to_Endian(1494);
             Console.WriteLine(test_convert2[0]+" "+ test_convert2[1]+ " "+test_convert2[2]+" "+test_convert2[3] );
             Console.WriteLine();
-            image.ToFile("test1", "bmp");
+            image.ToFile("TestToFile", "bmp");
             
-            image.RotationV2(180.00, true).ToFile("testRotation","bmp");
+            image.RotationV2(45.00, false).ToFile("testRotationTronqué","bmp");
             image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
             image.EffetMiroir().ToFile("TestMiroir","bmp");
+
+            Process.Start(name);
+            Process.Start("testRotationTronqué.bmp");
+            Process.Start("TestMiroir.bmp");
+            Process.Start("testN&B.bmp");
             Console.ReadLine();
         }
     }
