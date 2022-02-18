@@ -129,7 +129,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "grde image.bmp";
+            string name = "foret riviere.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);

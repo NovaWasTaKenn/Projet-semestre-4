@@ -226,6 +226,16 @@ namespace TD_1
                 }
             }
         }
+        public void FondGris()
+        {
+            for (int i = 0; i < this.image.GetLength(0); i++)
+            {
+                for (int j = 0; j < this.image.GetLength(1); j++)
+                {
+                    this.image[i, j] = new Pixel(34, 34, 34);
+                }
+            }
+        }
         #endregion
 
         #region Conversion
@@ -421,7 +431,7 @@ namespace TD_1
 
             MyImage copie = new MyImage(this, height, width);
 
-            copie.FondBlanc();
+            copie.FondGris();
 
             for (int i  = 0; i< this.image.GetLength(0); i++)
             {
