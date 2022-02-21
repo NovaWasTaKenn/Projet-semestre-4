@@ -129,7 +129,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "foret riviere.bmp";
+            string name = "foret1600par900.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -148,12 +148,12 @@ namespace TD_1
             Console.WriteLine();
             image.ToFile("TestToFile", "bmp");
             
-            image.RotationV2(45.00, false).ToFile("testRotationTronqué","bmp");
+            image.RotationV2(97.00, true).ToFile("testRotation","bmp");
             image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
             image.EffetMiroir().ToFile("TestMiroir","bmp");
 
             Process.Start(name);
-            Process.Start("testRotationTronqué.bmp");
+            Process.Start("testRotation.bmp");
             Process.Start("TestMiroir.bmp");
             Process.Start("testN&B.bmp");
             Console.ReadLine();

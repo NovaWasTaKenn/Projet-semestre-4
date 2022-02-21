@@ -470,11 +470,32 @@ namespace TD_1
                     if(i_new>= 0 && i_new < copie.image.GetLength(0) && j_new>= 0 && j_new < copie.image.GetLength(1))
                     {
                         copie.image[i_new, j_new] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B);
-                        if(i_new+1 < copie.height) { copie.image[i_new + 1, j_new] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }      //Ici pour chaque pixel orginal rempli un carré 2*2 dirigé en i+1, j+1 ds l'image tournée : voir si adapter la direction en fct de la rotation a un impact (vers i-1, j+1 , .....)
-                        if(j_new + 1< copie.width) { copie.image[i_new, j_new + 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
-                        if(i_new + 1 < copie.height && j_new + 1 < copie.width) 
+                        if (i != this.image.GetLength(0) - 1 && j != this.image.GetLength(1) - 1)
                         {
-                            copie.image[i_new + 1, j_new + 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B);
+                            if (sens_horaire && angle <= 90 && 0 <= angle)
+                            {
+                                if (i_new + 1 < copie.height) { copie.image[i_new + 1, j_new] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                                if (j_new - 1 >= 0 && i_new + 1 > copie.height) { copie.image[i_new + 1, j_new - 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                                if (i_new + 1 < copie.height && j_new + 1 < copie.width) { copie.image[i_new + 1, j_new + 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                            }
+                            if (sens_horaire && angle <= 180 && 90 < angle)
+                            {
+                                if (j_new - 1 >= 0) { copie.image[i_new, j_new - 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                                if (j_new - 1 >= 0 && i_new + 1 > copie.height) { copie.image[i_new + 1, j_new - 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                                if (i_new - 1 >= 0 && j_new - 1 >= 0) { copie.image[i_new - 1, j_new - 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                            }
+                            if (!sens_horaire && angle <= 90 && 0 <= angle)
+                            {
+                                if (j_new + 1 < copie.height) { copie.image[i_new, j_new + 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                                if (j_new + 1 < copie.width && i_new + 1 < copie.height) { copie.image[i_new + 1, j_new + 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                                if (i_new - 1 >= 0 && j_new + 1 < copie.width) { copie.image[i_new - 1, j_new + 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                            }
+                            if (!sens_horaire && angle <= 180 && 90 < angle)
+                            {
+                                if (i_new - 1 >= 0) { copie.image[i_new - 1, j_new] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                                if (j_new + 1 < copie.width && i_new - 1 >= 0) { copie.image[i_new - 1, j_new + 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                                if (i_new - 1 >= 0 && j_new - 1 >= 0) { copie.image[i_new - 1, j_new - 1] = new Pixel(this.image[i, j].R, this.image[i, j].G, this.image[i, j].B); }
+                            }
                         }
                     }
 
