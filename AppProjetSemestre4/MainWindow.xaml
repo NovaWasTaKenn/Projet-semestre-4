@@ -75,7 +75,7 @@
             <RowDefinition Height="70" />
             <RowDefinition Height="70"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="203"/>
+            <RowDefinition Height="220"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
@@ -85,7 +85,7 @@
             <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Border Grid.Row="2" Grid.Column="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Grid.RowSpan="3" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="275" Height="325.2">
+        <Border Grid.Row="2" Grid.Column="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Grid.RowSpan="3" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="275">
             <TreeView  Background="#FF4B4B4B"  Foreground="White">
 
                 <TreeView.ItemContainerStyle>
@@ -145,7 +145,7 @@
             <Button Click="Lancer_Click" ClickMode="Press" Content="Lancer" FontSize="16" Foreground="White" Style="{StaticResource ButtonStyle}" Template="{StaticResource LancerTemplate}" Margin="15,0,0,0" Background="#FF4B4B4B" ToolTip="Cliquez pour lancer le programme, le résultat apparaitra dans la fenêtre en dessous" Cursor="Hand"/>
         </StackPanel>
 
-        <Border Grid.Column="3" Grid.Row="3" Grid.RowSpan="2" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Width="500" HorizontalAlignment="Center" Background="#FF828282" Height="285">
+        <Border Grid.Column="3" Grid.Row="2" Grid.RowSpan="2" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Width="500" HorizontalAlignment="Center" Background="#FF828282" Height="285" VerticalAlignment="Center">
             <Image x:Name="ImageBox" Source="/foret riviere.bmp" Stretch="Uniform" Width="493" Height="279" />
         </Border>
 

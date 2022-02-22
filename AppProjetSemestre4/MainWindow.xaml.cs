@@ -21,17 +21,6 @@ namespace AppProjetSemestre4
         private string savePath;
         private static double angle;
         private static bool sens;
-        //private bool ro;
-        //private bool neB;
-        //private bool AeR;
-        //private bool Em;
-        //private bool Ddc;
-        //private bool Rdb;
-        //private bool Frl;
-        //private bool Hst;
-        //private bool Rpg;
-        //private bool Fl;
-        //private bool CeD;
         private Dictionary<string,bool> traitements= new Dictionary<string,bool>();
         Window1 win1;
         public static double Angle 
@@ -56,20 +45,6 @@ namespace AppProjetSemestre4
             MyImage imageRo = new MyImage(imagePath);
             imageRo.RotationV2(angle, sens).ToFile(savePath);
             ImageBox.Source = new BitmapImage(new Uri(savePath));
-            traitements.Add("NeB",false);
-            traitements.Add("Ro", false); 
-            traitements.Add("AeR", false);
-            traitements.Add("Em", false);
-            traitements.Add("DdC", false);
-            traitements.Add("RdB", false);
-            traitements.Add("Fl", false);
-            traitements.Add("Rpg", false);
-            traitements.Add("Frl", false);
-            traitements.Add("Hst", false);
-            traitements.Add("CeD", false);
-            traitements.Add("Cr", false);
-            traitements.Add("Le", false);
-            traitements.Add("Cry", false);
         }
         public void Lancer_Click(object sender, RoutedEventArgs e)
         {

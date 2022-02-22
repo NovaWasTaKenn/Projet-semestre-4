@@ -11,6 +11,8 @@
         WindowStyle="None"
         >
     <!--Essayer d'arrondir la fenêtre avec un template-->
+    <!--Vérifier que tt est centré 
+    ajouter la possibilité de drag la fenêtre-->
     <Window.Resources>
         <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
             <Setter Property="Cursor" Value="Hand"/>
