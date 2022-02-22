@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\TD 1\TD 1.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="foret riviere.bmp" />
   </ItemGroup>
 

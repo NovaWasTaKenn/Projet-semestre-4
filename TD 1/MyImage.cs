@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace TD_1
 {
-    class MyImage
+    public class MyImage
     {
         string type;
         int size;
@@ -155,6 +155,76 @@ namespace TD_1
             }
             File.WriteAllBytes(path, bytesToWrite);
         }
+        public void ToFile(string path)
+        {
+
+            if (!File.Exists(path))
+            {
+                using (File.Create(path)) ;
+            }
+
+            byte[] bytesToWrite = new byte[size];
+
+            for (int i = 0; i < 54; i++)
+            {
+                if (i < 2) { bytesToWrite[i] = ConvertTypeToHexa(type)[i]; }
+                if (i < 6 && i >= 2) { bytesToWrite[i] = Convertir_Int_to_Endian(size)[i - 2]; }
+                byte[] Reserved = { 0, 0, 0, 0 };
+                if (i < 10 && i >= 6) { bytesToWrite[i] = Reserved[i - 6]; }
+                if (i < 14 && i >= 10) { bytesToWrite[i] = Convertir_Int_to_Endian(offset)[i - 10]; }
+                byte[] HeaderSize = { 40, 0, 0, 0 };
+                if (i < 18 && i >= 14) { bytesToWrite[i] = HeaderSize[i - 14]; }
+                if (i < 22 && i >= 18) { bytesToWrite[i] = Convertir_Int_to_Endian(width)[i - 18]; }
+                if (i < 26 && i >= 22) { bytesToWrite[i] = Convertir_Int_to_Endian(height)[i - 22]; }
+                byte[] wut = { 1, 0 };
+                if (i < 28 && i >= 26) { bytesToWrite[i] = wut[i - 26]; }
+                if (i < 30 && i >= 28) { bytesToWrite[i] = Convertir_Int_to_Endian(bits_per_color)[i - 28]; }
+                byte[] bordel = { 0, 0, 0, 0, 176, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };                       //Nom de var bordel a changer
+                if (i < 54 && i >= 30) { bytesToWrite[i] = bordel[i - 30]; }
+            }
+
+            int index = 54;
+
+            for (int i = this.image.GetLength(0) - 1; i >= 0; i--)
+            {
+                for (int j = 0; j < this.image.GetLength(1); j++)
+                {
+                    bytesToWrite[index] = (byte)this.image[i, j].B;
+                    index++;
+                    bytesToWrite[index] = (byte)this.image[i, j].G;
+                    index++;
+                    bytesToWrite[index] = (byte)this.image[i, j].R;
+                    index++;
+                }
+
+                #region Switch     prendre en cpt les cas ou longueur pas multiple de 4, ajouter des 0 a la fin de chaque ligne pour arriver a un multiple de 4 
+                int fin_de_ligne = 4 - (this.width * 3) % 4;
+                switch (fin_de_ligne)
+                {
+                    case 1:
+                        bytesToWrite[index] = 0;
+                        index++;
+                        break;
+                    case 2:
+                        bytesToWrite[index] = 0;
+                        index++;
+                        bytesToWrite[index] = 0;
+                        index++;
+                        break;
+                    case 3:
+                        bytesToWrite[index] = 0;
+                        index++;
+                        bytesToWrite[index] = 0;
+                        index++;
+                        bytesToWrite[index] = 0;
+                        index++;
+                        break;
+                }
+
+                #endregion
+            }
+            File.WriteAllBytes(path, bytesToWrite);
+        }
         #endregion
 
         #region accesseurs
@@ -233,6 +303,16 @@ namespace TD_1
                 for (int j = 0; j < this.image.GetLength(1); j++)
                 {
                     this.image[i, j] = new Pixel(34, 34, 34);
+                }
+            }
+        }
+        public void FondGrisClair()
+        {
+            for (int i = 0; i < this.image.GetLength(0); i++)
+            {
+                for (int j = 0; j < this.image.GetLength(1); j++)
+                {
+                    this.image[i, j] = new Pixel(130, 130, 130);
                 }
             }
         }

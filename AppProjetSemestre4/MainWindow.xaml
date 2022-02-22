@@ -5,81 +5,87 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppProjetSemestre4"
         mc:Ignorable="d"
-        Title="Projet semestre 4" Height="450" Width="800" Background="#FF4B4B4B">
+        Title="Projet semestre 4" 
+        Height="600" Width="1000" 
+        Background="#FF4B4B4B"
+
+    >
 
     <Window.Resources>
-        <Style x:Key="GreenButton" TargetType="Button">
-            <Setter Property="OverridesDefaultStyle" Value="True"/>
-            <Setter Property="Margin" Value="0"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="Background" >
-                <Setter.Value>
-                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1" >
-                        <GradientStop Color="#FF3F9542" Offset="0.85"/>
-                    </LinearGradientBrush>
-                </Setter.Value>
-            </Setter>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Name="border" 
-            BorderThickness="0"
-            Padding="4,2" 
-            BorderBrush="LightGray" 
-            CornerRadius="2" 
-            Background="{TemplateBinding Background}">
-                            <Grid >
-                                <ContentPresenter HorizontalAlignment="Center" 
-                            VerticalAlignment="Center" Name="contentShadow" >
-                                </ContentPresenter>
-                                <ContentPresenter HorizontalAlignment="Center" 
-                        VerticalAlignment="Center" Name="content"/>
-                            </Grid>
-                        </Border>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="#FF4788c8" />
-                                <Setter Property="Foreground" Value="White" />
-                                <Setter Property="Cursor" Value="Hand" />
-                                <Setter Property="Background" Value="#FF429C46"/>
-                            </Trigger>
-                            <Trigger Property="IsDefaulted" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="#FF282828" />
-                            </Trigger>
-                            <Trigger Property="IsFocused" Value="True">
-                                <Setter TargetName="border" Property="BorderBrush" Value="#FF282828" />
-                            </Trigger>
-                            <Trigger Property="IsEnabled" Value="False">
-                                <Setter TargetName="border" Property="Opacity" Value="0.7" />
-                                <Setter Property="Foreground" Value="Black" />
-                            </Trigger>
 
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+        <Style x:Key="TreeViewItemStyle" TargetType="TreeViewItem">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="OverridesDefaultStyle" Value="False"/>
+            <Setter Property="Background" Value="#FF4B4B4B"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="FontWeight" Value="Medium"/>
+
+                </Trigger>
+            </Style.Triggers>
+
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="#FF323232" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlBrushKey}" Color="CadetBlue"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" Color="Black" />
+                <SolidColorBrush x:Key="{x:Static SystemColors.ControlTextBrushKey}" Color="Black" />
+            </Style.Resources>
         </Style>
+
+        <ControlTemplate x:Key="TreeViewItemTemplate" TargetType="TreeViewItem">
+            <Border Width="240" Height="18" CornerRadius="6" Background="{TemplateBinding Background}">
+                <ScrollViewer
+                            x:Name="PART_ContentHost"
+                            Focusable="false"
+                            HorizontalScrollBarVisibility="Hidden"
+                            VerticalScrollBarVisibility="Hidden" />
+            </Border>
+        </ControlTemplate>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF828282"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="FontWeight" Value="Medium"/>
+                    <Setter Property="Background" Value="#FF2D2D2D"/>  <!--Veut pas fonctionner-->
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
+            <Border Width="85" Height="23" CornerRadius="6" Background="{TemplateBinding Background}">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
+
+        <ControlTemplate x:Key="LancerTemplate" TargetType="Button">
+            <Border Width="95" Height="35" CornerRadius="6" Background="{TemplateBinding Background}">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
+
     </Window.Resources>
-
-
-    <Grid Margin="10" Background="#FF222222">
+    
+    <Grid Margin="10,10,10,10" Background="#FF222222">
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="45" />
+            <RowDefinition Height="70" />
             <RowDefinition Height="70"/>
-            <RowDefinition Height="20"/>
-            <RowDefinition Height="202.972"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="203"/>
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20"/>
-            <ColumnDefinition Width="250" />
-            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="275" />
+            <ColumnDefinition Width="100"/>
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
-        <Border Grid.Row="2" Grid.Column="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Grid.RowSpan="2" Margin="0,14,0,0">
+        <Border Grid.Row="2" Grid.Column="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Grid.RowSpan="3" Margin="0,0,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="275" Height="325.2">
             <TreeView  Background="#FF4B4B4B"  Foreground="White">
 
                 <TreeView.ItemContainerStyle>
@@ -88,50 +94,63 @@
                     </Style>
                 </TreeView.ItemContainerStyle>
 
-                <TreeViewItem Header ="Traitement d'image" Foreground="White" BorderBrush="#FF828282">
-                    <TreeViewItem Header="Noir et Blanc" Foreground="White" BorderBrush="#FF828282"/>
-                    <TreeViewItem Header="Rotation" Foreground="White" BorderBrush="#FF828282"/>
-                    <TreeViewItem Header="Agrandissement et Rétressissement" Foreground="White" BorderBrush="#FF828282"/>
-                    <TreeViewItem Header="Effet Miroir" Foreground="White" BorderBrush="#FF828282"/>
-                    <TreeViewItem Header="Matrices de convolution" Foreground="White" BorderBrush="#FF828282"/>
+                <TreeViewItem Header ="Traitement d'image" Foreground="White" BorderBrush="#FF828282" FontSize="14" >
+                   
+                    <TreeViewItem Selected="Traitement_Click" x:Name="NeB" Header="Noir et Blanc" Foreground="White" Background="#FF4B4B4B" Style="{StaticResource TreeViewItemStyle}" Template="{StaticResource TreeViewItemTemplate}" Height="15" Width="192" Cursor="Hand"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="Ro" Header="Rotation" Foreground="White" Style="{StaticResource TreeViewItemStyle}" />
+                    <TreeViewItem Selected="Traitement_Click" x:Name="AeR" Header="Agrandissement et Rétressissement" Foreground="White"  Style="{StaticResource TreeViewItemStyle}"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="Em" Header="Effet Miroir"  Foreground="White" Style="{StaticResource TreeViewItemStyle}"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="DdC" Header="Détection de contours" Foreground="White"  Style="{StaticResource TreeViewItemStyle}"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="RdB" Header="Renforcement des bords" Foreground="White"  Style="{StaticResource TreeViewItemStyle}"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="Fl" Header="Flou" Foreground="White" Style="{StaticResource TreeViewItemStyle}"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="Rpg" Header="Repoussage" Foreground="White" Style="{StaticResource TreeViewItemStyle}"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="Frl" Header="Fractale" Foreground="White" Style="{StaticResource TreeViewItemStyle}"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="Hst" Header="Histogramme" Foreground="White"  Style="{StaticResource TreeViewItemStyle}"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="CeD" Header="Coder et Décoder une image" Foreground="White" Style="{StaticResource TreeViewItemStyle}"/>
                 </TreeViewItem>
 
-                <TreeViewItem Header="QR code" Foreground="White" BorderBrush="#FF828282">
-                    <TreeViewItem Header="Creation" Foreground="White" BorderBrush="#FF828282"/>
-                    <TreeViewItem Header="Lecture" Foreground="White" BorderBrush="#FF828282"/>
+                <TreeViewItem Header="QR code" Foreground="White" BorderBrush="#FF828282" FontSize="14" Margin="0,5,0,0">
+                    <TreeViewItem Selected="Traitement_Click" x:Name="Cr" Header="Creation" Foreground="White" BorderBrush="#FF828282" Style="{StaticResource TreeViewItemStyle}"/>
+                    <TreeViewItem Selected="Traitement_Click" x:Name="Le" Header="Lecture" Foreground="White" BorderBrush="#FF828282" Style="{StaticResource TreeViewItemStyle}" />
                 </TreeViewItem>
 
-                <TreeViewItem Header="Cryptographie" Foreground="White" BorderBrush="#FF828282"/>
+                <TreeViewItem Selected ="Traitement_Click" x:Name="Cry" Header="Cryptographie" Foreground="White" BorderBrush="#FF828282" FontSize="14" Margin="0,0,5,0" Style="{StaticResource TreeViewItemStyle}" Cursor="Hand"/>
 
             </TreeView>
         </Border>
 
-        <Border Grid.Column="3" Grid.Row="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6">
 
-            <Grid IsEnabled="False" Margin="5,5,5,5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="135"/>
-                    <ColumnDefinition Width="177"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Horizontal">
+            <Border BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Width="375" HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="67">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
 
-                <Label Content="Image à traiter" Foreground="White"/>
-                <Button Grid.Row ="1" Content ="Parcourir" Style="{StaticResource GreenButton}" Height="20" Click="Button_Click" Background="#FF4B4B4B" Margin="5,5,19,5" Foreground="White" IsDefault="True" Width="110"/>
+                    <StackPanel>
+                        <TextBlock Text="Image à traiter" Foreground="White" Margin="5,2,0,0" FontSize="14" />
+                        <Button Click="Image_Click" ClickMode="Press" Content="Parcourir" FontSize="14" Foreground="White" Background="#FF4B4B4B" Margin="5,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Cliquez pour sélectionner une image dans le gestionnaire de fichiers" Cursor="Hand" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}"/>
 
-                <Label Grid.Column="1" Content="Emplacement de l'image traitée" Foreground="White"/>
-                <Button Grid.Column="1" Grid.Row="1" Content ="Parcourir" Style="{StaticResource GreenButton}" Height="20" Click="Button_Click" Background="#FF4B4B4B" Margin="5,5,35,5" Foreground="White" IsDefault="True" Width="110" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-            </Grid>
+                    </StackPanel>
+                    <StackPanel Grid.Column ="1" >
+                        <TextBlock Text="Emplacement de sortie" Foreground="White" Margin="5,2,0,0" FontSize="14" />
+                        <Button Click="Save_Click" ClickMode="Press" Content="Parcourir" FontSize="14" Foreground="White" Background="#FF4B4B4B" Margin="5,10,0,0" HorizontalAlignment="Left" ToolTip="Cliquez pour sélectionner une image dans le gestionnaire de fichiers" Cursor="Hand" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}"/>
+
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+            <Button Click="Lancer_Click" ClickMode="Press" Content="Lancer" FontSize="16" Foreground="White" Style="{StaticResource ButtonStyle}" Template="{StaticResource LancerTemplate}" Margin="15,0,0,0" Background="#FF4B4B4B" ToolTip="Cliquez pour lancer le programme, le résultat apparaitra dans la fenêtre en dessous" Cursor="Hand"/>
+        </StackPanel>
+
+        <Border Grid.Column="3" Grid.Row="3" Grid.RowSpan="2" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Width="500" HorizontalAlignment="Center" Background="#FF828282" Height="285">
+            <Image x:Name="ImageBox" Source="/foret riviere.bmp" Stretch="Uniform" Width="493" Height="279" />
         </Border>
-
-        <Border Grid.Column="3" Grid.Row="3" Grid.RowSpan="2" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Width="350" HorizontalAlignment="Center" Background="#FF828282">
-            <Image Source="/foret riviere.bmp" Stretch="Uniform"/>
-        </Border>
-
 
     </Grid>
+    
 
 
 </Window>

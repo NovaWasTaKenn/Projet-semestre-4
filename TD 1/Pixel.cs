@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TD_1
 {
-    class Pixel
+    public class Pixel
     {
         int r;
         int g;
