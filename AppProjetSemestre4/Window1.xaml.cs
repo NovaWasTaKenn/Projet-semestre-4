@@ -81,5 +81,9 @@ namespace AppProjetSemestre4
             BtnSh.BorderBrush = Brushes.Transparent;
 
         }
+        public void Window1_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
     }
 }

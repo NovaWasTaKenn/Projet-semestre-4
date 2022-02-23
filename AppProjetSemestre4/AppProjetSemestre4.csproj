@@ -7,7 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Croix2.bmp" />
     <None Remove="foret riviere.bmp" />
+    <None Remove="Trait.bmp" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,7 +17,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Croix2.bmp" />
     <Resource Include="foret riviere.bmp" />
+    <Resource Include="Trait.bmp" />
   </ItemGroup>
 
 </Project>
