@@ -61,6 +61,7 @@ namespace AppProjetSemestre4
         {
             MyImage imageRo = new MyImage(imagePath);
             imageRo.RotationV2(angle, sens).ToFile(savePath);
+            ImageBox.Source = new BitmapImage(new Uri(savePath));
 
         }
         public void Lancer_Click(object sender, RoutedEventArgs e)

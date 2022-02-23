@@ -12,7 +12,7 @@
         MouseDown="MainWindow_MouseDown"
         ResizeMode="NoResize"
     >
-
+    <!--#region Ressources-->
     <Window.Resources>
 
         <Style x:Key="ListBoxItemStyle" TargetType="ListBoxItem">
@@ -45,7 +45,6 @@
         </Style>
 
         <Style x:Key="CloseMinimizeStyle" TargetType="Button">
-
             <Setter Property="Margin" Value="2"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -95,8 +94,11 @@
 
 
     </Window.Resources>
+    <!--#endregion-->
 
     <Grid >
+        
+        <!--#region Fermer Minimiser-->
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
             <Button Click="MinimiserMain_Click" Width="25" Height="25" Background="#FF4B4B4B" Style="{StaticResource CloseMinimizeStyle}">
                 <Image Source="/Trait.bmp" />
@@ -105,9 +107,11 @@
                 <Image Source="/Croix2.bmp" Width="15" Height="15"/>
             </Button>
         </StackPanel>
+        <!--#endregion-->
         
         <Grid Margin="10,30,10,10" Background="#FF222222">
 
+            <!--#region Grid Def-->
             <Grid.RowDefinitions>
                 <RowDefinition Height="70" />
                 <RowDefinition Height="70"/>
@@ -115,14 +119,15 @@
                 <RowDefinition Height="220"/>
                 <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="285" />
                 <ColumnDefinition Width="90"/>
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-
+            <!--#endregion-->
+            
+            <!--#region Liste menu-->
             <Border Grid.Row="0" Grid.Column="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Grid.RowSpan="5" Margin="0,40,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="285" Height="490">
                 <ListBox Background="#FF222222" >
                     <ListBoxItem Content="Traitements" Foreground="White" FontSize="16" Margin="0,5,0,0" />
@@ -147,8 +152,9 @@
                     <ListBoxItem Content="Décryter" x:Name="Dcr" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
                 </ListBox>
             </Border>
+            <!--#endregion-->
 
-
+            <!--#region Image à Traiter Sortie lancer-->
             <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Horizontal">
                 <Border BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Width="375" HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="67">
                     <Grid>
@@ -173,10 +179,14 @@
 
                 <Button Content="Lancer" Click="Lancer_Click" ClickMode="Press" Foreground="White" Margin="10,0,0,0" FontSize="16"  Style="{StaticResource ButtonStyle}" Template="{StaticResource LancerTemplate}" Background="#FF4B4B4B"/>
             </StackPanel>
+            
+            <!--#endregion-->
 
+            <!--#region Image-->
             <Border Grid.Column="3" Grid.Row="2" Grid.RowSpan="2" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Background="#FF828282" VerticalAlignment="Top" Margin="0,20,37,0" HorizontalAlignment="Center" >
                 <Image x:Name="ImageBox" Source="/foret riviere.bmp" Stretch="Uniform"/>
             </Border>
+            <!--#endregion-->
 
         </Grid>
     </Grid>
