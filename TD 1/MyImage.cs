@@ -597,6 +597,99 @@ namespace TD_1
             }
             return copie;
         }
+        public MyImage Aggrandir(int multiplicateur)
+        {
+            MyImage copie = new MyImage(this, image.GetLength(0) * multiplicateur, image.GetLength(1) * multiplicateur);
+            int stock1 = 0;
+            int stock2 = 0;
+            for (int i = 0; i < image.GetLength(0); i++)
+            {
+                for (int j = 0; j < image.GetLength(1); j++)
+                {
+                    for (int h = stock1; h < stock1 + multiplicateur; h++)
+                    {
+                        for (int w = stock2; w < stock2 + multiplicateur; w++)
+                        {
+                            copie.image[h, w] = this.image[i, j];
+                        }
+                    }
+                    stock2 += multiplicateur;
+                }
+
+                stock1 += multiplicateur;
+                stock2 = 0;
+            }
+            return copie;
+        }
+        public MyImage Rétrecissement(double val_rétrecissement)
+        {
+            MyImage copie = new MyImage(this, (int)((double)this.image.GetLength(0) / val_rétrecissement), (int)(((double)this.image.GetLength(1)) / val_rétrecissement));
+            List<int> valeurs_rectangles = new List<int>();
+            int précision = 10;
+            if (val_rétrecissement % 1 !=0)
+            {
+                int nb_grd_valeur = (int)((val_rétrecissement - ((int)val_rétrecissement)) * précision);
+                int nb_ptte_valeur = précision - nb_grd_valeur;
+                for(int m =0; m< précision; m++)
+                {
+                    if (m < nb_ptte_valeur) { valeurs_rectangles.Add((int)val_rétrecissement); }
+                    else { valeurs_rectangles.Add((int)val_rétrecissement + 1); }
+                }
+            }
+            else
+            {
+                valeurs_rectangles.Add((int)val_rétrecissement);
+            }
+            int i = 0;
+            int j = 0;
+            int i_rétréci = 0;
+            int j_rétréci;
+            int somme_R;
+            int somme_G;
+            int somme_B;
+            int hauteur = valeurs_rectangles[i];
+            int largeur = valeurs_rectangles[j];
+            for (int i_originale =0; i_originale < this.image.GetLength(0); i_originale += hauteur)
+            {
+                j_rétréci = 0;
+                j = 0;
+                for(int j_originale= 0; j_originale < this.image.GetLength(1); j_originale += largeur)
+                {
+                    somme_R = 0;
+                    somme_G = 0;
+                    somme_B = 0;
+                    for (int k = 0; k< hauteur; k++)
+                    {
+                        for(int l = 0; l< largeur; l++)
+                        {
+                            if(i_originale+k < this.image.GetLength(0) && j_originale +l< this.image.GetLength(1) && i_originale+k >= 0 && j_originale+l >= 0)
+                            {
+                                somme_R += this.image[i_originale + k, j_originale + l].R;
+                                somme_G += this.image[i_originale + k, j_originale + l].G;
+                                somme_B += this.image[i_originale + k, j_originale + l].B;
+                            }
+                           
+                            //Console.WriteLine(somme_R + " " + somme_G + " " + somme_B);
+                        }
+                    }
+                    if(i_rétréci < copie.image.GetLength(0) && j_rétréci<copie.image.GetLength(1) && i_rétréci>=0 && j_rétréci >= 0)
+                    {
+                        copie.image[i_rétréci, j_rétréci] = new Pixel( somme_R / (hauteur * largeur), somme_G / (hauteur * largeur), somme_B / (hauteur * largeur));
+                    }
+                    j_rétréci++;
+                    j++;
+                    if (j > valeurs_rectangles.Count - 1) { j = 0; }
+                    largeur = valeurs_rectangles[j];
+                }
+                i_rétréci++;
+                if(i_rétréci == 6) 
+                { }
+                i++;
+                if (i > valeurs_rectangles.Count -1) { i = 0; }
+                hauteur = valeurs_rectangles[i];
+            }
+            return copie;
+        }
         #endregion
     }
 }

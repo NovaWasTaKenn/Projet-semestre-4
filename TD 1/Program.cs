@@ -7,6 +7,10 @@ using System.Drawing;
 using System.Diagnostics;
 using System.IO;
 
+// Proteger le toFIle en mettant un pixel blanc si le pixel est pas initialisé
+//Attention si le facteur de réduction est supérieur à la plus petite dimension alors l'image n'est pas lisible par le système --> Tester ds l'interface et avoir un message 
+//Revoir le retrecisssement, tronque l'image pour des valeurs de division entre 1 et 2  (la matrice resultat se remplie avant qu'on arrive a la fin de la matrice originale -> les données au bout de cette matrice la sont tronquées)
+
 namespace TD_1
 {
     class Program
@@ -129,7 +133,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "foret1600par900.bmp";
+            string name = "tour eiffel.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -150,12 +154,13 @@ namespace TD_1
             
             image.RotationV2(97.00, true).ToFile("testRotation","bmp");
             image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
-            image.EffetMiroir().ToFile("TestMiroir","bmp");
+            image.Rétrecissement(1.2).ToFile("TestRétrecissement","bmp");
 
             Process.Start(name);
             Process.Start("testRotation.bmp");
             Process.Start("TestMiroir.bmp");
             Process.Start("testN&B.bmp");
+            Process.Start("TestRétrecissement.bmp");
             Console.ReadLine();
         }
     }
