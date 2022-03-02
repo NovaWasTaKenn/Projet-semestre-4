@@ -133,7 +133,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "tour eiffel.bmp";
+            string name = "tourdepise.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -155,10 +155,14 @@ namespace TD_1
             image.RotationV2(97.00, true).ToFile("testRotation","bmp");
             image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
             image.Rétrecissement(1.2).ToFile("TestRétrecissement","bmp");
+            int[,] Repoussage = { { -2, -1, 0 }, { -1,1, 1 }, { 0,1,2} };
+            int[,] Flou = { { 1 ,1,1},{1,1,1},{1,1,1}};
+            image.Flou(Flou, 15).ToFile("TestBords","bmp");
+            //image.Aggrandir(5).ToFile("TestAgrandi","bmp");
 
             Process.Start(name);
+            Process.Start("TestBords.bmp");
             Process.Start("testRotation.bmp");
-            Process.Start("TestMiroir.bmp");
             Process.Start("testN&B.bmp");
             Process.Start("TestRétrecissement.bmp");
             Console.ReadLine();
