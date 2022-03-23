@@ -481,7 +481,7 @@ namespace TD_1
 
             return copie;
         }
-        public MyImage RotationV2(double angle, bool sens_horaire) // Trouver les formules pour -pi/2 - pi/2   |   fonctionne pas pour les angles quelconques car la taille de l'image sera quelconque (nb octet pas multiple de 4)
+        public MyImage RotationV2(double angle, bool sens_horaire) //essayer avec x' = x*cos O + y*sin O et y' = -x*sin 0 + y * sin O
         {
 
             if (angle > 360)
