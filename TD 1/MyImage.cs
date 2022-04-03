@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 
+
 namespace TD_1
 {
     public class MyImage
@@ -21,24 +22,23 @@ namespace TD_1
         //Rotation fct pour les multiples de 90° mais artefacts blancs sur les rotations quelconques
         // refaire convolution plus proprement
 
-
-#region Constructeurs
-public MyImage(MyImage myImage, int height, int width)
-{
-    this.type = myImage.type;
-    int nb_remplissage_fin_ligne = 0;
-    if ((width * 3) % 4 != 0)
-    {
-        nb_remplissage_fin_ligne = 4 - (width * 3) % 4;
-    }
-    this.size = 54 + ((nb_remplissage_fin_ligne+(width*3))*height);
-    this.offset = myImage.offset;
-    this.height = height;
-    this.width = width;
-    this.bits_per_color = myImage.bits_per_color;
-    this.image = new Pixel[height, width];
-}
-#endregion
+        #region Constructeurs
+        public MyImage(MyImage myImage, int height, int width)
+        {
+            this.type = myImage.type;
+            int nb_remplissage_fin_ligne = 0;
+            if ((width * 3) % 4 != 0)
+            {
+                nb_remplissage_fin_ligne = 4 - (width * 3) % 4;
+            }
+            this.size = 54 + ((nb_remplissage_fin_ligne+(width*3))*height);
+            this.offset = myImage.offset;
+            this.height = height;
+            this.width = width;
+            this.bits_per_color = myImage.bits_per_color;
+            this.image = new Pixel[height, width];
+        }
+        #endregion
 
 #region Fichier vers classe | Classe vers fichier
 public MyImage(string file)
@@ -964,22 +964,106 @@ public MyImage Matrice_de_convolution( int[,] matrice_convolution)
                 copie.image[i,j] = new Pixel(R,G,B);
             }
 
-            if(j>0 && i>0 && i<this.image.GetLength(0) -1 && j < this.image.GetLength(1) -1)
-            {
-                int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B= (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R,G,B);
+                    if(j>0 && i>0 && i<this.image.GetLength(0) -1 && j < this.image.GetLength(1) -1)
+                    {
+                        int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B= (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R,G,B);
+                    }
+                }
             }
+            return copie;
         }
+
+        #region TD 5 
+
+        
+
+        public static MyImage Fractale(MyImage image)
+        {
+            MyImage fractale = new MyImage(image,320,199);
+            double Reel_C = 0;
+            double Im_C = 0;
+            double Reel_Z = 0;
+            double Im_Z = 0;
+            double MinX = -2.4;
+            double MaxX = 2.4;
+            double MinY = -1.5;
+            double MaxY = 1.5;
+            int width = fractale.Image.GetLength(0);
+            int height = fractale.Image.GetLength(1);
+            double module = 0;
+            int R = 211;
+            int G = 0;
+            int B = 0;
+           
+
+            for(int i = 0; i< width; i++)
+            {
+                for(int j =0; j<height; j++)
+                {
+                    Reel_C = MinX + ((MinX+ MaxX)/width)*i;
+                    Im_C = MinY + ((MinY+ MaxY)/height)*j; 
+                    for(int k = 0; k<16; k++)
+                    {
+                        Reel_Z = (Reel_Z*Reel_Z)-(Im_Z*Im_Z)+ Reel_C;
+                        Im_Z = 2*Reel_Z*Im_Z + Im_C;
+                        module = Reel_Z*Reel_Z + Im_Z*Im_Z;
+                        if(module > 4) { fractale.Image[i,j] = new Pixel(R,G,B); k=16;}
+
+                    }
+                    fractale.Image[i,j] = new Pixel(0,0,0);
+                }
+            }
+            return fractale;
+        }
+
+
+
+
+        //public MyImage Histogramme()
+        //{
+        //    MyImage histogramme = new MyImage(this, this.height * this.width, 255);
+        //    int[] stockR = new int[256];
+        //    int[] stockG = new int[256];
+        //    int[] stockB = new int[256];
+        //    for (int pixel = 0; pixel < 256; pixel++)
+        //    {
+        //        for (int i = 0; i < this.height; i++)
+        //        {
+        //            for (int j = 0; j < this.width; j++)
+        //            {
+        //                if(this.image[i,j].R == pixel)
+        //                {
+        //                    stockR[pixel]++;
+        //                }
+
+        //                if(this.image[i,j].G == pixel)
+        //                {
+        //                    stockG[pixel]++;
+        //                }
+
+        //                if(this.image[i,j].B == pixel)
+        //                {
+        //                    stockB[pixel]++;
+        //                }
+        //            }
+        //        }
+        //    }
+            
+
+            
+            
+        //}
+
+        #endregion TD 5 
+
     }
-    return copie;
-}
-}
 }
