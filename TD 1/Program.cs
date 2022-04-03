@@ -133,7 +133,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "tourdepise.bmp";
+            string name = "bmp-icon.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -157,15 +157,29 @@ namespace TD_1
             image.Rétrecissement(1.2).ToFile("TestRétrecissement","bmp");
             int[,] Repoussage = { { -2, -1, 0 }, { -1,1, 1 }, { 0,1,2} };
             int[,] Flou = { { 1 ,1,1},{1,1,1},{1,1,1}};
-            image.Flou(Flou, 15).ToFile("TestBords","bmp");
+            int[,] Détection = { { 0, 1, 0 }, { 1,-4, 1 }, { 0,1,0} };
+            int[,] Renforcement = { { 0, 0, 0 }, { -1,1, 0 }, { 0,0,0} };
+            image.Flou(Flou, 9).ToFile("TestFlou","bmp");
+            image.Matrice_de_convolution(Repoussage).ToFile("TestRepoussage","bmp");
+            image.Matrice_de_convolution(Détection).ToFile("TestDétection","bmp");
+            image.Matrice_de_convolution(Renforcement).ToFile("TestRenforcement","bmp");
+
+            MyImage.Fractale(image).ToFile("Fractale", "bmp");
+            Process.Start("Fractale.bmp");
             //image.Aggrandir(5).ToFile("TestAgrandi","bmp");
 
             Process.Start(name);
-            Process.Start("TestBords.bmp");
+            Process.Start("TestFlou.bmp");
+            Process.Start("TestRepoussage.bmp");
+            Process.Start("TestDétection.bmp");
+            Process.Start("TestRenforcement.bmp");
+            Process.Start("TestFlou.bmp");
             Process.Start("testRotation.bmp");
             Process.Start("testN&B.bmp");
             Process.Start("TestRétrecissement.bmp");
             Console.ReadLine();
+
+            
         }
     }
 }

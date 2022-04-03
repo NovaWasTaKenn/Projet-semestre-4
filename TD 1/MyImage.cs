@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 
+
 namespace TD_1
 {
     public class MyImage
@@ -34,6 +35,21 @@ namespace TD_1
             this.height = height;
             this.width = width;
             this.bits_per_color = myImage.bits_per_color;
+            this.image = new Pixel[height, width];
+        }
+        public MyImage(int height, int width)
+        {
+            this.type = "bmp";
+            int nb_remplissage_fin_ligne = 0;
+            if ((width * 3) % 4 != 0)
+            {
+                nb_remplissage_fin_ligne = 4 - (width * 3) % 4;
+            }
+            this.size = 54 + ((nb_remplissage_fin_ligne+(width*3))*height);
+            byte[] offset_tab = {0,0,36,0};
+            this.offset = Convertir_Endian_To_Int(offset_tab);
+            byte[] bits_per_color_tab= {24,0};
+            this.bits_per_color = Convertir_Endian_To_Int(bits_per_color_tab);
             this.image = new Pixel[height, width];
         }
         #endregion
@@ -692,7 +708,9 @@ namespace TD_1
             return copie;
         }
         #endregion
-         public MyImage Flou( int[,] matrice_convolution, int coeff)
+
+        #region TD 4 
+        public MyImage Flou( int[,] matrice_convolution, int coeff)
         {
             MyImage copie = new MyImage(this, this.height, this.width);
             for(int i = 0; i< this.image.GetLength(0); i++)
@@ -979,5 +997,90 @@ namespace TD_1
             }
             return copie;
         }
+        #endregion
+
+        #region TD 5 
+
+        
+
+        public static MyImage Fractale(MyImage image)
+        {
+            MyImage fractale = new MyImage(image,320,199);
+            double Reel_C = 0;
+            double Im_C = 0;
+            double Reel_Z = 0;
+            double Im_Z = 0;
+            double MinX = -2.4;
+            double MaxX = 2.4;
+            double MinY = -1.5;
+            double MaxY = 1.5;
+            int width = fractale.Image.GetLength(0);
+            int height = fractale.Image.GetLength(1);
+            double module = 0;
+            int R = 211;
+            int G = 0;
+            int B = 0;
+           
+
+            for(int i = 0; i< width; i++)
+            {
+                for(int j =0; j<height; j++)
+                {
+                    Reel_C = MinX + ((MinX+ MaxX)/width)*i;
+                    Im_C = MinY + ((MinY+ MaxY)/height)*j; 
+                    for(int k = 0; k<16; k++)
+                    {
+                        Reel_Z = (Reel_Z*Reel_Z)-(Im_Z*Im_Z)+ Reel_C;
+                        Im_Z = 2*Reel_Z*Im_Z + Im_C;
+                        module = Reel_Z*Reel_Z + Im_Z*Im_Z;
+                        if(module > 4) { fractale.Image[i,j] = new Pixel(R,G,B); k=16;}
+
+                    }
+                    fractale.Image[i,j] = new Pixel(0,0,0);
+                }
+            }
+            return fractale;
+        }
+
+
+
+
+        //public MyImage Histogramme()
+        //{
+        //    MyImage histogramme = new MyImage(this, this.height * this.width, 255);
+        //    int[] stockR = new int[256];
+        //    int[] stockG = new int[256];
+        //    int[] stockB = new int[256];
+        //    for (int pixel = 0; pixel < 256; pixel++)
+        //    {
+        //        for (int i = 0; i < this.height; i++)
+        //        {
+        //            for (int j = 0; j < this.width; j++)
+        //            {
+        //                if(this.image[i,j].R == pixel)
+        //                {
+        //                    stockR[pixel]++;
+        //                }
+
+        //                if(this.image[i,j].G == pixel)
+        //                {
+        //                    stockG[pixel]++;
+        //                }
+
+        //                if(this.image[i,j].B == pixel)
+        //                {
+        //                    stockB[pixel]++;
+        //                }
+        //            }
+        //        }
+        //    }
+            
+
+            
+            
+        //}
+
+        #endregion TD 5 
+
     }
 }
