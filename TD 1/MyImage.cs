@@ -452,6 +452,28 @@ namespace TD_1
             }
             return retour;
         }
+
+        public bool[] Convertir_Int_to_Bool_Tab_9(int nb, int taille)
+        {
+            bool[] binaire = new bool[taille];
+            for (int i = 0; i < binaire.Length; i++)
+            {
+                int puissance = Puissance(2, binaire.Length - 1 - i);
+                if (nb - puissance >= 0)
+                {
+                    binaire[i] = true;
+                    nb -= puissance;
+                }
+
+                else
+                {
+                    binaire[i] = false;
+                }
+            }
+
+            
+            return binaire;
+        }
         #endregion
 
         #region TD 3
@@ -1193,45 +1215,53 @@ namespace TD_1
             int[] stockR = new int[256];
             int[] stockB = new int[256];
             int[] stockV = new int[256];
-            for (int pixel = 0; pixel < 256; pixel++)
+
+            for (int i = 0; i < this.height; i++)
             {
-                for (int i = 0; i < this.height; i++)
+                for (int j = 0; j < this.width; j++)
                 {
-                    for (int j = 0; j < this.width; j++)
-                    {
-                        if (this.image[i, j].R == pixel)
-                        {
-                            stockR[pixel]++;
-                        }
-
-                        if (this.image[i, j].B == pixel)
-                        {
-                            stockB[pixel]++;
-                        }
-
-                        if (this.image[i, j].G == pixel)
-                        {
-                            stockV[pixel]++;
-                        }
-                    }
+                    stockR[this.image[i, j].R]++;
+                    stockB[this.image[i, j].B]++;
+                    stockV[this.image[i, j].G]++;
                 }
             }
 
-            for (int i = 0; i < stockR.Length; i++)
+            int max_pixel = 0;
+            for (int index = 0; index < 256; index++)
             {
-                if (stockR[i] > this.height * 10)
+                if (stockR[index] >= max_pixel)
                 {
-                    stockR[i] = this.height * 10;
+                    max_pixel = stockR[index];
+
+                    if (stockB[index] >= max_pixel)
+                    {
+                        max_pixel = stockB[index];
+
+                        if (stockV[index] >= max_pixel)
+                        {
+                            max_pixel = stockV[index];
+                        }
+                    }
+
+                    else if (stockV[index] >= max_pixel)
+                    {
+                        max_pixel = stockV[index];
+                    }
                 }
 
-                if (stockB[i] > this.height * 10)
+                else if (stockB[index] >= max_pixel)
                 {
-                    stockB[i] = this.height * 10;
+                    max_pixel = stockB[index];
+
+                    if (stockV[index] >= max_pixel)
+                    {
+                        max_pixel = stockV[index];
+                    }
                 }
 
-                if (stockV[i] > this.height * 10)
+                else if (stockV[index] >= max_pixel)
                 {
-                    stockV[i] = this.height * 10;
+                    max_pixel = stockV[index];
                 }
             }
 
@@ -1277,6 +1307,117 @@ namespace TD_1
             return histogramme;
         }
 
+        #region QrCode
+
+        public int Convertir_Char_En_Int(char c)
+        {
+
+            switch  (c)
+            {
+                case ((int)c >= 55):
+                    return (int)c - 55;
+                    break;
+
+                case ' ':
+                    return 36;
+                    break;
+
+                case '$':
+                    return 37;
+                    break;
+
+                case '%':
+                    return 38;
+                    break;
+
+                case '*':
+                    return 39;
+                    break;
+
+                case '+':
+                    return 40;
+                    break;
+
+                case '-':
+                    return 41;
+                    break;
+
+                case '.':
+                    return 42;
+                    break;
+
+                case '/':
+                    return 43;
+                    break;
+
+                case ':':
+                    return 44;
+                    break;
+
+                default:
+                    return (int)c - 48;
+                    break;
+            }
+
+            
+        }
+
+        
+
+        public byte[] Convertir_Chaine_Char(string chaine)
+        {
+            bool[] chaine_finale = {false,false,true,false };
+            int taille_Chaine = chaine.Length;
+            chaine_finale = chaine_finale.Concat<bool>(this.Convertir_Int_to_Bool_Tab_9(taille_Chaine, 9)).ToArray();
+            Dictionary<char, int> code_Charactères = new Dictionary<char, int>()
+            {
+                {' ', 36},
+                {'$', 37},
+                {'%', 38},
+                {'*', 39},
+                {'+', 40},
+                {'-', 41},
+                {'.', 42},
+                {'/', 43},
+                {':', 44},
+            };
+
+
+
+            for(int i = 0; i< chaine.Length; i += 2)
+            { 
+                int int_Couple_Char;
+                bool[] binaire_Couple_Char;
+                if (i + 1 > chaine.Length-1) 
+                {
+                    int_Couple_Char =  Convertir_Char_En_Int(chaine[i]);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 6);
+                }
+                else
+                {
+                    int_Couple_Char = 45 * Convertir_Char_En_Int(chaine[i]) + Convertir_Char_En_Int(chaine[i+1]);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 11);
+                }
+
+                
+                chaine_finale = chaine_finale.Concat<bool>(binaire_Couple_Char).ToArray();
+            }
+
+            
+
+
+
+            /*
+                Plan
+            
+            Chaine stockée ds tableau d'octets
+
+
+
+             */
+        }
+
+        #endregion
         #endregion TD 5 
 
     }

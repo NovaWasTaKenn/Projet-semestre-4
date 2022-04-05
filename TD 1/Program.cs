@@ -170,12 +170,12 @@ namespace TD_1
             //Process.Start("testN&B.bmp");
             //Process.Start("TestRétrecissement.bmp");
 
-            image.Histogramme().ToFile("TestHistogramme","bmp");
-            Process.Start("TestHistogramme.bmp");
+            //image.Histogramme().ToFile("TestHistogramme","bmp");
+            //Process.Start("TestHistogramme.bmp");
 
             for (int i = 0; i < 15; i++)
             {
-                MyImage.FractaleJulia(3000).ToFile("TestFractale", "bmp");
+                MyImage.FractaleJulia(500).ToFile("TestFractale", "bmp");
                 Process.Start("TestFractale.bmp");
             }
 
