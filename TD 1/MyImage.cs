@@ -1314,10 +1314,6 @@ namespace TD_1
 
             switch  (c)
             {
-                case ((int)c >= 55):
-                    return (int)c - 55;
-                    break;
-
                 case ' ':
                     return 36;
                     break;
@@ -1355,67 +1351,103 @@ namespace TD_1
                     break;
 
                 default:
-                    return (int)c - 48;
+                    if((int)c >= 55)
+                    {
+                        return (int)c - 55;
+                    }
+                    else
+                    {
+                        return (int)c - 48;
+                    }
+                    
                     break;
             }
 
             
         }
-
-        
-
-        public byte[] Convertir_Chaine_Char(string chaine)
+        public byte[] Découper_Tab_Bool(bool[] tab, int remplissage)
         {
-            bool[] chaine_finale = {false,false,true,false };
-            int taille_Chaine = chaine.Length;
-            chaine_finale = chaine_finale.Concat<bool>(this.Convertir_Int_to_Bool_Tab_9(taille_Chaine, 9)).ToArray();
-            Dictionary<char, int> code_Charactères = new Dictionary<char, int>()
+            byte[] retour = new byte[2];
+            for (int i = 0; i < 16; i++)
             {
-                {' ', 36},
-                {'$', 37},
-                {'%', 38},
-                {'*', 39},
-                {'+', 40},
-                {'-', 41},
-                {'.', 42},
-                {'/', 43},
-                {':', 44},
-            };
+                if (i > remplissage -1  && i<= 7)
+                {
+                    retour[0] += (byte)(System.Math.Abs(System.Convert.ToInt32(tab[i -  remplissage]) * System.Math.Pow(2, 7 - i)));
+                }
+                if (i > 7 && (i - 8)<tab.Length-remplissage)
+                {
+                    retour[1] += (byte)(System.Math.Abs(System.Convert.ToInt32(tab[i - remplissage]) * System.Math.Pow(2, 15 - i)));
+                }
+            }
+            return retour;
+        }
+
+
+        public bool[] Convertir_Chaine_Char(string chaine)  //Verifier : il y a peut etre moyen de fusionner decouper et convertir en bool et de supprimer le passage par bool
+        {
+
+            int taille_Chaine = chaine.Length;
+            int taille_Finale;
+            int Remplissage_Octet_Finale = 4;
+
+            if (taille_Chaine < 26) { taille_Finale = 152; }
+            else { taille_Finale = 272; }
+            byte[] chaine_finale = new byte[taille_Finale];
+            chaine_finale[0] |= 0b_0010_0000;
+
+            byte[] taille_Chaine_bytes = Découper_Tab_Bool(this.Convertir_Int_to_Bool_Tab_9(taille_Chaine, 9), 8-Remplissage_Octet_Finale);
+            chaine_finale[0] |= taille_Chaine_bytes[0];
+            Remplissage_Octet_Finale = 0;
+            chaine_finale[1] |= taille_Chaine_bytes[1];
+            Remplissage_Octet_Finale = 5;
 
 
 
+            int j = 1;
             for(int i = 0; i< chaine.Length; i += 2)
-            { 
+            {
                 int int_Couple_Char;
                 bool[] binaire_Couple_Char;
-                if (i + 1 > chaine.Length-1) 
+                byte[] bytes_Couple_Char;
+                if (i+1 > chaine.Length - 1)
                 {
-                    int_Couple_Char =  Convertir_Char_En_Int(chaine[i]);
+                    int_Couple_Char = Convertir_Char_En_Int(chaine[i]);
                     binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 6);
-                }
-                else
-                {
-                    int_Couple_Char = 45 * Convertir_Char_En_Int(chaine[i]) + Convertir_Char_En_Int(chaine[i+1]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 11);
-                }
+                    if (Remplissage_Octet_Finale < 3)
+                    {
+                        
+                    }
+                    else
+                    {
+                        bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, 8 - Remplissage_Octet_Finale);
+                        for(int k = 0; k<bytes_Couple_Char.Length; k++)
+                        {
+                            chaine_finale[j] |= bytes_Couple_Char[k];
+                            Remplissage_Octet_Finale = Remplissage_Octet_Finale + 6-(8-Remplissage_Octet_Finale);
+                            if (Remplissage_Octet_Finale >= 8) { Remplissage_Octet_Finale -= 8; j++; }
+                        }
+                    }
 
-                
-                chaine_finale = chaine_finale.Concat<bool>(binaire_Couple_Char).ToArray();
+                    
+                }
+                else//Attention   besoin de pouvoir découper le tableau de bool en trois
+                {
+
+                }
+                if()
             }
 
-            
-
-
-
-            /*
-                Plan
-            
-            Chaine stockée ds tableau d'octets
-
-
-
-             */
         }
+
+        //public bool[] ECC(bool[] données)
+        //{
+
+        //}
+
+        /*
+         Convertisseur en byte
+
+         */
 
         #endregion
         #endregion TD 5 
