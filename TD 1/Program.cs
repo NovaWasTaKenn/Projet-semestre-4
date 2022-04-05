@@ -173,25 +173,28 @@ namespace TD_1
             //image.Histogramme().ToFile("TestHistogramme","bmp");
             //Process.Start("TestHistogramme.bmp");
 
-            //for (int i = 0; i < 15; i++)
+            for (int i = 0; i < 15; i++)
+            {
+                MyImage.FractaleJulia(10000).ToFile("TestFractale", "bmp");
+                Process.Start("TestFractale.bmp");
+            }
+
+            //byte b = 0b_0000_0000;
+            //b += 0b_1000_0000;
+
+
+            //b += (byte)(System.Math.Abs(System.Convert.ToInt32(true) * System.Math.Pow(2, 3)));
+            //Console.WriteLine(Convert.ToString(b, 2));
+
+            //bool[] tab = { false, false , false , false , false ,true, false ,true,true};
+
+            //string Hello = "HELLO WORLD";
+            //byte[] Hello_byte = image.Convertir_Chaine_Char(Hello);
+
+            //for(int i = 0; i< Hello_byte.Length; i++)
             //{
-            //    MyImage.FractaleJulia(500).ToFile("TestFractale", "bmp");
-            //    Process.Start("TestFractale.bmp");
+            //    Console.WriteLine(Convert.ToString(Hello_byte[i], 2));
             //}
-
-            byte b = 0b_0000_0000;
-            b += 0b_1000_0000;
-            
-
-            b += (byte)(System.Math.Abs(System.Convert.ToInt32(true) * System.Math.Pow(2, 3)));
-            Console.WriteLine(Convert.ToString(b, 2));
-
-            bool[] tab = { false, false , false , false , false ,true, false ,true,true};
-
-
-            Console.WriteLine(Convert.ToString(image.Découper_Tab_Bool(tab, 4)[0], 2));
-            Console.WriteLine(Convert.ToString(image.Découper_Tab_Bool(tab, 4)[1],2));
-
             Console.ReadLine();
         }
     }
