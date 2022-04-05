@@ -692,7 +692,7 @@ namespace TD_1
             return copie;
         }
         #endregion
-         public MyImage Flou( int[,] matrice_convolution, int coeff)
+        public MyImage Flou( int[,] matrice_convolution, int coeff)
         {
             MyImage copie = new MyImage(this, this.height, this.width);
             for(int i = 0; i< this.image.GetLength(0); i++)
@@ -978,6 +978,103 @@ namespace TD_1
                 }
             }
             return copie;
+        }
+
+        public MyImage Histogramme()
+        {
+            int[] stockR = new int[256];
+            int[] stockB = new int[256];
+            int[] stockV = new int[256];
+
+            for(int i = 0; i < this.height; i++)
+            {
+                for(int j = 0; j  < this.width; j++)
+                {
+                    stockR[this.image[i,j].R]++;
+                    stockB[this.image[i,j].B]++;
+                    stockV[this.image[i,j].G]++;
+                }
+            }
+
+            int max_pixel = 0;
+            for(int index = 0; index < 256; index++)
+            {
+                if(stockR[index] >= max_pixel)
+                {
+                    max_pixel = stockR[index];
+                    
+                    if(stockB[index] >= max_pixel)
+                    {
+                        max_pixel = stockB[index];
+
+                        if(stockV[index] >= max_pixel)
+                        {
+                            max_pixel = stockV[index];
+                        }
+                    }
+
+                    else if(stockV[index] >= max_pixel)
+                    {
+                        max_pixel = stockV[index];
+                    }
+                }
+
+                else if(stockB[index] >= max_pixel)
+                {
+                    max_pixel = stockB[index];
+
+                    if(stockV[index] >= max_pixel)
+                    {
+                        max_pixel = stockV[index];
+                    }
+                }
+
+                else if(stockV[index] >= max_pixel)
+                {
+                    max_pixel = stockV[index];
+                }
+            }
+
+            int multi = 3;
+            MyImage histogramme = new MyImage(this, max_pixel + 1, 256 * multi + 1);
+            for(int i = 0; i < histogramme.height; i++)
+            {
+                for(int j = 0; j < histogramme.width; j++)
+                {
+                    histogramme.image[i,j] = new Pixel(0, 0, 0);
+                }
+            }
+
+            int k = 0;
+            for(int j = 1; j < histogramme.width; j+= multi)
+            { 
+                
+                for(int indexR = histogramme.height - 2; indexR >= histogramme.height - stockR[k]; indexR--)
+                { 
+                    for(int l = 0; l < multi; l++)
+                    { 
+                        histogramme.image[indexR, j + l] = new Pixel(255, 0, 0);
+                    }
+                }
+
+                for(int indexB = histogramme.height - 2; indexB >= histogramme.height - stockB[k]; indexB--)
+                {
+                    for(int l = 0; l < multi; l++)
+                    { 
+                        histogramme.image[indexB, j + l] = new Pixel(histogramme.image[indexB, j].R, 0, 255);
+                    }
+                }
+
+                for(int indexV = histogramme.height - 2; indexV >= histogramme.height - stockV[k]; indexV--)
+                {
+                    for(int l = 0; l < multi; l++)
+                    { 
+                        histogramme.image[indexV, j + l] = new Pixel(histogramme.image[indexV, j].R, 255, histogramme.image[indexV, j].B);
+                    }
+                }
+                k++;
+            }          
+            return histogramme;
         }
     }
 }
