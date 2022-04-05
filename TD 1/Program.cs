@@ -133,7 +133,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            /*string name = "fleur.bmp";
+            string name = "foret1600par900.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -151,38 +151,35 @@ namespace TD_1
             Console.WriteLine(test_convert2[0]+" "+ test_convert2[1]+ " "+test_convert2[2]+" "+test_convert2[3] );
             Console.WriteLine();
             image.ToFile("TestToFile", "bmp");
-            
-            mage.RotationV2(97.00, true).ToFile("testRotation","bmp");
-            image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
-            image.Rétrecissement(1.2).ToFile("TestRétrecissement","bmp");
-            int[,] Repoussage = { { -2, -1, 0 }, { -1,1, 1 }, { 0,1,2} };
-            int[,] Flou = { { 1 ,1,1},{1,1,1},{1,1,1}};
-            image.Flou(Flou, 15).ToFile("TestBords","bmp");
-            image.Aggrandir(5).ToFile("TestAgrandi","bmp");
-            image.Histogramme().ToFile("testHistogramme","bmp");
 
-            Process.Start(name);
-            Process.Start("TestBords.bmp");
-            Process.Start("testRotation.bmp");
-            Process.Start("testN&B.bmp");
-            Process.Start("TestRétrecissement.bmp");
-            Process.Start("testHistogramme.bmp");
-            Console.ReadLine();*/
-            char c = 'A';
-            Console.WriteLine( " A donne = " + (int)c);
-            Console.WriteLine( " Z donne = " + (int)'Z');
-            Console.WriteLine( " 0 donne = " + (int)'0');
-            Console.WriteLine( " 9 donne = " + (int)'9');
-            Console.WriteLine( "  donne = " + (int)' ');
-            Console.WriteLine( " $ donne = " + (int)'$');
-            Console.WriteLine( " % donne = " + (int)'%');
-            Console.WriteLine( " * donne = " + (int)'*');
-            Console.WriteLine( " + donne = " + (int)'+');
-            Console.WriteLine( " - donne = " + (int)'-');
-            Console.WriteLine( " . donne = " + (int)'/');
-            Console.WriteLine( " : donne = " + (int)':');
+            //image.RotationV2(97.00, true).ToFile("testRotation","bmp");
+            //image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
+            //image.Rétrecissement(1.2).ToFile("TestRétrecissement","bmp");
 
-            Console.ReadKey();
+            //int[,] Repoussage = { { -2, -1, 0 }, { -1,1, 1 }, { 0,1,2} };
+            //int[,] Flou = { { 1 ,1,1},{1,1,1},{1,1,1}};
+            //image.Flou(Flou, 15).ToFile("TestBords","bmp");
+            //image.Aggrandir(5).ToFile("TestAgrandi","bmp");
+
+            //MyImage.FractaleJulia(300).ToFile("TestFractale", "bmp");
+            //Process.Start("TestFractale.bmp");
+
+            //Process.Start(name);
+            //Process.Start("TestBords.bmp");
+            //Process.Start("testRotation.bmp");
+            //Process.Start("testN&B.bmp");
+            //Process.Start("TestRétrecissement.bmp");
+
+            //image.Histogramme().ToFile("TestHistogramme","bmp");
+            //Process.Start("TestHistogramme.bmp");
+
+            for (int i = 0; i < 15; i++)
+            {
+                MyImage.FractaleJulia(500).ToFile("TestFractale", "bmp");
+                Process.Start("TestFractale.bmp");
+            }
+
+            Console.ReadLine();
         }
     }
 }
