@@ -133,7 +133,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "foret1600par900.bmp";
+            string name = "carre.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -173,11 +173,23 @@ namespace TD_1
             //image.Histogramme().ToFile("TestHistogramme","bmp");
             //Process.Start("TestHistogramme.bmp");
 
-            for (int i = 0; i < 15; i++)
+            /*for (int i = 0; i < 1; i++)
             {
-                MyImage.FractaleJulia(500).ToFile("TestFractale", "bmp");
+                MyImage.FractaleJulia(100).ToFile("TestFractale", "bmp");
                 Process.Start("TestFractale.bmp");
             }
+
+            byte[] test = new byte[255];
+            Console.WriteLine(test[0]);*/
+
+            MyImage image2 = new MyImage("fleur.bmp");
+            //Process.Start("fleur.bmp");
+            image.CacherImage_dans_Image(image2).ToFile("TestCacher","bmp");
+            Process.Start("TestCacher.bmp");
+
+            MyImage image3 = new MyImage("TestCacher.bmp");
+            image.DecoderImageCachee(image3).ToFile("TestDecoder","bmp");
+            Process.Start("TestDecoder.bmp");
 
             Console.ReadLine();
         }

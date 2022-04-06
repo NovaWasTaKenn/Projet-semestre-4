@@ -380,7 +380,7 @@ namespace TD_1
         //    return retour;
         //}
         #endregion
-
+       
         public int Convertir_Endian_To_Int(byte[] tab)
         {            
             int retour = 0;
@@ -453,6 +453,32 @@ namespace TD_1
             return retour;
         }
 
+        public int[] ConvertirInt_To_Binaire(int nb)
+        {
+            int[] binaire = new int[8];
+            for (int i = 0; i < binaire.Length; i++)
+            {
+                    if(nb - Puissance(2, binaire.Length - 1 - i) >= 0)
+                    {
+                        binaire[i] = 1;
+                    }
+            }
+            return binaire;
+        }
+
+        public int ConvertirBinaire_To_Int(int[] binaire)
+        {
+            int retour = 0;
+            for(int i = 0; i < binaire.Length; i++)
+            {
+                if(binaire[i] == 1)
+                { 
+                    retour += Puissance(2, binaire.Length - 1 - i);
+                }
+            }
+
+            return retour;
+        }
         public bool[] Convertir_Int_to_Bool_Tab_9(int nb, int taille)
         {
             bool[] binaire = new bool[taille];
@@ -1266,7 +1292,7 @@ namespace TD_1
             }
 
             int multi = 3;
-            MyImage histogramme = new MyImage(this, this.height * 10 + 1, 256 * multi + 1);
+            MyImage histogramme = new MyImage(max_pixel + 1, 256 * multi + 1);
             for (int i = 0; i < histogramme.height; i++)
             {
                 for (int j = 0; j < histogramme.width; j++)
@@ -1307,9 +1333,193 @@ namespace TD_1
             return histogramme;
         }
 
+        public MyImage CacherImage_dans_Image(MyImage image)
+        {
+            MyImage retour = new MyImage(this, this.height, this.width);
+
+            for(int i = 0; i < this.height; i++)
+            {
+                for (int j = 0; j < this.width; j++)
+                {
+                    retour.image[i,j] = this.image[i,j];
+                }
+            }
+
+            int height_min = this.height;
+            if(image.height <= height_min)
+            {
+                height_min = image.height;
+            }
+
+            int width_min = this.width;
+            if(image.width <= width_min)
+            {
+                width_min = image.width;
+            }
+            
+            int[] binaireR1 = new int[8];
+            int[] binaireG1 = new int[8];
+            int[] binaireB1 = new int[8];
+
+            int[] binaireR2 = new int[8];
+            int[] binaireG2 = new int[8];
+            int[] binaireB2 = new int[8];
+
+            int[] binaire = new int[8];
+            int pixelNumber = 0;
+
+            for(int i = 0; i < height_min; i++)
+            {
+                for(int j = 0; j < width_min; j++)
+                {
+                    //Pixel rouge
+                    binaireR1 = ConvertirInt_To_Binaire(this.image[i,j].R);
+                    binaireR2 = ConvertirInt_To_Binaire(image.image[i,j].R);
+                    
+                    for(int index = 0; index < binaireR1.Length/2; index++)
+                    {
+                        binaire[index] = binaireR1[index];
+                        binaire[index + binaireR1.Length/2] = binaireR2[index];
+                    }
+
+                    pixelNumber = ConvertirBinaire_To_Int(binaire);
+                    retour.image[i,j].R = pixelNumber; 
+
+                    //Pixel Vert
+                    binaireG1 = ConvertirInt_To_Binaire(this.image[i,j].G);
+                    binaireG2 = ConvertirInt_To_Binaire(image.image[i,j].G);
+                    
+                    for(int index = 0; index < binaireR1.Length/2; index++)
+                    {
+                        binaire[index] = binaireG1[index];
+                        binaire[index + binaireG1.Length/2] = binaireG2[index];
+                    }
+
+                    pixelNumber = ConvertirBinaire_To_Int(binaire);
+                    retour.image[i,j].G = pixelNumber; 
+
+                    //Pixel Bleu
+                    binaireB1 = ConvertirInt_To_Binaire(this.image[i,j].B);
+                    binaireB2 = ConvertirInt_To_Binaire(image.image[i,j].B);
+                    
+                    for(int index = 0; index < binaireR1.Length/2; index++)
+                    {
+                        binaire[index] = binaireB1[index];
+                        binaire[index + binaireB1.Length/2] = binaireB2[index];
+                    }
+
+                    pixelNumber = ConvertirBinaire_To_Int(binaire);
+                    retour.image[i,j].B = pixelNumber; 
+                }
+            }
+
+            return retour;
+        }
+
+        public MyImage DecoderImageCachee(MyImage imagecachee)
+        {
+            MyImage doubleimage = new MyImage(imagecachee.height, imagecachee.width*2);
+            for(int i = 0; i < doubleimage.height; i++)
+            {
+                for(int j = 0; j < doubleimage.width; j++)
+                {
+                    doubleimage.image[i,j] = new Pixel(0,0,0);
+                }
+            }
+
+            int[] binaireR1 = new int[8];
+            int[] binaireG1 = new int[8];
+            int[] binaireB1 = new int[8];
+
+            int[] binaireR2 = new int[8];
+            int[] binaireG2 = new int[8];
+            int[] binaireB2 = new int[8];
+
+            int[] binaire = new int[8];
+            int pixelNumber = 0;
+
+            for(int i = 0; i < imagecachee.height; i++)
+            {
+                for(int j = 0; j < imagecachee.width; j++)
+                {
+
+                        //Pixel Rouge
+                        binaire = ConvertirInt_To_Binaire(imagecachee.image[i,j].R);
+                        for(int index = 0; index < binaire.Length/2; index++)
+                        {
+                            binaireR1[index] = binaire[index];
+                            binaireR2[index] = binaire[index + binaire.Length/2];
+                        }
+                        
+                        for(int index = binaire.Length/2; index < binaire.Length; index++)
+                        {
+                            binaireR1[index] = 0;
+                            binaireR2[index] = 0;
+                        }
+                        
+                        //Première Image
+                        pixelNumber = ConvertirBinaire_To_Int(binaireR1);
+                        doubleimage.image[i,j].R = pixelNumber;
+                        
+                        //Deuxième Image
+                        pixelNumber = ConvertirBinaire_To_Int(binaireR2);
+                        doubleimage.image[i,j + imagecachee.width].R = pixelNumber;
+                
+                        binaire = ConvertirInt_To_Binaire(imagecachee.image[i,j].G);
+
+                        for(int index = 0; index < binaire.Length/2; index++)
+                        {
+                            binaireG1[index] = binaire[index];
+                            binaireG2[index] = binaire[index + binaire.Length/2];
+                        }
+
+                        for(int index = binaire.Length/2; index < binaire.Length; index++)
+                        {
+                            binaireG1[index] = 0;
+                            binaireG2[index] = 0;
+                        }
+
+                        //Première Image
+                        pixelNumber = ConvertirBinaire_To_Int(binaireG1);
+                        doubleimage.image[i,j].G = pixelNumber;
+
+                        //Deuxième Image
+                        pixelNumber = ConvertirBinaire_To_Int(binaireG2);
+                        doubleimage.image[i,j + imagecachee.width].G = pixelNumber;
+                
+
+                        //Pixel Bleu
+                        binaire = ConvertirInt_To_Binaire(imagecachee.image[i,j].B);
+                
+                        for(int index = 0; index < binaire.Length/2; index++)
+                        {
+                            binaireB1[index] = binaire[index];
+                            binaireB2[index] = binaire[index + binaire.Length/2];
+                        }
+                
+                        for(int index = binaire.Length/2; index < binaire.Length; index++)
+                        {
+                            binaireB1[index] = 0;
+                            binaireB2[index] = 0;
+                        }
+                
+                        //Première Image
+                        pixelNumber = ConvertirBinaire_To_Int(binaireB1);
+                        doubleimage.image[i,j].B = pixelNumber;
+                
+                        //Deuxième Image
+                        pixelNumber = ConvertirBinaire_To_Int(binaireB2);
+                        doubleimage.image[i,j + imagecachee.width].B = pixelNumber;  
+                    
+                }
+            }
+
+            return doubleimage;
+        }
+
         #region QrCode
 
-        public int Convertir_Char_En_Int(char c)
+        /*public int Convertir_Char_En_Int(char c)
         {
 
             switch  (c)
@@ -1364,25 +1574,11 @@ namespace TD_1
 
         
 
-        public byte[] Convertir_Chaine_Char(string chaine)
+        /*public byte[] Convertir_Chaine_Char(string chaine)
         {
             bool[] chaine_finale = {false,false,true,false };
             int taille_Chaine = chaine.Length;
             chaine_finale = chaine_finale.Concat<bool>(this.Convertir_Int_to_Bool_Tab_9(taille_Chaine, 9)).ToArray();
-            Dictionary<char, int> code_Charactères = new Dictionary<char, int>()
-            {
-                {' ', 36},
-                {'$', 37},
-                {'%', 38},
-                {'*', 39},
-                {'+', 40},
-                {'-', 41},
-                {'.', 42},
-                {'/', 43},
-                {':', 44},
-            };
-
-
 
             for(int i = 0; i< chaine.Length; i += 2)
             { 
@@ -1415,7 +1611,7 @@ namespace TD_1
 
 
              */
-        }
+        
 
         #endregion
         #endregion TD 5 
