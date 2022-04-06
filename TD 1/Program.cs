@@ -133,7 +133,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "carre.bmp";
+            string name = "foret1600par900.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -173,24 +173,28 @@ namespace TD_1
             //image.Histogramme().ToFile("TestHistogramme","bmp");
             //Process.Start("TestHistogramme.bmp");
 
-            /*for (int i = 0; i < 1; i++)
+            for (int i = 0; i < 15; i++)
             {
-                MyImage.FractaleJulia(100).ToFile("TestFractale", "bmp");
+                MyImage.FractaleJulia(10000).ToFile("TestFractale", "bmp");
                 Process.Start("TestFractale.bmp");
             }
 
-            byte[] test = new byte[255];
-            Console.WriteLine(test[0]);*/
+            //byte b = 0b_0000_0000;
+            //b += 0b_1000_0000;
 
-            MyImage image2 = new MyImage("fleur.bmp");
-            //Process.Start("fleur.bmp");
-            image.CacherImage_dans_Image(image2).ToFile("TestCacher","bmp");
-            Process.Start("TestCacher.bmp");
 
-            MyImage image3 = new MyImage("TestCacher.bmp");
-            image.DecoderImageCachee(image3).ToFile("TestDecoder","bmp");
-            Process.Start("TestDecoder.bmp");
+            //b += (byte)(System.Math.Abs(System.Convert.ToInt32(true) * System.Math.Pow(2, 3)));
+            //Console.WriteLine(Convert.ToString(b, 2));
 
+            //bool[] tab = { false, false , false , false , false ,true, false ,true,true};
+
+            //string Hello = "HELLO WORLD";
+            //byte[] Hello_byte = image.Convertir_Chaine_Char(Hello);
+
+            //for(int i = 0; i< Hello_byte.Length; i++)
+            //{
+            //    Console.WriteLine(Convert.ToString(Hello_byte[i], 2));
+            //}
             Console.ReadLine();
         }
     }

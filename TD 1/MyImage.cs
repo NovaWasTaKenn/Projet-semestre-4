@@ -21,6 +21,7 @@ namespace TD_1
 
         //Rotation fct pour les multiples de 90° mais artefacts blancs sur les rotations quelconques
         // refaire convolution plus proprement
+        //Try catch sur les entrées sorties znes à pbs acces fichier
 
         #region Constructeurs
         public MyImage (int height, int width)
@@ -499,6 +500,32 @@ namespace TD_1
 
             
             return binaire;
+        }
+        public int[] ConvertirInt_To_Binaire(int nb)
+        {
+            int[] binaire = new int[8];
+            for (int i = 0; i < binaire.Length; i++)
+            {
+                if (nb - Puissance(2, binaire.Length - 1 - i) >= 0)
+                {
+                    binaire[i] = 1;
+                }
+            }
+            return binaire;
+        }
+
+        public int ConvertirBinaire_To_Int(int[] binaire)
+        {
+            int retour = 0;
+            for (int i = 0; i < binaire.Length; i++)
+            {
+                if (binaire[i] == 1)
+                {
+                    retour += Puissance(2, binaire.Length - 1 - i);
+                }
+            }
+
+            return retour;
         }
         #endregion
 
@@ -1337,26 +1364,26 @@ namespace TD_1
         {
             MyImage retour = new MyImage(this, this.height, this.width);
 
-            for(int i = 0; i < this.height; i++)
+            for (int i = 0; i < this.height; i++)
             {
                 for (int j = 0; j < this.width; j++)
                 {
-                    retour.image[i,j] = this.image[i,j];
+                    retour.image[i, j] = this.image[i, j];
                 }
             }
 
             int height_min = this.height;
-            if(image.height <= height_min)
+            if (image.height <= height_min)
             {
                 height_min = image.height;
             }
 
             int width_min = this.width;
-            if(image.width <= width_min)
+            if (image.width <= width_min)
             {
                 width_min = image.width;
             }
-            
+
             int[] binaireR1 = new int[8];
             int[] binaireG1 = new int[8];
             int[] binaireB1 = new int[8];
@@ -1368,48 +1395,48 @@ namespace TD_1
             int[] binaire = new int[8];
             int pixelNumber = 0;
 
-            for(int i = 0; i < height_min; i++)
+            for (int i = 0; i < height_min; i++)
             {
-                for(int j = 0; j < width_min; j++)
+                for (int j = 0; j < width_min; j++)
                 {
                     //Pixel rouge
-                    binaireR1 = ConvertirInt_To_Binaire(this.image[i,j].R);
-                    binaireR2 = ConvertirInt_To_Binaire(image.image[i,j].R);
-                    
-                    for(int index = 0; index < binaireR1.Length/2; index++)
+                    binaireR1 = ConvertirInt_To_Binaire(this.image[i, j].R);
+                    binaireR2 = ConvertirInt_To_Binaire(image.image[i, j].R);
+
+                    for (int index = 0; index < binaireR1.Length / 2; index++)
                     {
                         binaire[index] = binaireR1[index];
-                        binaire[index + binaireR1.Length/2] = binaireR2[index];
+                        binaire[index + binaireR1.Length / 2] = binaireR2[index];
                     }
 
                     pixelNumber = ConvertirBinaire_To_Int(binaire);
-                    retour.image[i,j].R = pixelNumber; 
+                    retour.image[i, j].R = pixelNumber;
 
                     //Pixel Vert
-                    binaireG1 = ConvertirInt_To_Binaire(this.image[i,j].G);
-                    binaireG2 = ConvertirInt_To_Binaire(image.image[i,j].G);
-                    
-                    for(int index = 0; index < binaireR1.Length/2; index++)
+                    binaireG1 = ConvertirInt_To_Binaire(this.image[i, j].G);
+                    binaireG2 = ConvertirInt_To_Binaire(image.image[i, j].G);
+
+                    for (int index = 0; index < binaireR1.Length / 2; index++)
                     {
                         binaire[index] = binaireG1[index];
-                        binaire[index + binaireG1.Length/2] = binaireG2[index];
+                        binaire[index + binaireG1.Length / 2] = binaireG2[index];
                     }
 
                     pixelNumber = ConvertirBinaire_To_Int(binaire);
-                    retour.image[i,j].G = pixelNumber; 
+                    retour.image[i, j].G = pixelNumber;
 
                     //Pixel Bleu
-                    binaireB1 = ConvertirInt_To_Binaire(this.image[i,j].B);
-                    binaireB2 = ConvertirInt_To_Binaire(image.image[i,j].B);
-                    
-                    for(int index = 0; index < binaireR1.Length/2; index++)
+                    binaireB1 = ConvertirInt_To_Binaire(this.image[i, j].B);
+                    binaireB2 = ConvertirInt_To_Binaire(image.image[i, j].B);
+
+                    for (int index = 0; index < binaireR1.Length / 2; index++)
                     {
                         binaire[index] = binaireB1[index];
-                        binaire[index + binaireB1.Length/2] = binaireB2[index];
+                        binaire[index + binaireB1.Length / 2] = binaireB2[index];
                     }
 
                     pixelNumber = ConvertirBinaire_To_Int(binaire);
-                    retour.image[i,j].B = pixelNumber; 
+                    retour.image[i, j].B = pixelNumber;
                 }
             }
 
@@ -1418,12 +1445,12 @@ namespace TD_1
 
         public MyImage DecoderImageCachee(MyImage imagecachee)
         {
-            MyImage doubleimage = new MyImage(imagecachee.height, imagecachee.width*2);
-            for(int i = 0; i < doubleimage.height; i++)
+            MyImage doubleimage = new MyImage(imagecachee.height, imagecachee.width * 2);
+            for (int i = 0; i < doubleimage.height; i++)
             {
-                for(int j = 0; j < doubleimage.width; j++)
+                for (int j = 0; j < doubleimage.width; j++)
                 {
-                    doubleimage.image[i,j] = new Pixel(0,0,0);
+                    doubleimage.image[i, j] = new Pixel(0, 0, 0);
                 }
             }
 
@@ -1438,96 +1465,93 @@ namespace TD_1
             int[] binaire = new int[8];
             int pixelNumber = 0;
 
-            for(int i = 0; i < imagecachee.height; i++)
+            for (int i = 0; i < imagecachee.height; i++)
             {
-                for(int j = 0; j < imagecachee.width; j++)
+                for (int j = 0; j < imagecachee.width; j++)
                 {
 
-                        //Pixel Rouge
-                        binaire = ConvertirInt_To_Binaire(imagecachee.image[i,j].R);
-                        for(int index = 0; index < binaire.Length/2; index++)
-                        {
-                            binaireR1[index] = binaire[index];
-                            binaireR2[index] = binaire[index + binaire.Length/2];
-                        }
-                        
-                        for(int index = binaire.Length/2; index < binaire.Length; index++)
-                        {
-                            binaireR1[index] = 0;
-                            binaireR2[index] = 0;
-                        }
-                        
-                        //Première Image
-                        pixelNumber = ConvertirBinaire_To_Int(binaireR1);
-                        doubleimage.image[i,j].R = pixelNumber;
-                        
-                        //Deuxième Image
-                        pixelNumber = ConvertirBinaire_To_Int(binaireR2);
-                        doubleimage.image[i,j + imagecachee.width].R = pixelNumber;
-                
-                        binaire = ConvertirInt_To_Binaire(imagecachee.image[i,j].G);
+                    //Pixel Rouge
+                    binaire = ConvertirInt_To_Binaire(imagecachee.image[i, j].R);
+                    for (int index = 0; index < binaire.Length / 2; index++)
+                    {
+                        binaireR1[index] = binaire[index];
+                        binaireR2[index] = binaire[index + binaire.Length / 2];
+                    }
 
-                        for(int index = 0; index < binaire.Length/2; index++)
-                        {
-                            binaireG1[index] = binaire[index];
-                            binaireG2[index] = binaire[index + binaire.Length/2];
-                        }
+                    for (int index = binaire.Length / 2; index < binaire.Length; index++)
+                    {
+                        binaireR1[index] = 0;
+                        binaireR2[index] = 0;
+                    }
 
-                        for(int index = binaire.Length/2; index < binaire.Length; index++)
-                        {
-                            binaireG1[index] = 0;
-                            binaireG2[index] = 0;
-                        }
+                    //Première Image
+                    pixelNumber = ConvertirBinaire_To_Int(binaireR1);
+                    doubleimage.image[i, j].R = pixelNumber;
 
-                        //Première Image
-                        pixelNumber = ConvertirBinaire_To_Int(binaireG1);
-                        doubleimage.image[i,j].G = pixelNumber;
+                    //Deuxième Image
+                    pixelNumber = ConvertirBinaire_To_Int(binaireR2);
+                    doubleimage.image[i, j + imagecachee.width].R = pixelNumber;
 
-                        //Deuxième Image
-                        pixelNumber = ConvertirBinaire_To_Int(binaireG2);
-                        doubleimage.image[i,j + imagecachee.width].G = pixelNumber;
-                
+                    binaire = ConvertirInt_To_Binaire(imagecachee.image[i, j].G);
 
-                        //Pixel Bleu
-                        binaire = ConvertirInt_To_Binaire(imagecachee.image[i,j].B);
-                
-                        for(int index = 0; index < binaire.Length/2; index++)
-                        {
-                            binaireB1[index] = binaire[index];
-                            binaireB2[index] = binaire[index + binaire.Length/2];
-                        }
-                
-                        for(int index = binaire.Length/2; index < binaire.Length; index++)
-                        {
-                            binaireB1[index] = 0;
-                            binaireB2[index] = 0;
-                        }
-                
-                        //Première Image
-                        pixelNumber = ConvertirBinaire_To_Int(binaireB1);
-                        doubleimage.image[i,j].B = pixelNumber;
-                
-                        //Deuxième Image
-                        pixelNumber = ConvertirBinaire_To_Int(binaireB2);
-                        doubleimage.image[i,j + imagecachee.width].B = pixelNumber;  
-                    
+                    for (int index = 0; index < binaire.Length / 2; index++)
+                    {
+                        binaireG1[index] = binaire[index];
+                        binaireG2[index] = binaire[index + binaire.Length / 2];
+                    }
+
+                    for (int index = binaire.Length / 2; index < binaire.Length; index++)
+                    {
+                        binaireG1[index] = 0;
+                        binaireG2[index] = 0;
+                    }
+
+                    //Première Image
+                    pixelNumber = ConvertirBinaire_To_Int(binaireG1);
+                    doubleimage.image[i, j].G = pixelNumber;
+
+                    //Deuxième Image
+                    pixelNumber = ConvertirBinaire_To_Int(binaireG2);
+                    doubleimage.image[i, j + imagecachee.width].G = pixelNumber;
+
+
+                    //Pixel Bleu
+                    binaire = ConvertirInt_To_Binaire(imagecachee.image[i, j].B);
+
+                    for (int index = 0; index < binaire.Length / 2; index++)
+                    {
+                        binaireB1[index] = binaire[index];
+                        binaireB2[index] = binaire[index + binaire.Length / 2];
+                    }
+
+                    for (int index = binaire.Length / 2; index < binaire.Length; index++)
+                    {
+                        binaireB1[index] = 0;
+                        binaireB2[index] = 0;
+                    }
+
+                    //Première Image
+                    pixelNumber = ConvertirBinaire_To_Int(binaireB1);
+                    doubleimage.image[i, j].B = pixelNumber;
+
+                    //Deuxième Image
+                    pixelNumber = ConvertirBinaire_To_Int(binaireB2);
+                    doubleimage.image[i, j + imagecachee.width].B = pixelNumber;
+
                 }
             }
 
             return doubleimage;
         }
 
+        #endregion TD 5 
         #region QrCode
 
-        /*public int Convertir_Char_En_Int(char c)
+        public int Convertir_Char_En_Int(char c)
         {
 
-            switch  (c)
+            switch (c)
             {
-                case ((int)c >= 55):
-                    return (int)c - 55;
-                    break;
-
                 case ' ':
                     return 36;
                     break;
@@ -1565,56 +1589,166 @@ namespace TD_1
                     break;
 
                 default:
-                    return (int)c - 48;
+                    if ((int)c >= 55)
+                    {
+                        return (int)c - 55;
+                    }
+                    else
+                    {
+                        return (int)c - 48;
+                    }
+
                     break;
             }
 
-            
+
+        }
+        public byte[] Découper_Tab_Bool(bool[] tab, int remplissage_Octet_Chaine_Finale, int nb_découpe)
+        {
+            byte[] retour = new byte[nb_découpe];
+            for (int i = 0; i < nb_découpe*8; i++)
+            {
+                if (i > remplissage_Octet_Chaine_Finale - 1 && i - remplissage_Octet_Chaine_Finale < tab.Length && i <= 7)
+                {
+                    retour[0] += (byte)(System.Math.Abs(System.Convert.ToInt32(tab[i - remplissage_Octet_Chaine_Finale]) * System.Math.Pow(2, 7 - i)));
+                }
+                if (i > 7 && i - remplissage_Octet_Chaine_Finale < tab.Length  && i <16)
+                {
+                    retour[1] += (byte)(System.Math.Abs(System.Convert.ToInt32(tab[i - remplissage_Octet_Chaine_Finale]) * System.Math.Pow(2, 15 - i)));
+                }
+                if (i > 15 && i - remplissage_Octet_Chaine_Finale< tab.Length && i<24)
+                {
+                    retour[2] += (byte)(System.Math.Abs(System.Convert.ToInt32(tab[i - remplissage_Octet_Chaine_Finale]) * System.Math.Pow(2, 23 - i)));
+                }
+            }
+            return retour;
         }
 
-        
 
-        /*public byte[] Convertir_Chaine_Char(string chaine)
-        {
-            bool[] chaine_finale = {false,false,true,false };
+        public byte[] Convertir_Chaine_Char(string chaine)  //Verifier : il y a peut etre moyen de fusionner decouper et convertir en bool et de supprimer le passage par bool
+        {                                                  // Fonctionne sur test hello world
+                                                          //ajouter les bytes pour remplir a la fin     
+
             int taille_Chaine = chaine.Length;
-            chaine_finale = chaine_finale.Concat<bool>(this.Convertir_Int_to_Bool_Tab_9(taille_Chaine, 9)).ToArray();
+            int taille_Finale;
+            int remplissage_Octet_Chaine_Finale = 4;
 
-            for(int i = 0; i< chaine.Length; i += 2)
-            { 
+            if (taille_Chaine < 26) { taille_Finale = 152; }
+            else { taille_Finale = 272; }
+            byte[] chaine_finale = new byte[taille_Finale/8];
+            chaine_finale[0] |= 0b_0010_0000;
+
+            byte[] taille_Chaine_bytes = Découper_Tab_Bool(this.Convertir_Int_to_Bool_Tab(taille_Chaine, 9), 8 - remplissage_Octet_Chaine_Finale, 2);
+            chaine_finale[0] |= taille_Chaine_bytes[0];
+            remplissage_Octet_Chaine_Finale = 0;
+            chaine_finale[1] |= taille_Chaine_bytes[1];
+            remplissage_Octet_Chaine_Finale = 5;
+
+
+
+            int j = 1;
+            for (int i = 0; i < chaine.Length; i += 2)
+            {
                 int int_Couple_Char;
                 bool[] binaire_Couple_Char;
-                if (i + 1 > chaine.Length-1) 
+                byte[] bytes_Couple_Char;
+                int reste_Bytes_Couple_Char;
+                bool done = false;
+                if (i + 1 > chaine.Length - 1 && remplissage_Octet_Chaine_Finale < 3 && !done)
                 {
-                    int_Couple_Char =  Convertir_Char_En_Int(chaine[i]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 6);
-                }
-                else
-                {
-                    int_Couple_Char = 45 * Convertir_Char_En_Int(chaine[i]) + Convertir_Char_En_Int(chaine[i+1]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 11);
+                    reste_Bytes_Couple_Char = 6;
+                    int_Couple_Char = Convertir_Char_En_Int(chaine[i]);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab(int_Couple_Char, 6);
+                    bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 1);
+
+                    for (int k = 0; k < bytes_Couple_Char.Length; k++)
+                    {
+                        chaine_finale[j] |= bytes_Couple_Char[k];
+
+                        if (8 - remplissage_Octet_Chaine_Finale < reste_Bytes_Couple_Char)
+                        {
+                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale; remplissage_Octet_Chaine_Finale = 0; j++;
+                        }
+                        else { remplissage_Octet_Chaine_Finale = reste_Bytes_Couple_Char; reste_Bytes_Couple_Char = 0; }
+                    }
+                    done = true;
                 }
 
-                
-                chaine_finale = chaine_finale.Concat<bool>(binaire_Couple_Char).ToArray();
+                if (i + 1 > chaine.Length - 1 && remplissage_Octet_Chaine_Finale >= 3 && !done)
+                {
+                    reste_Bytes_Couple_Char = 6;
+                    int_Couple_Char = Convertir_Char_En_Int(chaine[i]);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab(int_Couple_Char, 6);
+                    bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 2);
+
+                    for (int k = 0; k < bytes_Couple_Char.Length; k++)
+                    {
+                        chaine_finale[j] |= bytes_Couple_Char[k];
+
+                        if (8 - remplissage_Octet_Chaine_Finale < reste_Bytes_Couple_Char)
+                        {
+                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale; remplissage_Octet_Chaine_Finale = 0; j++;
+                        }
+                        else { remplissage_Octet_Chaine_Finale = reste_Bytes_Couple_Char; reste_Bytes_Couple_Char = 0; }
+                    }
+                    done = true;
+                }
+                if(i + 1 <= chaine.Length - 1 && remplissage_Octet_Chaine_Finale < 6 && !done)
+                {
+                    reste_Bytes_Couple_Char = 11;
+                    int_Couple_Char = 45 * Convertir_Char_En_Int(chaine[i]) + Convertir_Char_En_Int(chaine[i + 1]);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab(int_Couple_Char, 11);
+                    bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 2);
+
+                    for (int k = 0; k < bytes_Couple_Char.Length; k++)
+                    {
+                        
+                        chaine_finale[j] |= bytes_Couple_Char[k];
+
+                        if (8 - remplissage_Octet_Chaine_Finale <= reste_Bytes_Couple_Char)
+                        {
+                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale; remplissage_Octet_Chaine_Finale = 0; j++;
+                        }
+                        else { remplissage_Octet_Chaine_Finale = reste_Bytes_Couple_Char; reste_Bytes_Couple_Char = 0; }
+                    }
+                    done = true;
+                }
+                if(i + 1 <= chaine.Length - 1 && remplissage_Octet_Chaine_Finale >= 6 && !done )
+                {
+                    reste_Bytes_Couple_Char = 11;
+                    int_Couple_Char = 45 * Convertir_Char_En_Int(chaine[i]) + Convertir_Char_En_Int(chaine[i + 1]);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab(int_Couple_Char, 11);
+                    bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 3);
+
+                    for (int k = 0; k < bytes_Couple_Char.Length; k++)
+                    {
+                        chaine_finale[j] |= bytes_Couple_Char[k];
+
+                        if (8 - remplissage_Octet_Chaine_Finale < reste_Bytes_Couple_Char)
+                        {
+                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale; remplissage_Octet_Chaine_Finale = 0; j++;
+                        }
+                        else { remplissage_Octet_Chaine_Finale = reste_Bytes_Couple_Char; reste_Bytes_Couple_Char = 0; }
+                    }
+
+                    done = true;
+                }
+
             }
+            return chaine_finale;
+        }
 
-            
+        //public bool[] ECC(bool[] données)
+        //{
 
+        //}
 
+        /*
+         Convertisseur en byte
 
-            /*
-                Plan
-            
-            Chaine stockée ds tableau d'octets
-
-
-
-             */
-        
+         */
 
         #endregion
-        #endregion TD 5 
 
     }
 }
