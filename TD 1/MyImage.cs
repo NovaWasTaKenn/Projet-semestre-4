@@ -107,7 +107,7 @@ namespace TD_1
             catch (Exception e) { Console.WriteLine(e.Message); };
         }
 
-        public void ToFile(string name, string type)
+        public void ToFile(string name, string type)//Penser à supprimer, utilisé que pour les tests manuels
         {    
             string path = name + "." + type;
             try
@@ -181,7 +181,7 @@ namespace TD_1
                 File.WriteAllBytes(path, bytesToWrite);
             }
             catch(Exception e) { Console.WriteLine(e.Message); };
-        }        //Penser à supprimer, utilie que pour les tests manuels
+        }        
         public void ToFile(string path)
         {
 
@@ -700,6 +700,7 @@ namespace TD_1
         #endregion
 
         #region Flou_Convolution
+        #region anciennes convo
         public MyImage Flou( int[,] matrice_convolution, int coeff)
         {
             MyImage copie = new MyImage(this, this.height, this.width);
@@ -986,23 +987,39 @@ namespace TD_1
             }
             return copie;
         }
-
-        public MyImage Convolution(int[,] matrice_convolution)
+        #endregion
+        /// <summary>
+        /// <para>
+        /// Applique la matrice de convolution <paramref name="matrice_convolution"/> à l'image. 
+        /// Le coefficient <paramref name="coeff"/> divise le résultat de la convolution ( recommandé pour le flou : 9)
+        /// </para>
+        /// <returns>
+        /// Retourne une instance de MyImage clonée à partir de l'image originale
+        /// </returns>
+        ///
+        /// </summary>
+        /// <param name="matrice_convolution"></param>
+        /// <param name="coeff"></param>
+        /// <returns></returns>
+        public MyImage Convolution(int[,] matrice_convolution, int coeff = 1)
         {
             MyImage image_sortie = new MyImage(this, this.height, this.width);
-            int R = 0;
-            int G = 0;
-            int B = 0;
+            int R;
+            int G;
+            int B;
             for(int i = 0; i< this.image.GetLength(0); i++)
             {
                 for(int j = 0; j<this.image.GetLength(1); j++)
                 {
-                    for(int k = -matrice_convolution.GetLength(0)/2; k < matrice_convolution.GetLength(0)/2; k++)
+                    R = 0;
+                    G = 0;
+                    B = 0;
+                    for(int k = -matrice_convolution.GetLength(0)/2; k <= matrice_convolution.GetLength(0)/2; k++)
                     {
-                        for(int l = -matrice_convolution.GetLength(1)/2; l< matrice_convolution.GetLength(1)/2; l++)
+                        for(int l = -matrice_convolution.GetLength(1)/2; l<= matrice_convolution.GetLength(1)/2; l++)
                         {
                             int newI = (this.image.GetLength(0) + i + k) % this.image.GetLength(0);
-                            int newJ = (this.image.GetLength(0) + i + k) % this.image.GetLength(1);
+                            int newJ = (this.image.GetLength(1) + j + l) % this.image.GetLength(1);
                             int newK = k + matrice_convolution.GetLength(0) / 2;
                             int newL = l + matrice_convolution.GetLength(1) / 2;
                             R += this.image[newI, newJ].R * matrice_convolution[newK, newL];
@@ -1010,6 +1027,9 @@ namespace TD_1
                             B += this.image[newI, newJ].B * matrice_convolution[newK, newL];
                         }
                     }
+                    R = R / coeff;
+                    G = G / coeff;
+                    B = B / coeff;
                     if (R > 255) { R = 255; }
                     if (R < 0) { R = 0; }
                     if (G > 255) { G = 255; }
@@ -1497,7 +1517,13 @@ namespace TD_1
         #endregion TD 5 
 
         #region QrCode
-
+        /// <summary>
+        /// 
+        /// Retourne un entier correspondant au charactère <paramref name="c"/> dans le code donné dans l'énoncé
+        /// 
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public int Convertir_Char_En_Int(char c)
         {
 
@@ -1544,45 +1570,66 @@ namespace TD_1
 
 
         }
-        public byte[] Convertir_Int_En_Tab_De_Byte(int nb, int taille, int remplissage_Octet_Chaine_Finale, int nb_découpe) 
+        /// <summary>
+        /// <para>Converti un entier <paramref name="nb"/> en tableau d'octets de taille définie par <paramref name="taille"/> et de nombre de bit défini par <paramref name="nb_bits" />. 
+        /// Le premier octet est constitué de la gauche vers la droite de <paramref name="remplissage_Octet_Chaine_Finale"/> zéros et 8 -<paramref name="remplissage_Octet_Chaine_Finale"/> valeurs dévrivant <paramref name="nb"/></para>
+        /// 
+        /// <returns>
+        /// Retourne un tableau d'octet de taille <paramref name="taille"/> contennant les <paramref name="nb_bits"/> encodant <paramref name="nb"/>
+        /// </returns>
+        /// </summary>
+        /// <param name="nb"></param>
+        /// <param name="nb_bits"></param>
+        /// <param name="remplissage_Octet_Chaine_Finale"></param>
+        /// <param name="taille"></param>
+        /// <returns></returns>
+        public byte[] Convertir_Int_En_Tab_De_Byte(int nb, int nb_bits, int remplissage_Octet_Chaine_Finale, int taille) 
         {
-            byte[] retour = new byte[nb_découpe];
-            for (int i = 0; i < nb_découpe * 8; i++)
+            byte[] retour = new byte[taille];
+            for (int i = 0; i < taille * 8; i++)
             {
-                if (i > remplissage_Octet_Chaine_Finale - 1 && i - remplissage_Octet_Chaine_Finale < taille && i <= 7)
+                if (i > remplissage_Octet_Chaine_Finale - 1 && i - remplissage_Octet_Chaine_Finale < nb_bits && i <= 7)
                 {
-                    if(nb - System.Math.Pow(2, taille-1-(i-remplissage_Octet_Chaine_Finale)) >= 0) 
+                    if(nb - System.Math.Pow(2, nb_bits-1-(i-remplissage_Octet_Chaine_Finale)) >= 0) 
                     { 
-                        retour[0] += (byte)System.Math.Pow(2, 7 - i); nb -= (int)System.Math.Pow(2, taille - 1 - (i - remplissage_Octet_Chaine_Finale));
+                        retour[0] += (byte)System.Math.Pow(2, 7 - i); nb -= (int)System.Math.Pow(2, nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale));
                             }
                 }
-                if (i > 7 && i - remplissage_Octet_Chaine_Finale < taille && i < 16)
+                if (i > 7 && i - remplissage_Octet_Chaine_Finale < nb_bits && i < 16)
                 {
-                    if(nb - System.Math.Pow(2,taille - 1 - (i - remplissage_Octet_Chaine_Finale)) >= 0) 
+                    if(nb - System.Math.Pow(2,nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale)) >= 0) 
                     { 
-                        retour[1] += (byte)System.Math.Pow(2, 15 - i); nb -= (int)System.Math.Pow(2, taille - 1 - (i - remplissage_Octet_Chaine_Finale));
+                        retour[1] += (byte)System.Math.Pow(2, 15 - i); nb -= (int)System.Math.Pow(2, nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale));
                     }
                 }
-                if (i > 15 && i - remplissage_Octet_Chaine_Finale < taille && i < 24)
+                if (i > 15 && i - remplissage_Octet_Chaine_Finale < nb_bits && i < 24)
                 {
-                    if(nb - System.Math.Pow(2, taille - 1 - (i - remplissage_Octet_Chaine_Finale)) >= 0) 
+                    if(nb - System.Math.Pow(2, nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale)) >= 0) 
                     { 
-                        retour[2] += (byte)System.Math.Pow(2, 23 - i); nb -= (int)System.Math.Pow(2, taille - 1 - (i - remplissage_Octet_Chaine_Finale));
+                        retour[2] += (byte)System.Math.Pow(2, 23 - i); nb -= (int)System.Math.Pow(2, nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale));
                     }
                 }
             }
             return retour;
         }
-        public byte[] Convertir_Chaine_Char(string chaine, int version)  //Verifier : il y a peut etre moyen de fusionner decouper et convertir en bool et de supprimer le passage par boolb
+        /// <summary>
+        /// <para> Crée une tableau d'octet contenant toutes les données du QR code à partir de la chaine de caractères alphanumériques <paramref name="chaine"/>. Le tableau contient tous les mots de données et les mots de correction d'erreur. </para>
+        /// <returns> Retourne : Un tableau de bytes </returns>
+        /// </summary>
+        /// <param name="chaine"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public byte[] Convertir_Chaine_Char(string chaine, int version)  
         {                                                  // Fonctionne sur test hello world
                                                           //Tester le chgmt de découpe vers convertir int en bytes tab    
+                                                         //Peut etre moyen de faire tt plus facilement en travaillant sur les octets sous forme d'int
 
             int taille_Chaine = chaine.Length;
             int taille_Finale = 152;
             int remplissage_Octet_Chaine_Finale;
 
             if (version == 1) { taille_Finale = 152; }
-            if(version == 2) { taille_Finale = 272; }
+            if (version == 2) { taille_Finale = 272; }
             byte[] chaine_non_ECC = new byte[taille_Finale/8];
             chaine_non_ECC[0] |= 0b_0010_0000;
             remplissage_Octet_Chaine_Finale = 4;

@@ -133,7 +133,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "foret1600par900.bmp";
+            string name = "tour eiffel.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -159,7 +159,7 @@ namespace TD_1
             int[,] Repoussage = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
             int[,] Flou = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
 
-            image.Convolution(Repoussage).ToFile("TestConvo.bmp");
+            image.Convolution(Flou, 9).ToFile("TestConvo.bmp");
             Process.Start("TestConvo.bmp");
 
             //image.Flou(Flou, 15).ToFile("TestBords","bmp");
