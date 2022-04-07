@@ -483,10 +483,14 @@ namespace TD_1
             {
                 if (nb - Puissance(2, 7 - i) >= 0)
                 {
+                    nb -= Puissance(2, 7 - i);
                     binaire += '1';
                 }
 
-                binaire += '0';
+                else
+                {
+                    binaire += '0';
+                }
             }
             return binaire;
         }
@@ -1903,6 +1907,8 @@ namespace TD_1
                 }
 
                 retour.image[retour.height - 8, 8] = new Pixel(0, 0, 0);
+
+                donnee_binaire += "00000000";
             }
 
             #region Remplissage des coins
@@ -2042,132 +2048,106 @@ namespace TD_1
             #endregion
 
             bool libre; //Savoir si la case est libre ou non 
-            int indexchainebinaire = 0; //Index de la chaine de donnée
+            int indexchainebinaire = 0;//Index de la chaine de donnée
             int sens = 0; //Pour connaitre si c'est vers le haut ou vers le bas
 
             #region Remplissage du QRCode Sans Masque
             if (masque == false)
             {
-                
-
-                //Ajouter le masque avec la méthode modulo à la place d'un XOR
+           
                 for (int j = retour.width - 1; j >= 0; j -= 2)
                 {
+                    if (j == 6)
+                    {
+                        j--;
+                    }
+
                     if (sens % 2 == 0)
                     {
                         for (int i = retour.height - 1; i >= 0; i--)
-                        {
+                    {
                             libre = true;
                             while (libre)
                             {
-                                if (j - 1 >= 0)
+                            
+                                if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
                                 {
-                                    if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
+
+                                }
+
+                                else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                {
+                                    if (donnee_binaire[indexchainebinaire] == '1')
                                     {
+                                        retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+
+                                    }
+                                }
+
+                                else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
 
                                     }
 
-                                    else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                    else
                                     {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+
+                                    }
+                                }
+
+                                else
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+
                                         if (donnee_binaire[indexchainebinaire] == '1')
                                         {
-
                                             retour.image[i, j - 1] = new Pixel(0, 0, 0);
                                             indexchainebinaire++;
-
                                         }
 
                                         else
                                         {
                                             retour.image[i, j - 1] = new Pixel(255, 255, 255);
                                             indexchainebinaire++;
-
-                                        }
-                                    }
-
-                                    else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
-                                    {
-
-                                        if (donnee_binaire[indexchainebinaire] == '1')
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                            indexchainebinaire++;
-
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                            indexchainebinaire++;
-
                                         }
                                     }
 
                                     else
                                     {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
 
                                         if (donnee_binaire[indexchainebinaire] == '1')
                                         {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
+                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
                                             indexchainebinaire++;
-
-                                            if (donnee_binaire[indexchainebinaire] == '1')
-                                            {
-                                                retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                                indexchainebinaire++;
-                                            }
-
-                                            else
-                                            {
-                                                retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                                indexchainebinaire++;
-                                            }
                                         }
 
                                         else
                                         {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
+                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
                                             indexchainebinaire++;
-
-                                            if (donnee_binaire[indexchainebinaire] == '1')
-                                            {
-                                                retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                                indexchainebinaire++;
-                                            }
-
-                                            else
-                                            {
-                                                retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                                indexchainebinaire++;
-                                            }
                                         }
                                     }
-                                }
-
-                                else
-                                {
-                                    if (retour.image[i, j] != null)
-                                    {
-                                    }
-
-                                    else
-                                    {
-
-                                        if (donnee_binaire[indexchainebinaire] == '1')
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                            indexchainebinaire++;
-
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                            indexchainebinaire++;
-
-                                        }
-                                    }
-                                }
+                                }                           
                                 libre = false;
                             }
                         }
@@ -2179,121 +2159,90 @@ namespace TD_1
                         {
                             libre = true;
                             while (libre)
-                            {
-                                if (j - 1 >= 0)
+                            {                                
+                                if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
                                 {
-                                    if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
+
+                                }
+
+                                else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
                                     {
+                                        retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+                                    }
+                                }
+
+                                else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
 
                                     }
 
-                                    else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                    else
                                     {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+
+                                    }
+                                }
+
+                                else
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+
+                                        if (donnee_binaire[indexchainebinaire] == '0')
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                            indexchainebinaire++;
+                                        }
+
+                                        else
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                            indexchainebinaire++;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
 
                                         if (donnee_binaire[indexchainebinaire] == '1')
                                         {
                                             retour.image[i, j - 1] = new Pixel(0, 0, 0);
                                             indexchainebinaire++;
-
                                         }
 
                                         else
                                         {
                                             retour.image[i, j - 1] = new Pixel(255, 255, 255);
                                             indexchainebinaire++;
-
                                         }
                                     }
-
-                                    else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
-                                    {
-
-                                        if (donnee_binaire[indexchainebinaire] == '1')
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                            indexchainebinaire++;
-
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                            indexchainebinaire++;
-
-                                        }
-                                    }
-
-                                    else
-                                    {
-
-                                        if (donnee_binaire[indexchainebinaire] == '1')
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                            indexchainebinaire++;
-
-                                            if (donnee_binaire[indexchainebinaire] == '0')
-                                            {
-                                                retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                                indexchainebinaire++;
-                                            }
-
-                                            else
-                                            {
-                                                retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                                indexchainebinaire++;
-                                            }
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                            indexchainebinaire++;
-
-                                            if (donnee_binaire[indexchainebinaire] == '1')
-                                            {
-                                                retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                                indexchainebinaire++;
-                                            }
-
-                                            else
-                                            {
-                                                retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                                indexchainebinaire++;
-                                            }
-                                        }
-                                    }
-                                }
-
-                                else
-                                {
-                                    if (retour.image[i, j] != null)
-                                    {
-                                    }
-
-                                    else
-                                    {
-
-                                        if (donnee_binaire[indexchainebinaire] == '1')
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                            indexchainebinaire++;
-
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                            indexchainebinaire++;
-
-                                        }
-                                    }
-                                }
-
+                                }                                                               
                                 libre = false;
                             }
                         }
                     }
-                    sens++;
+                    sens++;              
                 }
                 
             }
@@ -2306,6 +2255,11 @@ namespace TD_1
                 //Ajouter le masque avec la méthode modulo à la place d'un XOR
                 for (int j = retour.width - 1; j >= 0; j -= 2)
                 {
+                    if(j == 6)
+                    {
+                        j--;
+                    }
+
                     if (sens % 2 == 0)
                     {
                         for (int i = retour.height - 1; i >= 0; i--)
@@ -2313,93 +2267,69 @@ namespace TD_1
                             bitmasque = (i + j) % 2;
                             libre = true;
                             while (libre)
-                            {
-                                if (j - 1 >= 0)
+                            {                        
+                                if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
                                 {
-                                    if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
+
+                                }
+
+                                else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                {
+                                    bitmasque = (i + (j - 1)) % 2;
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
                                     {
-
-                                    }
-
-                                    else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
-                                    {
-                                        bitmasque = (i + (j - 1)) % 2;
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                        }
-
-                                        indexchainebinaire++;
-                                    }
-
-                                    else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
-                                    {
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                        }
-
-                                        indexchainebinaire++;
+                                        retour.image[i, j - 1] = new Pixel(0, 0, 0);
                                     }
 
                                     else
                                     {
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                        }
-                                        indexchainebinaire++;
-
-                                        bitmasque = (i + (j - 1)) % 2;
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                        }
-
-                                        indexchainebinaire++;
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
                                     }
+
+                                    indexchainebinaire++;
+                                }
+
+                                else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
+                                {
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                    }
+
+                                    indexchainebinaire++;
                                 }
 
                                 else
                                 {
-                                    if (retour.image[i, j] != null)
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
                                     {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
                                     }
 
                                     else
                                     {
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                        }
-                                        indexchainebinaire++;
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
                                     }
-                                }
+                                    indexchainebinaire++;
+
+                                    bitmasque = (i + (j - 1)) % 2;
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                    }
+
+                                    indexchainebinaire++;
+                                }                                                            
                                 libre = false;
                             }
                         }
@@ -2409,97 +2339,72 @@ namespace TD_1
                     {
                         for (int i = 0; i < retour.height; i++)
                         {
+                            bitmasque = (i + j) % 2;
                             libre = true;
                             while (libre)
-                            {
-                                if (j - 1 >= 0)
+                            {                                
+                                if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
                                 {
-                                    if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
+
+                                }
+
+                                else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                {
+                                    bitmasque = (i + (j - 1)) % 2;
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
                                     {
-
-                                    }
-
-                                    else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
-                                    {
-                                        bitmasque = (i + (j - 1)) % 2;
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                        }
-                                        indexchainebinaire++;
-                                    }
-
-                                    else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
-                                    {
-
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                        }
-                                        indexchainebinaire++;
+                                        retour.image[i, j - 1] = new Pixel(0,0,0);
                                     }
 
                                     else
                                     {
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                    }
+                                    indexchainebinaire++;
+                                }
 
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                        }
+                                else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
+                                {
 
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                        }
-                                        indexchainebinaire++;
-
-                                        bitmasque = (i + (j - 1)) % 2;
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                        }
-
-                                        indexchainebinaire++;
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j] = new Pixel(0,0,0);
                                     }
 
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255,255,255) ;
+                                    }
+                                    indexchainebinaire++;
                                 }
 
                                 else
                                 {
-                                    if (retour.image[i, j] != null)
+
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
                                     {
+                                        retour.image[i, j] = new Pixel(0,0,0) ;
                                     }
 
                                     else
                                     {
-                                        if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
-                                        {
-                                            retour.image[i, j] = new Pixel(255, 255, 255);
-                                        }
-
-                                        else
-                                        {
-                                            retour.image[i, j] = new Pixel(0, 0, 0);
-                                        }
-                                        indexchainebinaire++;
+                                        retour.image[i, j] = new Pixel(255,255,255);
                                     }
-                                }
+                                    indexchainebinaire++;
 
+                                    bitmasque = (i + (j - 1)) % 2;
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(0,0,0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255,255,255);
+                                    }
+
+                                    indexchainebinaire++;
+                                }                                                            
                                 libre = false;
                             }
                         }
