@@ -501,32 +501,7 @@ namespace TD_1
             
             return binaire;
         }
-        public int[] ConvertirInt_To_Binaire(int nb)
-        {
-            int[] binaire = new int[8];
-            for (int i = 0; i < binaire.Length; i++)
-            {
-                if (nb - Puissance(2, binaire.Length - 1 - i) >= 0)
-                {
-                    binaire[i] = 1;
-                }
-            }
-            return binaire;
-        }
 
-        public int ConvertirBinaire_To_Int(int[] binaire)
-        {
-            int retour = 0;
-            for (int i = 0; i < binaire.Length; i++)
-            {
-                if (binaire[i] == 1)
-                {
-                    retour += Puissance(2, binaire.Length - 1 - i);
-                }
-            }
-
-            return retour;
-        }
         #endregion
 
         #region TD 3
@@ -1443,9 +1418,9 @@ namespace TD_1
             return retour;
         }
 
-        public MyImage DecoderImageCachee(MyImage imagecachee)
+        public MyImage DecoderImageCachee()
         {
-            MyImage doubleimage = new MyImage(imagecachee.height, imagecachee.width * 2);
+            MyImage doubleimage = new MyImage(this.height, this.width * 2);
             for (int i = 0; i < doubleimage.height; i++)
             {
                 for (int j = 0; j < doubleimage.width; j++)
@@ -1465,13 +1440,13 @@ namespace TD_1
             int[] binaire = new int[8];
             int pixelNumber = 0;
 
-            for (int i = 0; i < imagecachee.height; i++)
+            for (int i = 0; i < this.height; i++)
             {
-                for (int j = 0; j < imagecachee.width; j++)
+                for (int j = 0; j < this.width; j++)
                 {
 
                     //Pixel Rouge
-                    binaire = ConvertirInt_To_Binaire(imagecachee.image[i, j].R);
+                    binaire = ConvertirInt_To_Binaire(this.image[i, j].R);
                     for (int index = 0; index < binaire.Length / 2; index++)
                     {
                         binaireR1[index] = binaire[index];
@@ -1490,9 +1465,9 @@ namespace TD_1
 
                     //Deuxième Image
                     pixelNumber = ConvertirBinaire_To_Int(binaireR2);
-                    doubleimage.image[i, j + imagecachee.width].R = pixelNumber;
+                    doubleimage.image[i, j + this.width].R = pixelNumber;
 
-                    binaire = ConvertirInt_To_Binaire(imagecachee.image[i, j].G);
+                    binaire = ConvertirInt_To_Binaire(this.image[i, j].G);
 
                     for (int index = 0; index < binaire.Length / 2; index++)
                     {
@@ -1512,11 +1487,11 @@ namespace TD_1
 
                     //Deuxième Image
                     pixelNumber = ConvertirBinaire_To_Int(binaireG2);
-                    doubleimage.image[i, j + imagecachee.width].G = pixelNumber;
+                    doubleimage.image[i, j + this.width].G = pixelNumber;
 
 
                     //Pixel Bleu
-                    binaire = ConvertirInt_To_Binaire(imagecachee.image[i, j].B);
+                    binaire = ConvertirInt_To_Binaire(this.image[i, j].B);
 
                     for (int index = 0; index < binaire.Length / 2; index++)
                     {
@@ -1536,7 +1511,7 @@ namespace TD_1
 
                     //Deuxième Image
                     pixelNumber = ConvertirBinaire_To_Int(binaireB2);
-                    doubleimage.image[i, j + imagecachee.width].B = pixelNumber;
+                    doubleimage.image[i, j + this.width].B = pixelNumber;
 
                 }
             }
@@ -1638,7 +1613,7 @@ namespace TD_1
             byte[] chaine_finale = new byte[taille_Finale/8];
             chaine_finale[0] |= 0b_0010_0000;
 
-            byte[] taille_Chaine_bytes = Découper_Tab_Bool(this.Convertir_Int_to_Bool_Tab(taille_Chaine, 9), 8 - remplissage_Octet_Chaine_Finale, 2);
+            byte[] taille_Chaine_bytes = Découper_Tab_Bool(this.Convertir_Int_to_Bool_Tab_9(taille_Chaine, 9), 8 - remplissage_Octet_Chaine_Finale, 2);
             chaine_finale[0] |= taille_Chaine_bytes[0];
             remplissage_Octet_Chaine_Finale = 0;
             chaine_finale[1] |= taille_Chaine_bytes[1];
@@ -1658,7 +1633,7 @@ namespace TD_1
                 {
                     reste_Bytes_Couple_Char = 6;
                     int_Couple_Char = Convertir_Char_En_Int(chaine[i]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab(int_Couple_Char, 6);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 6);
                     bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 1);
 
                     for (int k = 0; k < bytes_Couple_Char.Length; k++)
@@ -1667,7 +1642,9 @@ namespace TD_1
 
                         if (8 - remplissage_Octet_Chaine_Finale < reste_Bytes_Couple_Char)
                         {
-                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale; remplissage_Octet_Chaine_Finale = 0; j++;
+                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale; 
+                            remplissage_Octet_Chaine_Finale = 0; 
+                            j++;
                         }
                         else { remplissage_Octet_Chaine_Finale = reste_Bytes_Couple_Char; reste_Bytes_Couple_Char = 0; }
                     }
@@ -1678,7 +1655,7 @@ namespace TD_1
                 {
                     reste_Bytes_Couple_Char = 6;
                     int_Couple_Char = Convertir_Char_En_Int(chaine[i]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab(int_Couple_Char, 6);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 6);
                     bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 2);
 
                     for (int k = 0; k < bytes_Couple_Char.Length; k++)
@@ -1697,7 +1674,7 @@ namespace TD_1
                 {
                     reste_Bytes_Couple_Char = 11;
                     int_Couple_Char = 45 * Convertir_Char_En_Int(chaine[i]) + Convertir_Char_En_Int(chaine[i + 1]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab(int_Couple_Char, 11);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 11);
                     bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 2);
 
                     for (int k = 0; k < bytes_Couple_Char.Length; k++)
@@ -1717,7 +1694,7 @@ namespace TD_1
                 {
                     reste_Bytes_Couple_Char = 11;
                     int_Couple_Char = 45 * Convertir_Char_En_Int(chaine[i]) + Convertir_Char_En_Int(chaine[i + 1]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab(int_Couple_Char, 11);
+                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 11);
                     bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 3);
 
                     for (int k = 0; k < bytes_Couple_Char.Length; k++)
@@ -1749,6 +1726,243 @@ namespace TD_1
          */
 
         #endregion
+
+        public MyImage QRCode(int version, int[] masquage)
+        {
+            MyImage retour = new MyImage(25,25);
+            int[,] matricebinaire;
+            for(int i = 0; i < 25; i++)
+            {
+                for(int j = 0; j < 25; j++)
+                {
+                    retour.image[i,j] = new Pixel(255,0,0);
+                }
+            }
+
+            if(version == 1)
+            {
+                matricebinaire = new int[21,21];
+
+                for(int i = 0; i < 7; i++)
+                {
+                    for(int j = 0; j < 7; j++)
+                    {
+                        if(j == 1)
+                        {
+                            for(int l = 1; l < 6; l++)
+                            {
+
+                                retour.image[l, j] = new Pixel(255,255,255);
+                                retour.image[l, retour.width - 1 - j] = new Pixel(255,255,255);
+                                retour.image[retour.height - 1 - l, j] = new Pixel(255,255,255);
+
+                                retour.image[j, l] = new Pixel(255,255,255);
+                                retour.image[retour.width - 1 - j, l] = new Pixel(255,255,255);
+                                retour.image[j, retour.height - 1 - l] = new Pixel(255,255,255);
+
+                                retour.image[l, j + 4] = new Pixel(255,255,255);
+                                retour.image[l, retour.width - 1 - j - 4] = new Pixel(255,255,255);
+                                retour.image[retour.height - 1 - l, j + 4] = new Pixel(255,255,255);
+
+                                retour.image[j + 4, l] = new Pixel(255,255,255);
+                                retour.image[retour.width - 1 - j - 4, l] = new Pixel(255,255,255);
+                                retour.image[j + 4, retour.height - 1 - l] = new Pixel(255,255,255);
+                            }
+                        }
+
+                        retour.image[i,j] = new Pixel(0,0,0);
+                        retour.image[i, retour.width - 1 - j] = new Pixel(0,0,0);
+                        retour.image[retour.height - 1 - i, j] = new Pixel(0,0,0);
+                    }
+                }
+
+                for(int i = 0; i < 8; i++)
+                {
+                    retour.image[i,7] = new Pixel(255,255,255);
+                    retour.image[i, retour.width - 1 - 7] = new Pixel(255,255,255);
+                    retour.image[retour.height - 1 - i, 7] = new Pixel(255,255,255);
+
+                    retour.image[7, i] = new Pixel(255,255,255);
+                    retour.image[7, retour.width - 1 - i] = new Pixel(255,255,255);
+                    retour.image[retour.height - 1 - 7, i] = new Pixel(255,255,255);
+                }
+
+                
+
+                for(int j = 8; j < retour.width - 8; j++)
+                {
+                    if(j%2 == 0)
+                    {
+                        retour.image[6, j] = new Pixel(0,0,0);
+                        retour.image[j, 6] = new Pixel(0,0,0);
+                    }
+                    
+                    else
+                    { 
+                        retour.image[6, j] = new Pixel(255,255,255);
+                        retour.image[j, 6] = new Pixel(255,255,255);
+                    }
+                }
+
+                retour.image[retour.height - 8, 8] = new Pixel(0,0,0);
+            }
+
+            if(version == 2)
+            {
+                //retour = MyImage(25,25);
+                for(int i = 0; i < 7; i++)
+                {
+                    for(int j = 0; j < 7; j++)
+                    {
+                        if(j == 1)
+                        {
+                            for(int l = 1; l < 6; l++)
+                            {
+                                retour.image[l, j] = new Pixel(255,255,255);
+                                retour.image[l, retour.width - 1 - j] = new Pixel(255,255,255);
+                                retour.image[retour.height - 1 - l, j] = new Pixel(255,255,255);
+
+                                retour.image[j, l] = new Pixel(255,255,255);
+                                retour.image[retour.width - 1 - j, l] = new Pixel(255,255,255);
+                                retour.image[j, retour.height - 1 - l] = new Pixel(255,255,255);
+
+                                retour.image[l, j + 4] = new Pixel(255,255,255);
+                                retour.image[l, retour.width - 1 - j - 4] = new Pixel(255,255,255);
+                                retour.image[retour.height - 1 - l, j + 4] = new Pixel(255,255,255);
+
+                                retour.image[j + 4, l] = new Pixel(255,255,255);
+                                retour.image[retour.width - 1 - j - 4, l] = new Pixel(255,255,255);
+                                retour.image[j + 4, retour.height - 1 - l] = new Pixel(255,255,255);
+                            }
+                        }
+
+                        retour.image[i,j] = new Pixel(0,0,0);
+                        retour.image[i, retour.width - 1 - j] = new Pixel(0,0,0);
+                        retour.image[retour.height - 1 - i, j] = new Pixel(0,0,0);
+                    }
+                }
+                
+
+                for(int i = -2; i < 3; i++)
+                {
+                    for(int j = -2; j < 3; j++)
+                    { 
+                        retour.image[18 + i, 18 + j] = new Pixel(0,0,0);
+                    }
+                }
+                
+                for(int i = -1; i < 2; i++)
+                {
+                    for(int j = -1; j < 2; j++)
+                    { 
+                        retour.image[18 + i, 18 + j] = new Pixel(255,255,255);
+                    }
+                }
+
+                retour.image[18,18] = new Pixel(0,0,0);
+
+                for(int i = 0; i < 8; i++)
+                {
+                    retour.image[i,7] = new Pixel(255,255,255);
+                    retour.image[i, retour.width - 1 - 7] = new Pixel(255,255,255);
+                    retour.image[retour.height - 1 - i, 7] = new Pixel(255,255,255);
+
+                    retour.image[7, i] = new Pixel(255,255,255);
+                    retour.image[7, retour.width - 1 - i] = new Pixel(255,255,255);
+                    retour.image[retour.height - 1 - 7, i] = new Pixel(255,255,255);
+                }
+
+
+                for(int j = 8; j < retour.width - 8; j++)
+                {
+                    if(j%2 == 0)
+                    {
+                        retour.image[6, j] = new Pixel(0,0,0);
+                        retour.image[j, 6] = new Pixel(0,0,0);
+                    }
+                    
+                    else
+                    { 
+                        retour.image[6, j] = new Pixel(255,255,255);
+                        retour.image[j, 6] = new Pixel(255,255,255);
+                    }
+                }
+
+                retour.image[retour.height - 8, 8] = new Pixel(0,0,0);
+            }
+
+            for(int index = 0; index < masquage.Length; index++)
+            {
+                if(index < masquage.Length/2)
+                {
+                    if(index == 6)
+                    {
+                        if(masquage[index] == 0)
+                        {
+                            retour.image[8, index + 1] =  new Pixel(255,255,255);
+                            retour.image[retour.height - 1 - index, 8] = new Pixel(255,255,255);
+                        }
+
+                        else
+                        {              
+                            retour.image[8, index + 1] =  new Pixel(0,0,0);              
+                            retour.image[retour.height - 1 - index, 8] = new Pixel(0,0,0);
+                        }
+                    }
+
+                    else
+                    { 
+                        if(masquage[index] == 0)
+                        {
+                            retour.image[8, index] =  new Pixel(255,255,255);
+                            retour.image[retour.height - 1 - index, 8] = new Pixel(255,255,255);
+                        }
+
+                        else
+                        {              
+                            retour.image[8, index] =  new Pixel(0,0,0);              
+                            retour.image[retour.height - 1 - index, 8] = new Pixel(0,0,0);
+                        }
+                    }
+                }
+
+                else
+                {
+                    if(index >= 9)
+                    { 
+                        if(masquage[index] == 0)
+                        {
+                            retour.image[masquage.Length - 1 - index, 8] =  new Pixel(255,255,255);
+                            retour.image[8, retour.width - masquage.Length + index] = new Pixel(255,255,255);
+                        }
+
+                        else
+                        {              
+                            retour.image[masquage.Length - 1 - index, 8] =  new Pixel(0,0,0);              
+                            retour.image[8, retour.width - masquage.Length + index] = new Pixel(0,0,0);
+                        } 
+                    }
+                 
+                    else
+                    { 
+                        if(masquage[index] == 0)
+                        {
+                            retour.image[masquage.Length - index, 8] =  new Pixel(255,255,255);
+                            retour.image[8, retour.width - masquage.Length + index] = new Pixel(255,255,255);
+                        }
+
+                        else
+                        {              
+                            retour.image[masquage.Length - index, 8] =  new Pixel(0,0,0);              
+                            retour.image[8, retour.width - masquage.Length + index] = new Pixel(0,0,0);
+                        }
+                    }
+                }
+            }
+            
+            return retour;
+        }
+
 
     }
 }

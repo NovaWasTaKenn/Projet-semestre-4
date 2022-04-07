@@ -172,12 +172,20 @@ namespace TD_1
 
             //image.Histogramme().ToFile("TestHistogramme","bmp");
             //Process.Start("TestHistogramme.bmp");
+            //MyImage image2 = new MyImage("fleur.bmp");
+            //Process.Start("fleur.bmp");
+            //image.CacherImage_dans_Image(image2).ToFile("TestCacher","bmp");
+            //Process.Start("TestCacher.bmp");
+            
+            //MyImage image3 = new MyImage("TestCacher.bmp");
+            //image3.DecoderImageCachee().ToFile("TestDecoder","bmp");
+            //Process.Start("TestDecoder.bmp");
 
-            for (int i = 0; i < 15; i++)
+            /*for (int i = 0; i < 1; i++)
             {
                 MyImage.FractaleJulia(10000).ToFile("TestFractale", "bmp");
                 Process.Start("TestFractale.bmp");
-            }
+            }*/
 
             //byte b = 0b_0000_0000;
             //b += 0b_1000_0000;
@@ -195,6 +203,14 @@ namespace TD_1
             //{
             //    Console.WriteLine(Convert.ToString(Hello_byte[i], 2));
             //}
+            int[] masque = {1,1,1,0,1,1,1,1,1,0,0,0,1,0,0};
+            image.QRCode(2,masque).ToFile("QRCode","bmp");
+            int a = masque.Length/2;
+            Console.Write(a);
+            MyImage qrcode = new MyImage("QRCode.bmp");
+            qrcode.Aggrandir(10).ToFile("QRGRAND", "bmp");
+            Process.Start("QRCode.bmp");
+            Process.Start("QRGRAND.bmp");
             Console.ReadLine();
         }
     }
