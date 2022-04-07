@@ -141,15 +141,15 @@
                     <ListBoxItem Content="Repoussage" x:Name="Rpg" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
                     <ListBoxItem Content="Fractale" x:Name="Frl" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
                     <ListBoxItem Content="Histogramme" x:Name="Hst" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Coder et Décoder une image" Foreground="White" Margin="0,5,0,0" FontSize="16"/>
+                    <ListBoxItem Content="Coder et décoder une image cachée" Foreground="White" Margin="0,5,0,0" FontSize="16"/>
                     <ListBoxItem Content="Coder" x:Name="Co" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
                     <ListBoxItem Content="Décoder" x:Name="Dc" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
                     <ListBoxItem Content="QR Code" Foreground="White" Margin="0,5,0,0" FontSize="16" />
                     <ListBoxItem Content="Création" x:Name="Cr" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
                     <ListBoxItem Content="Lecteur" x:Name="Le" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Crytage" Foreground="White" Margin="10,2,0,0" FontSize="16"/>
+                    <!--<ListBoxItem Content="Crytage" Foreground="White" Margin="10,2,0,0" FontSize="16"/>
                     <ListBoxItem Content="Cryter" x:Name="Cry" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Décryter" x:Name="Dcr" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
+                    <ListBoxItem Content="Décryter" x:Name="Dcr" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>-->
                 </ListBox>
             </Border>
             <!--#endregion-->

@@ -59,120 +59,129 @@ namespace TD_1
         #region Fichier vers classe | Classe vers fichier
         public MyImage(string file)
         {
-            byte[] file_tab = File.ReadAllBytes(file);
 
-            string type_input = Convert.ToString(Convert.ToChar(file_tab[0])) + Convert.ToString(Convert.ToChar(file_tab[1]));
-            this.type = ConvertToType(type_input);
-
-            byte[] size_input = { file_tab[2], file_tab[3], file_tab[4], file_tab[5] };
-            this.size = Convertir_Endian_To_Int(size_input);
-
-            byte[] offset_input = {file_tab[10], file_tab[11], file_tab[12], file_tab[13]};
-            this.offset = Convertir_Endian_To_Int(offset_input);
-
-            byte[] width_input = { file_tab[18], file_tab[19], file_tab[20], file_tab[21] };
-            this.width = Convertir_Endian_To_Int(width_input);
-
-            byte[] height_input = { file_tab[22], file_tab[23], file_tab[24], file_tab[25] };
-            this.height = Convertir_Endian_To_Int(height_input);
-
-            byte[] bits_per_color_input = { file_tab[28], file_tab[29] };
-            this.bits_per_color = Convertir_Endian_To_Int(bits_per_color_input);
-
-            this.image = new Pixel[height, width];
-            int ligne = height - 1;
-            int colonne;
-
-            for(int i = 54; i < file_tab.Length && ligne >=  0; i += width*3)
+            byte[] file_tab;
+            try
             {
-                //Prendre en cpt les cas ou la largeur de l'image n'est pas multiple de 4 , on augmente l'index i en conséquence pr sauter les 0 de remplissage
+                file_tab = File.ReadAllBytes(file);
+                string type_input = Convert.ToString(Convert.ToChar(file_tab[0])) + Convert.ToString(Convert.ToChar(file_tab[1]));
+                this.type = ConvertToType(type_input);
 
-                colonne = 0;
-                for(int j = i; j < i + width * 3; j += 3)
+                byte[] size_input = { file_tab[2], file_tab[3], file_tab[4], file_tab[5] };
+                this.size = Convertir_Endian_To_Int(size_input);
+
+                byte[] offset_input = { file_tab[10], file_tab[11], file_tab[12], file_tab[13] };
+                this.offset = Convertir_Endian_To_Int(offset_input);
+
+                byte[] width_input = { file_tab[18], file_tab[19], file_tab[20], file_tab[21] };
+                this.width = Convertir_Endian_To_Int(width_input);
+
+                byte[] height_input = { file_tab[22], file_tab[23], file_tab[24], file_tab[25] };
+                this.height = Convertir_Endian_To_Int(height_input);
+
+                byte[] bits_per_color_input = { file_tab[28], file_tab[29] };
+                this.bits_per_color = Convertir_Endian_To_Int(bits_per_color_input);
+
+                this.image = new Pixel[height, width];
+                int ligne = height - 1;
+                int colonne;
+
+                for (int i = 54; i < file_tab.Length && ligne >= 0; i += width * 3)
                 {
-                    this.image[ligne, colonne] = new Pixel(file_tab[j + 2], file_tab[j + 1], file_tab[j]);
-                    colonne++;
+
+
+                    colonne = 0;
+                    for (int j = i; j < i + width * 3; j += 3)
+                    {
+                        this.image[ligne, colonne] = new Pixel(file_tab[j + 2], file_tab[j + 1], file_tab[j]);
+                        colonne++;
+                    }
+                    if ((width * 3) % 4 != 0)
+                    {
+                        int nb_remplissage_fin_ligne = 4 - (width * 3) % 4;
+                        i = i + nb_remplissage_fin_ligne;
+                    }
+                    ligne--;
                 }
-                if ((width * 3) % 4 != 0)
-                {
-                    int nb_remplissage_fin_ligne = 4 - (width * 3) % 4;
-                    i = i + nb_remplissage_fin_ligne;
-                }
-                ligne--;
             }
+            catch (Exception e) { Console.WriteLine(e.Message); };
         }
 
-        public void ToFile(string name, string type)
+        public void ToFile(string name, string type)//Penser à supprimer, utilisé que pour les tests manuels
         {    
             string path = name + "." + type;
-
-            if (!File.Exists(path))
+            try
             {
-                using(File.Create(path));
-            }
 
-            byte[] bytesToWrite = new byte[size];
-
-            for(int i = 0; i < 54; i++)
-            {
-                if (i < 2) { bytesToWrite[i] = ConvertTypeToHexa(type)[i]; }
-                if(i < 6  && i >= 2) { bytesToWrite[i] = Convertir_Int_to_Endian(size)[i - 2]; }
-                byte[] Reserved = { 0,0,0,0 };
-                if(i < 10  && i >= 6) { bytesToWrite[i] = Reserved[i - 6]; }
-                if(i < 14  && i >= 10) { bytesToWrite[i] = Convertir_Int_to_Endian(offset)[i - 10]; }
-                byte[] HeaderSize = { 40,0,0,0 };
-                if(i < 18  && i >= 14) { bytesToWrite[i] = HeaderSize[i - 14]; }
-                if(i < 22  && i >= 18) { bytesToWrite[i] = Convertir_Int_to_Endian(width)[i - 18]; }
-                if(i < 26  && i >= 22) { bytesToWrite[i] = Convertir_Int_to_Endian(height)[i - 22]; }
-                byte[] wut = {1,0};
-                if(i < 28  && i >= 26) {bytesToWrite[i] = wut[i - 26]; }
-                if(i < 30  && i >= 28) {bytesToWrite[i] = Convertir_Int_to_Endian(bits_per_color)[i - 28]; }
-                byte[] bordel = { 0,0,0,0,176,4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 };                       //Nom de var bordel a changer
-                if(i < 54  && i >= 30) { bytesToWrite[i] = bordel[i - 30]; }
-            }
-
-            int index = 54;
-
-            for(int i = this.image.GetLength(0) - 1; i >= 0; i--)
-            {
-                for(int j = 0; j < this.image.GetLength(1); j++)
+                if (!File.Exists(path))
                 {
-                    bytesToWrite[index] = (byte)this.image[i,j].B;
-                    index++;
-                    bytesToWrite[index] = (byte)this.image[i,j].G;
-                    index++;
-                    bytesToWrite[index] = (byte)this.image[i,j].R;
-                    index++;                 
+                    using (File.Create(path)) ;
                 }
 
-                #region Switch     prendre en cpt les cas ou longueur pas multiple de 4, ajouter des 0 a la fin de chaque ligne pour arriver a un multiple de 4 
-                int fin_de_ligne = 4 - (this.width*3)%4;
-                switch (fin_de_ligne)
+                byte[] bytesToWrite = new byte[size];
+
+                for (int i = 0; i < 54; i++)
                 {
-                    case 1 : 
-                        bytesToWrite[index] = 0;
-                        index++;
-                        break;
-                    case 2 :
-                        bytesToWrite[index] = 0;
-                        index++;
-                        bytesToWrite[index] = 0;
-                        index++;
-                        break;
-                    case 3 :
-                        bytesToWrite[index] = 0;
-                        index++;
-                        bytesToWrite[index] = 0;
-                        index++;
-                        bytesToWrite[index] = 0;
-                        index++;
-                        break;
+                    if (i < 2) { bytesToWrite[i] = ConvertTypeToHexa(type)[i]; }
+                    if (i < 6 && i >= 2) { bytesToWrite[i] = Convertir_Int_to_Endian(size)[i - 2]; }
+                    byte[] Reserved = { 0, 0, 0, 0 };
+                    if (i < 10 && i >= 6) { bytesToWrite[i] = Reserved[i - 6]; }
+                    if (i < 14 && i >= 10) { bytesToWrite[i] = Convertir_Int_to_Endian(offset)[i - 10]; }
+                    byte[] HeaderSize = { 40, 0, 0, 0 };
+                    if (i < 18 && i >= 14) { bytesToWrite[i] = HeaderSize[i - 14]; }
+                    if (i < 22 && i >= 18) { bytesToWrite[i] = Convertir_Int_to_Endian(width)[i - 18]; }
+                    if (i < 26 && i >= 22) { bytesToWrite[i] = Convertir_Int_to_Endian(height)[i - 22]; }
+                    byte[] wut = { 1, 0 };
+                    if (i < 28 && i >= 26) { bytesToWrite[i] = wut[i - 26]; }
+                    if (i < 30 && i >= 28) { bytesToWrite[i] = Convertir_Int_to_Endian(bits_per_color)[i - 28]; }
+                    byte[] bordel = { 0, 0, 0, 0, 176, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };                       //Nom de var bordel a changer
+                    if (i < 54 && i >= 30) { bytesToWrite[i] = bordel[i - 30]; }
                 }
 
-                #endregion
+                int index = 54;
+
+                for (int i = this.image.GetLength(0) - 1; i >= 0; i--)
+                {
+                    for (int j = 0; j < this.image.GetLength(1); j++)
+                    {
+                        bytesToWrite[index] = (byte)this.image[i, j].B;
+                        index++;
+                        bytesToWrite[index] = (byte)this.image[i, j].G;
+                        index++;
+                        bytesToWrite[index] = (byte)this.image[i, j].R;
+                        index++;
+                    }
+
+                    #region Switch     prendre en cpt les cas ou longueur pas multiple de 4, ajouter des 0 a la fin de chaque ligne pour arriver a un multiple de 4 
+                    int fin_de_ligne = 4 - (this.width * 3) % 4;
+                    switch (fin_de_ligne)
+                    {
+                        case 1:
+                            bytesToWrite[index] = 0;
+                            index++;
+                            break;
+                        case 2:
+                            bytesToWrite[index] = 0;
+                            index++;
+                            bytesToWrite[index] = 0;
+                            index++;
+                            break;
+                        case 3:
+                            bytesToWrite[index] = 0;
+                            index++;
+                            bytesToWrite[index] = 0;
+                            index++;
+                            bytesToWrite[index] = 0;
+                            index++;
+                            break;
+                    }
+
+                    #endregion
+                }
+                File.WriteAllBytes(path, bytesToWrite);
             }
-            File.WriteAllBytes(path, bytesToWrite);
-        }
+            catch(Exception e) { Console.WriteLine(e.Message); };
+        }        
         public void ToFile(string path)
         {
 
@@ -381,7 +390,7 @@ namespace TD_1
         //    return retour;
         //}
         #endregion
-       
+
         public int Convertir_Endian_To_Int(byte[] tab)
         {            
             int retour = 0;
@@ -453,7 +462,7 @@ namespace TD_1
             }
             return retour;
         }
-
+       
         public int[] ConvertirInt_To_Binaire(int nb)
         {
             int[] binaire = new int[8];
@@ -519,36 +528,6 @@ namespace TD_1
             }
             return copie;
         }
-        public MyImage Rotation(int angle, bool sens_horaire)
-        {
-            int nb_rotation = angle / 90;
-            MyImage copie = new MyImage(this, this.height, this.width);
-
-
-
-            for(int k = 0; k < nb_rotation; k++)
-            {              
-                copie = new MyImage(this, this.width, this.height);
-                for (int i = 0; i < image.GetLength(0); i++)
-                {
-                    for (int j = 0; j < image.GetLength(1); j++)
-                    {
-                        if (sens_horaire)
-                        {
-                            copie.image[j, copie.image.GetLength(1) - i - 1] =  this.image[i,j]; 
-                        }
-                        else
-                        {
-                            copie.image[copie.image.GetLength(0)-j-1, i] = this.image[i,j];
-                        }
-                    }
-                }
-
-                this.image = copie.image;
-            }
-
-            return copie;
-        }
         public MyImage RotationV2(double angle, bool sens_horaire) //essayer avec x' = x*cos O + y*sin O et y' = -x*sin 0 + y * sin O
         {
 
@@ -587,7 +566,7 @@ namespace TD_1
                 {
                     int j_new = 0;
                     int i_new = 0;
-                    if (sens_horaire)           // Les formules ne fonctionne pas pour une rotation de 180°   probablement besoin de trouver les formules pour -pi/2 - pi/2
+                    if (sens_horaire)          
                     {
                         if (angle<=90 && 0<=angle)
                         {
@@ -689,7 +668,7 @@ namespace TD_1
             }
             return copie;
         }
-        public MyImage Rétrecissement(double val_rétrecissement)
+        public MyImage Rétrecissement(double val_rétrecissement)  // Finir la possibilité de rétrecir par des valeurs nn entières ou enlever la possibilité et simplifier code
         {
             MyImage copie = new MyImage(this, (int)((double)this.image.GetLength(0) / val_rétrecissement), (int)(((double)this.image.GetLength(1)) / val_rétrecissement));
             List<int> valeurs_rectangles = new List<int>();
@@ -759,276 +738,277 @@ namespace TD_1
             return copie;
         }
         #endregion
+
         #region Flou_Convolution
+        #region anciennes convo
         public MyImage Flou( int[,] matrice_convolution, int coeff)
-{
-    MyImage copie = new MyImage(this, this.height, this.width);
-    for(int i = 0; i< this.image.GetLength(0); i++)
-    {
-        for(int j = 0; j< this.image.GetLength(1); j++)
         {
+            MyImage copie = new MyImage(this, this.height, this.width);
+            for(int i = 0; i< this.image.GetLength(0); i++)
+            {
+                for(int j = 0; j< this.image.GetLength(1); j++)
+                {
 
-            if(i==0 && j == 0)
-            {
-                int R= (int) (this.image[this.height - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[this.height - 1, j].R * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G=(int) (this.image[this.height - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[this.height - 1, j].G * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B=(int) (this.image[this.height - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[this.height - 1, j].B * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                R = R/coeff;
-                G = G/coeff;
-                B = B/coeff;
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R, G, B);
+                    if(i==0 && j == 0)
+                    {
+                        int R= (int) (this.image[this.height - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[this.height - 1, j].R * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G=(int) (this.image[this.height - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[this.height - 1, j].G * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B=(int) (this.image[this.height - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[this.height - 1, j].B * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        R = R/coeff;
+                        G = G/coeff;
+                        B = B/coeff;
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R, G, B);
+                    }
+                    if(i == 0 && j == this.image.GetLength(1) - 1)
+                    {
+                        int R= (int) (this.image[this.height - 1, j - 1].R * matrice_convolution[0, 0] + this.image[this.height-1, j].R * matrice_convolution[0, 1] + this.image[this.height - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[i + 1, 0].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[this.height - 1, j - 1].G * matrice_convolution[0, 0] + this.image[this.height-1, j].G * matrice_convolution[0, 1] + this.image[this.height - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[i + 1, 0].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B= (int) (this.image[this.height - 1, j - 1].B * matrice_convolution[0, 0] + this.image[this.height-1, j].B * matrice_convolution[0, 1] + this.image[this.height - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[i + 1, 0].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        R = R/coeff;
+                        G = G/coeff;
+                        B = B/coeff;
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R, G, B);               
+                    }
+                    if(i==this.image.GetLength(0) - 1 && j == this.image.GetLength(1) - 1)
+                    {
+                        int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[0, 0].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[0, 0].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[0, 0].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        R = R/coeff;
+                        G = G/coeff;
+                        B = B/coeff;
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R, G, B);
+                    }
+                    if(i == this.image.GetLength(0) - 1 && j == 0)
+                    {
+                        int R= (int) (this.image[i - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[0, j + 1].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[i - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[0, j + 1].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[0, j + 1].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        R = R/coeff;
+                        G = G/coeff;
+                        B = B/coeff;
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R, G, B);
+                    }
+                    if(i== 0 && j != 0 && j != this.width -1)
+                    {
+                        int R= (int) (this.image[this.height -1, j - 1].R * matrice_convolution[0, 0] + this.image[this.height -1, j].R * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[this.height -1, j - 1].G * matrice_convolution[0, 0] + this.image[this.height -1, j].G * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[this.height -1, j - 1].B * matrice_convolution[0, 0] + this.image[this.height -1, j].B * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        R = R/coeff;
+                        G = G/coeff;
+                        B = B/coeff;
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R, G, B);  
+                    }
+                    if(i == this.image.GetLength(0) - 1 && j != 0 && j != this.width -1 )
+                    {
+                        int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[0, j + 1].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G=  (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[0, j + 1].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[0, j + 1].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        R = R/coeff;
+                        G = G/coeff;
+                        B = B/coeff;
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R, G, B);
+                    }
+                    if(j==this.image.GetLength(1) - 1 && i != 0 && i != this.height -1 )
+                    {
+                        int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[i + 1, 0].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G=  (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[i + 1, 0].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[i + 1, 0].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        R = R/coeff;
+                        G = G/coeff;
+                        B = B/coeff;
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                         copie.image[i,j] = new Pixel(R, G, B);
+                    }
+                    if(j == 0 && i != 0 && i != this.height -1 )
+                    {
+                        int R= (int) (this.image[i - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[i - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        R = R/coeff;
+                        G = G/coeff;
+                        B = B/coeff;
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R, G, B);
+                    }
+                    if(j>0 && i>0 && i<this.image.GetLength(0) -1 && j < this.image.GetLength(1) -1)
+                    {
+                        int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B= (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        R = R/coeff;
+                        G = G/coeff;
+                        B = B/coeff;
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R, G, B);
+                    }
+                }
             }
-            if(i == 0 && j == this.image.GetLength(1) - 1)
-            {
-                int R= (int) (this.image[this.height - 1, j - 1].R * matrice_convolution[0, 0] + this.image[this.height-1, j].R * matrice_convolution[0, 1] + this.image[this.height - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[i + 1, 0].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[this.height - 1, j - 1].G * matrice_convolution[0, 0] + this.image[this.height-1, j].G * matrice_convolution[0, 1] + this.image[this.height - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[i + 1, 0].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B= (int) (this.image[this.height - 1, j - 1].B * matrice_convolution[0, 0] + this.image[this.height-1, j].B * matrice_convolution[0, 1] + this.image[this.height - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[i + 1, 0].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                R = R/coeff;
-                G = G/coeff;
-                B = B/coeff;
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R, G, B);               
-            }
-            if(i==this.image.GetLength(0) - 1 && j == this.image.GetLength(1) - 1)
-            {
-                int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[0, 0].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[0, 0].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[0, 0].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                R = R/coeff;
-                G = G/coeff;
-                B = B/coeff;
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R, G, B);
-            }
-            if(i == this.image.GetLength(0) - 1 && j == 0)
-            {
-                int R= (int) (this.image[i - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[0, j + 1].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[i - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[0, j + 1].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[0, j + 1].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                R = R/coeff;
-                G = G/coeff;
-                B = B/coeff;
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R, G, B);
-            }
-            if(i== 0 && j != 0 && j != this.width -1)
-            {
-                int R= (int) (this.image[this.height -1, j - 1].R * matrice_convolution[0, 0] + this.image[this.height -1, j].R * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[this.height -1, j - 1].G * matrice_convolution[0, 0] + this.image[this.height -1, j].G * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[this.height -1, j - 1].B * matrice_convolution[0, 0] + this.image[this.height -1, j].B * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                R = R/coeff;
-                G = G/coeff;
-                B = B/coeff;
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R, G, B);  
-            }
-            if(i == this.image.GetLength(0) - 1 && j != 0 && j != this.width -1 )
-            {
-                int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[0, j + 1].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G=  (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[0, j + 1].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[0, j + 1].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                R = R/coeff;
-                G = G/coeff;
-                B = B/coeff;
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R, G, B);
-            }
-            if(j==this.image.GetLength(1) - 1 && i != 0 && i != this.height -1 )
-            {
-                int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[i + 1, 0].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G=  (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[i + 1, 0].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[i + 1, 0].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                R = R/coeff;
-                G = G/coeff;
-                B = B/coeff;
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                 copie.image[i,j] = new Pixel(R, G, B);
-            }
-            if(j == 0 && i != 0 && i != this.height -1 )
-            {
-                int R= (int) (this.image[i - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[i - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                R = R/coeff;
-                G = G/coeff;
-                B = B/coeff;
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R, G, B);
-            }
-
-            if(j>0 && i>0 && i<this.image.GetLength(0) -1 && j < this.image.GetLength(1) -1)
-            {
-                int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B= (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                R = R/coeff;
-                G = G/coeff;
-                B = B/coeff;
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R, G, B);
-            }
+            return copie;
         }
-    }
-    return copie;
-}
         public MyImage Matrice_de_convolution( int[,] matrice_convolution)
-{
-    MyImage copie = new MyImage(this, this.height, this.width);
-    for(int i = 0; i< this.image.GetLength(0); i++)
-    {
-        for(int j = 0; j< this.image.GetLength(1); j++)
         {
+            MyImage copie = new MyImage(this, this.height, this.width);
+            for(int i = 0; i< this.image.GetLength(0); i++)
+            {
+                for(int j = 0; j< this.image.GetLength(1); j++)
+                {
 
-            if(i==0 && j == 0)
-            {
-                int R= (int) (this.image[this.height - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[this.height - 1, j].R * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G=(int) (this.image[this.height - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[this.height - 1, j].G * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B=(int) (this.image[this.height - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[this.height - 1, j].B * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R,G,B);
-            }
-            if(i == 0 && j == this.image.GetLength(1) - 1)
-            {
-                int R= (int) (this.image[this.height - 1, j - 1].R * matrice_convolution[0, 0] + this.image[this.height-1, j].R * matrice_convolution[0, 1] + this.image[this.height - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[i + 1, 0].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[this.height - 1, j - 1].G * matrice_convolution[0, 0] + this.image[this.height-1, j].G * matrice_convolution[0, 1] + this.image[this.height - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[i + 1, 0].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B= (int) (this.image[this.height - 1, j - 1].B * matrice_convolution[0, 0] + this.image[this.height-1, j].B * matrice_convolution[0, 1] + this.image[this.height - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[i + 1, 0].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R,G,B);
-            }
-            if(i==this.image.GetLength(0) - 1 && j == this.image.GetLength(1) - 1)
-            {
-                int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[0, 0].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[0, 0].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[0, 0].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R,G,B);
-            }
-            if(i == this.image.GetLength(0) - 1 && j == 0)
-            {
-                int R= (int) (this.image[i - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[0, j + 1].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[i - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[0, j + 1].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[0, j + 1].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R,G,B);
-            }
-            if(i== 0 && j != 0 && j != this.width -1)
-            {
-                int R= (int) (this.image[this.height -1, j - 1].R * matrice_convolution[0, 0] + this.image[this.height -1, j].R * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[this.height -1, j - 1].G * matrice_convolution[0, 0] + this.image[this.height -1, j].G * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[this.height -1, j - 1].B * matrice_convolution[0, 0] + this.image[this.height -1, j].B * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R,G,B);
-            }
-            if(i == this.image.GetLength(0) - 1 && j != 0 && j != this.width -1 )
-            {
-                int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[0, j + 1].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G=  (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[0, j + 1].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[0, j + 1].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R,G,B);
-            }
-            if(j==this.image.GetLength(1) - 1 && i != 0 && i != this.height -1 )
-            {
-                int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[i + 1, 0].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G=  (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[i + 1, 0].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[i + 1, 0].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R,G,B);
-            }
-            if(j == 0 && i != 0 && i != this.height -1 )
-            {
-                int R= (int) (this.image[i - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
-                int G= (int) (this.image[i - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
-                int B = (int) (this.image[i - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
-                if (R > 255) { R = 255;}
-                if (R < 0) { R = 0;}
-                if (G > 255) { G = 255;}
-                if (G < 0) { G = 0;}
-                if (B > 255) { B = 255;}
-                if (B < 0) { B = 0;}
-                copie.image[i,j] = new Pixel(R,G,B);
-            }
+                    if(i==0 && j == 0)
+                    {
+                        int R= (int) (this.image[this.height - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[this.height - 1, j].R * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G=(int) (this.image[this.height - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[this.height - 1, j].G * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B=(int) (this.image[this.height - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[this.height - 1, j].B * matrice_convolution[0, 1] + this.image[this.height - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R,G,B);
+                    }
+                    if(i == 0 && j == this.image.GetLength(1) - 1)
+                    {
+                        int R= (int) (this.image[this.height - 1, j - 1].R * matrice_convolution[0, 0] + this.image[this.height-1, j].R * matrice_convolution[0, 1] + this.image[this.height - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[i + 1, 0].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[this.height - 1, j - 1].G * matrice_convolution[0, 0] + this.image[this.height-1, j].G * matrice_convolution[0, 1] + this.image[this.height - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[i + 1, 0].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B= (int) (this.image[this.height - 1, j - 1].B * matrice_convolution[0, 0] + this.image[this.height-1, j].B * matrice_convolution[0, 1] + this.image[this.height - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[i + 1, 0].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R,G,B);
+                    }
+                    if(i==this.image.GetLength(0) - 1 && j == this.image.GetLength(1) - 1)
+                    {
+                        int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[0, 0].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[0, 0].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[0, 0].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R,G,B);
+                    }
+                    if(i == this.image.GetLength(0) - 1 && j == 0)
+                    {
+                        int R= (int) (this.image[i - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[0, j + 1].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[i - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[0, j + 1].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[0, j + 1].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R,G,B);
+                    }
+                    if(i== 0 && j != 0 && j != this.width -1)
+                    {
+                        int R= (int) (this.image[this.height -1, j - 1].R * matrice_convolution[0, 0] + this.image[this.height -1, j].R * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[this.height -1, j - 1].G * matrice_convolution[0, 0] + this.image[this.height -1, j].G * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[this.height -1, j - 1].B * matrice_convolution[0, 0] + this.image[this.height -1, j].B * matrice_convolution[0, 1] + this.image[this.height -1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R,G,B);
+                    }
+                    if(i == this.image.GetLength(0) - 1 && j != 0 && j != this.width -1 )
+                    {
+                        int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[0, j + 1].R * matrice_convolution[2, 2] + this.image[0, j].R * matrice_convolution[2, 1] + this.image[0, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G=  (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[0, j + 1].G * matrice_convolution[2, 2] + this.image[0, j].G * matrice_convolution[2, 1] + this.image[0, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[0, j + 1].B * matrice_convolution[2, 2] + this.image[0, j].B * matrice_convolution[2, 1] + this.image[0, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R,G,B);
+                    }
+                    if(j==this.image.GetLength(1) - 1 && i != 0 && i != this.height -1 )
+                    {
+                        int R= (int) (this.image[i - 1, j - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, 0].R * matrice_convolution[0, 2] + this.image[i, 0].R * matrice_convolution[1, 2] + this.image[i + 1, 0].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, j - 1].R * matrice_convolution[2, 0] + this.image[i, j - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G=  (int) (this.image[i - 1, j - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, 0].G * matrice_convolution[0, 2] + this.image[i, 0].G * matrice_convolution[1, 2] + this.image[i + 1, 0].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, j - 1].G * matrice_convolution[2, 0] + this.image[i, j - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, j - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, 0].B * matrice_convolution[0, 2] + this.image[i, 0].B * matrice_convolution[1, 2] + this.image[i + 1, 0].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, j - 1].B * matrice_convolution[2, 0] + this.image[i, j - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R,G,B);
+                    }
+                    if(j == 0 && i != 0 && i != this.height -1 )
+                    {
+                        int R= (int) (this.image[i - 1, this.width - 1].R * matrice_convolution[0, 0] + this.image[i - 1, j].R * matrice_convolution[0, 1] + this.image[i - 1, j + 1].R * matrice_convolution[0, 2] + this.image[i, j + 1].R * matrice_convolution[1, 2] + this.image[i + 1, j + 1].R * matrice_convolution[2, 2] + this.image[i + 1, j].R * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].R * matrice_convolution[2, 0] + this.image[i, this.width - 1].R * matrice_convolution[1, 0] + this.image[i, j].R * matrice_convolution[1, 1]);
+                        int G= (int) (this.image[i - 1, this.width - 1].G * matrice_convolution[0, 0] + this.image[i - 1, j].G * matrice_convolution[0, 1] + this.image[i - 1, j + 1].G * matrice_convolution[0, 2] + this.image[i, j + 1].G * matrice_convolution[1, 2] + this.image[i + 1, j + 1].G * matrice_convolution[2, 2] + this.image[i + 1, j].G * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].G * matrice_convolution[2, 0] + this.image[i, this.width - 1].G * matrice_convolution[1, 0] + this.image[i, j].G * matrice_convolution[1, 1]);
+                        int B = (int) (this.image[i - 1, this.width - 1].B * matrice_convolution[0, 0] + this.image[i - 1, j].B * matrice_convolution[0, 1] + this.image[i - 1, j + 1].B * matrice_convolution[0, 2] + this.image[i, j + 1].B * matrice_convolution[1, 2] + this.image[i + 1, j + 1].B * matrice_convolution[2, 2] + this.image[i + 1, j].B * matrice_convolution[2, 1] + this.image[i + 1, this.width - 1].B * matrice_convolution[2, 0] + this.image[i, this.width - 1].B * matrice_convolution[1, 0] + this.image[i, j].B * matrice_convolution[1, 1]);
+                        if (R > 255) { R = 255;}
+                        if (R < 0) { R = 0;}
+                        if (G > 255) { G = 255;}
+                        if (G < 0) { G = 0;}
+                        if (B > 255) { B = 255;}
+                        if (B < 0) { B = 0;}
+                        copie.image[i,j] = new Pixel(R,G,B);
+                    }
 
                     if(j>0 && i>0 && i<this.image.GetLength(0) -1 && j < this.image.GetLength(1) -1)
                     {
@@ -1048,10 +1028,63 @@ namespace TD_1
             return copie;
         }
         #endregion
+        /// <summary>
+        /// <para>
+        /// Applique la matrice de convolution <paramref name="matrice_convolution"/> à l'image. 
+        /// Le coefficient <paramref name="coeff"/> divise le résultat de la convolution ( recommandé pour le flou : 9)
+        /// </para>
+        /// <returns>
+        /// Retourne une instance de MyImage clonée à partir de l'image originale
+        /// </returns>
+        ///
+        /// </summary>
+        /// <param name="matrice_convolution"></param>
+        /// <param name="coeff"></param>
+        /// <returns></returns>
+        public MyImage Convolution(int[,] matrice_convolution, int coeff = 1)
+        {
+            MyImage image_sortie = new MyImage(this, this.height, this.width);
+            int R;
+            int G;
+            int B;
+            for(int i = 0; i< this.image.GetLength(0); i++)
+            {
+                for(int j = 0; j<this.image.GetLength(1); j++)
+                {
+                    R = 0;
+                    G = 0;
+                    B = 0;
+                    for(int k = -matrice_convolution.GetLength(0)/2; k <= matrice_convolution.GetLength(0)/2; k++)
+                    {
+                        for(int l = -matrice_convolution.GetLength(1)/2; l<= matrice_convolution.GetLength(1)/2; l++)
+                        {
+                            int newI = (this.image.GetLength(0) + i + k) % this.image.GetLength(0);
+                            int newJ = (this.image.GetLength(1) + j + l) % this.image.GetLength(1);
+                            int newK = k + matrice_convolution.GetLength(0) / 2;
+                            int newL = l + matrice_convolution.GetLength(1) / 2;
+                            R += this.image[newI, newJ].R * matrice_convolution[newK, newL];
+                            G += this.image[newI, newJ].G * matrice_convolution[newK, newL];
+                            B += this.image[newI, newJ].B * matrice_convolution[newK, newL];
+                        }
+                    }
+                    R = R / coeff;
+                    G = G / coeff;
+                    B = B / coeff;
+                    if (R > 255) { R = 255; }
+                    if (R < 0) { R = 0; }
+                    if (G > 255) { G = 255; }
+                    if (G < 0) { G = 0; }
+                    if (B > 255) { B = 255; }
+                    if (B < 0) { B = 0; }
+                    image_sortie.image[i, j] = new Pixel(R, G, B);
+                }
+            }
+            return image_sortie;
+        }
+
+        #endregion
 
         #region TD 5 
-
-
 
         public static MyImage Fractale_MandelBrot(int coté)
         {
@@ -1111,6 +1144,7 @@ namespace TD_1
             }
             return fractale;
         }
+
         public static MyImage FractaleJulia(
             int coté, 
             bool fractale_Random = true, 
@@ -1238,6 +1272,7 @@ namespace TD_1
             }
             return fractale;
         }
+
         public MyImage Histogramme()
         {
             int[] stockR = new int[256];
@@ -1520,8 +1555,15 @@ namespace TD_1
         }
 
         #endregion TD 5 
-        #region QrCode
 
+        #region QrCode
+        /// <summary>
+        /// 
+        /// Retourne un entier correspondant au charactère <paramref name="c"/> dans le code donné dans l'énoncé
+        /// 
+        /// </summary>
+        /// <param name="c"></param>
+        /// <returns></returns>
         public int Convertir_Char_En_Int(char c)
         {
 
@@ -1530,39 +1572,29 @@ namespace TD_1
                 case ' ':
                     return 36;
                     break;
-
                 case '$':
                     return 37;
                     break;
-
                 case '%':
                     return 38;
                     break;
-
                 case '*':
                     return 39;
                     break;
-
                 case '+':
                     return 40;
                     break;
-
                 case '-':
                     return 41;
                     break;
-
                 case '.':
                     return 42;
                     break;
-
                 case '/':
                     return 43;
                     break;
-
                 case ':':
                     return 44;
-                    break;
-
                 default:
                     if ((int)c >= 55)
                     {
@@ -1578,54 +1610,82 @@ namespace TD_1
 
 
         }
-        public byte[] Découper_Tab_Bool(bool[] tab, int remplissage_Octet_Chaine_Finale, int nb_découpe)
+        /// <summary>
+        /// <para>Converti un entier <paramref name="nb"/> en tableau d'octets de taille définie par <paramref name="taille"/> et de nombre de bit défini par <paramref name="nb_bits" />. 
+        /// Le premier octet est constitué de la gauche vers la droite de <paramref name="remplissage_Octet_Chaine_Finale"/> zéros et 8 -<paramref name="remplissage_Octet_Chaine_Finale"/> valeurs dévrivant <paramref name="nb"/></para>
+        /// 
+        /// <returns>
+        /// Retourne un tableau d'octet de taille <paramref name="taille"/> contennant les <paramref name="nb_bits"/> encodant <paramref name="nb"/>
+        /// </returns>
+        /// </summary>
+        /// <param name="nb"></param>
+        /// <param name="nb_bits"></param>
+        /// <param name="remplissage_Octet_Chaine_Finale"></param>
+        /// <param name="taille"></param>
+        /// <returns></returns>
+        public byte[] Convertir_Int_En_Tab_De_Byte(int nb, int nb_bits, int remplissage_Octet_Chaine_Finale, int taille) 
         {
-            byte[] retour = new byte[nb_découpe];
-            for (int i = 0; i < nb_découpe*8; i++)
+            byte[] retour = new byte[taille];
+            for (int i = 0; i < taille * 8; i++)
             {
-                if (i > remplissage_Octet_Chaine_Finale - 1 && i - remplissage_Octet_Chaine_Finale < tab.Length && i <= 7)
+                if (i > remplissage_Octet_Chaine_Finale - 1 && i - remplissage_Octet_Chaine_Finale < nb_bits && i <= 7)
                 {
-                    retour[0] += (byte)(System.Math.Abs(System.Convert.ToInt32(tab[i - remplissage_Octet_Chaine_Finale]) * System.Math.Pow(2, 7 - i)));
+                    if(nb - System.Math.Pow(2, nb_bits-1-(i-remplissage_Octet_Chaine_Finale)) >= 0) 
+                    { 
+                        retour[0] += (byte)System.Math.Pow(2, 7 - i); nb -= (int)System.Math.Pow(2, nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale));
+                            }
                 }
-                if (i > 7 && i - remplissage_Octet_Chaine_Finale < tab.Length  && i <16)
+                if (i > 7 && i - remplissage_Octet_Chaine_Finale < nb_bits && i < 16)
                 {
-                    retour[1] += (byte)(System.Math.Abs(System.Convert.ToInt32(tab[i - remplissage_Octet_Chaine_Finale]) * System.Math.Pow(2, 15 - i)));
+                    if(nb - System.Math.Pow(2,nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale)) >= 0) 
+                    { 
+                        retour[1] += (byte)System.Math.Pow(2, 15 - i); nb -= (int)System.Math.Pow(2, nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale));
+                    }
                 }
-                if (i > 15 && i - remplissage_Octet_Chaine_Finale< tab.Length && i<24)
+                if (i > 15 && i - remplissage_Octet_Chaine_Finale < nb_bits && i < 24)
                 {
-                    retour[2] += (byte)(System.Math.Abs(System.Convert.ToInt32(tab[i - remplissage_Octet_Chaine_Finale]) * System.Math.Pow(2, 23 - i)));
+                    if(nb - System.Math.Pow(2, nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale)) >= 0) 
+                    { 
+                        retour[2] += (byte)System.Math.Pow(2, 23 - i); nb -= (int)System.Math.Pow(2, nb_bits - 1 - (i - remplissage_Octet_Chaine_Finale));
+                    }
                 }
             }
             return retour;
         }
-
-
-        public byte[] Convertir_Chaine_Char(string chaine)  //Verifier : il y a peut etre moyen de fusionner decouper et convertir en bool et de supprimer le passage par bool
+        /// <summary>
+        /// <para> Crée une tableau d'octet contenant toutes les données du QR code à partir de la chaine de caractères alphanumériques <paramref name="chaine"/>. Le tableau contient tous les mots de données et les mots de correction d'erreur. </para>
+        /// <returns> Retourne : Un tableau de bytes </returns>
+        /// </summary>
+        /// <param name="chaine"></param>
+        /// <param name="version"></param>
+        /// <returns></returns>
+        public byte[] Convertir_Chaine_Char(string chaine, int version)  
         {                                                  // Fonctionne sur test hello world
-                                                          //ajouter les bytes pour remplir a la fin     
+                                                          //Tester le chgmt de découpe vers convertir int en bytes tab    
+                                                         //Peut etre moyen de faire tt plus facilement en travaillant sur les octets sous forme d'int
 
             int taille_Chaine = chaine.Length;
-            int taille_Finale;
-            int remplissage_Octet_Chaine_Finale = 4;
+            int taille_Finale = 152;
+            int remplissage_Octet_Chaine_Finale;
 
-            if (taille_Chaine < 26) { taille_Finale = 152; }
-            else { taille_Finale = 272; }
-            byte[] chaine_finale = new byte[taille_Finale/8];
-            chaine_finale[0] |= 0b_0010_0000;
+            if (version == 1) { taille_Finale = 152; }
+            if (version == 2) { taille_Finale = 272; }
+            byte[] chaine_non_ECC = new byte[taille_Finale/8];
+            chaine_non_ECC[0] |= 0b_0010_0000;
+            remplissage_Octet_Chaine_Finale = 4;
 
-            byte[] taille_Chaine_bytes = Découper_Tab_Bool(this.Convertir_Int_to_Bool_Tab_9(taille_Chaine, 9), 8 - remplissage_Octet_Chaine_Finale, 2);
-            chaine_finale[0] |= taille_Chaine_bytes[0];
+            byte[] taille_Chaine_bytes = Convertir_Int_En_Tab_De_Byte(taille_Chaine, 9, 8 - remplissage_Octet_Chaine_Finale, 2);
+            chaine_non_ECC[0] |= taille_Chaine_bytes[0];
             remplissage_Octet_Chaine_Finale = 0;
-            chaine_finale[1] |= taille_Chaine_bytes[1];
+            chaine_non_ECC[1] |= taille_Chaine_bytes[1];
             remplissage_Octet_Chaine_Finale = 5;
 
 
-
+            #region conversion chaine de char
             int j = 1;
             for (int i = 0; i < chaine.Length; i += 2)
             {
                 int int_Couple_Char;
-                bool[] binaire_Couple_Char;
                 byte[] bytes_Couple_Char;
                 int reste_Bytes_Couple_Char;
                 bool done = false;
@@ -1633,12 +1693,11 @@ namespace TD_1
                 {
                     reste_Bytes_Couple_Char = 6;
                     int_Couple_Char = Convertir_Char_En_Int(chaine[i]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 6);
-                    bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 1);
+                    bytes_Couple_Char = Convertir_Int_En_Tab_De_Byte(int_Couple_Char, 6, remplissage_Octet_Chaine_Finale, 1);
 
                     for (int k = 0; k < bytes_Couple_Char.Length; k++)
                     {
-                        chaine_finale[j] |= bytes_Couple_Char[k];
+                        chaine_non_ECC[j] |= bytes_Couple_Char[k];
 
                         if (8 - remplissage_Octet_Chaine_Finale < reste_Bytes_Couple_Char)
                         {
@@ -1650,17 +1709,15 @@ namespace TD_1
                     }
                     done = true;
                 }
-
                 if (i + 1 > chaine.Length - 1 && remplissage_Octet_Chaine_Finale >= 3 && !done)
                 {
                     reste_Bytes_Couple_Char = 6;
                     int_Couple_Char = Convertir_Char_En_Int(chaine[i]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 6);
-                    bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 2);
+                    bytes_Couple_Char = Convertir_Int_En_Tab_De_Byte(int_Couple_Char, 6, remplissage_Octet_Chaine_Finale, 2);
 
                     for (int k = 0; k < bytes_Couple_Char.Length; k++)
                     {
-                        chaine_finale[j] |= bytes_Couple_Char[k];
+                        chaine_non_ECC[j] |= bytes_Couple_Char[k];
 
                         if (8 - remplissage_Octet_Chaine_Finale < reste_Bytes_Couple_Char)
                         {
@@ -1674,13 +1731,12 @@ namespace TD_1
                 {
                     reste_Bytes_Couple_Char = 11;
                     int_Couple_Char = 45 * Convertir_Char_En_Int(chaine[i]) + Convertir_Char_En_Int(chaine[i + 1]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 11);
-                    bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 2);
+                    bytes_Couple_Char = Convertir_Int_En_Tab_De_Byte(int_Couple_Char, 11, remplissage_Octet_Chaine_Finale, 2);
 
                     for (int k = 0; k < bytes_Couple_Char.Length; k++)
                     {
                         
-                        chaine_finale[j] |= bytes_Couple_Char[k];
+                        chaine_non_ECC[j] |= bytes_Couple_Char[k];
 
                         if (8 - remplissage_Octet_Chaine_Finale <= reste_Bytes_Couple_Char)
                         {
@@ -1694,12 +1750,11 @@ namespace TD_1
                 {
                     reste_Bytes_Couple_Char = 11;
                     int_Couple_Char = 45 * Convertir_Char_En_Int(chaine[i]) + Convertir_Char_En_Int(chaine[i + 1]);
-                    binaire_Couple_Char = Convertir_Int_to_Bool_Tab_9(int_Couple_Char, 11);
-                    bytes_Couple_Char = Découper_Tab_Bool(binaire_Couple_Char, remplissage_Octet_Chaine_Finale, 3);
+                    bytes_Couple_Char = Convertir_Int_En_Tab_De_Byte(int_Couple_Char, 11, remplissage_Octet_Chaine_Finale, 3);
 
                     for (int k = 0; k < bytes_Couple_Char.Length; k++)
                     {
-                        chaine_finale[j] |= bytes_Couple_Char[k];
+                        chaine_non_ECC[j] |= bytes_Couple_Char[k];
 
                         if (8 - remplissage_Octet_Chaine_Finale < reste_Bytes_Couple_Char)
                         {
@@ -1712,18 +1767,72 @@ namespace TD_1
                 }
 
             }
-            return chaine_finale;
+            #endregion
+
+            #region terminaison
+            int taille_terminaison = 0;
+            Console.WriteLine(j);
+            Console.WriteLine(Convert.ToString(chaine_non_ECC[j], 2));
+            if (chaine_non_ECC.Length - ((j-1)*8+remplissage_Octet_Chaine_Finale)< 4)
+            {
+                taille_terminaison = chaine_non_ECC.Length - ((j - 1) * 8 + remplissage_Octet_Chaine_Finale);
+            }
+            if (chaine_non_ECC.Length - ((j - 1) * 8 + remplissage_Octet_Chaine_Finale) >= 4)
+            {
+                taille_terminaison = 4;
+            }
+            if (remplissage_Octet_Chaine_Finale > 8 - taille_terminaison)
+            {
+                remplissage_Octet_Chaine_Finale = taille_terminaison - (8 - remplissage_Octet_Chaine_Finale);
+                Console.WriteLine(Convert.ToString(chaine_non_ECC[j], 2));
+                j++;
+            }
+            else
+            {
+                remplissage_Octet_Chaine_Finale = remplissage_Octet_Chaine_Finale + taille_terminaison;
+                Console.WriteLine(Convert.ToString(chaine_non_ECC[j], 2));
+            }
+            Console.WriteLine(j);
+            Console.WriteLine(Convert.ToString(chaine_non_ECC[j], 2));
+            #endregion
+
+            #region multiple 8
+            int taille_terminaison_multiple_8 = 0;
+            if(((j - 1) * 8 + remplissage_Octet_Chaine_Finale)%8 != 0)
+            {
+                taille_terminaison_multiple_8 = ((j - 1) * 8 + remplissage_Octet_Chaine_Finale) % 8;
+            }
+            if (remplissage_Octet_Chaine_Finale > 8 - taille_terminaison_multiple_8)
+            {
+                remplissage_Octet_Chaine_Finale = taille_terminaison_multiple_8 - (8 - remplissage_Octet_Chaine_Finale);
+                j++;
+            }
+            else
+            {
+                remplissage_Octet_Chaine_Finale = remplissage_Octet_Chaine_Finale + taille_terminaison_multiple_8;
+            }
+            #endregion
+
+            #region terminaison 236 17
+
+            for (int i = j+1; i< chaine_non_ECC.Length; i++, j++)
+            {
+                if(i%2 == 0) { chaine_non_ECC[i] = 236; }
+                if(i%2 !=0) { chaine_non_ECC[i] = 17;  }
+            }
+            #endregion
+
+            #region ECC
+            byte[] bytes_ECC = ReedSolomon.ReedSolomonAlgorithm.Encode(chaine_non_ECC, 7, ReedSolomon.ErrorCorrectionCodeType.QRCode);
+            byte[] chaine_finale_ECC = chaine_non_ECC.Concat<byte>(bytes_ECC).ToArray();
+            #endregion
+
+
+
+
+            return chaine_finale_ECC;
         }
 
-        //public bool[] ECC(bool[] données)
-        //{
-
-        //}
-
-        /*
-         Convertisseur en byte
-
-         */
 
         #endregion
 

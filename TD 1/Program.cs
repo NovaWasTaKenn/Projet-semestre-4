@@ -133,7 +133,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "foret1600par900.bmp";
+            string name = "tour eiffel.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -156,9 +156,14 @@ namespace TD_1
             //image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
             //image.Rétrecissement(1.2).ToFile("TestRétrecissement","bmp");
 
-            //int[,] Repoussage = { { -2, -1, 0 }, { -1,1, 1 }, { 0,1,2} };
-            //int[,] Flou = { { 1 ,1,1},{1,1,1},{1,1,1}};
+            int[,] Repoussage = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
+            int[,] Flou = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+
+            image.Convolution(Flou, 9).ToFile("TestConvo.bmp");
+            Process.Start("TestConvo.bmp");
+
             //image.Flou(Flou, 15).ToFile("TestBords","bmp");
+
             //image.Aggrandir(5).ToFile("TestAgrandi","bmp");
 
             //MyImage.FractaleJulia(300).ToFile("TestFractale", "bmp");
@@ -172,20 +177,12 @@ namespace TD_1
 
             //image.Histogramme().ToFile("TestHistogramme","bmp");
             //Process.Start("TestHistogramme.bmp");
-            //MyImage image2 = new MyImage("fleur.bmp");
-            //Process.Start("fleur.bmp");
-            //image.CacherImage_dans_Image(image2).ToFile("TestCacher","bmp");
-            //Process.Start("TestCacher.bmp");
-            
-            //MyImage image3 = new MyImage("TestCacher.bmp");
-            //image3.DecoderImageCachee().ToFile("TestDecoder","bmp");
-            //Process.Start("TestDecoder.bmp");
 
-            /*for (int i = 0; i < 1; i++)
-            {
-                MyImage.FractaleJulia(10000).ToFile("TestFractale", "bmp");
-                Process.Start("TestFractale.bmp");
-            }*/
+            //for (int i = 0; i < 15; i++)
+            //{
+            //    MyImage.FractaleJulia(10000).ToFile("TestFractale", "bmp");
+            //    Process.Start("TestFractale.bmp");
+            //}
 
             //byte b = 0b_0000_0000;
             //b += 0b_1000_0000;
@@ -194,14 +191,22 @@ namespace TD_1
             //b += (byte)(System.Math.Abs(System.Convert.ToInt32(true) * System.Math.Pow(2, 3)));
             //Console.WriteLine(Convert.ToString(b, 2));
 
-            //bool[] tab = { false, false , false , false , false ,true, false ,true,true};
+            //bool[] tab = { false, false, false, false, false, true, false, true, true };
 
             //string Hello = "HELLO WORLD";
-            //byte[] Hello_byte = image.Convertir_Chaine_Char(Hello);
 
-            //for(int i = 0; i< Hello_byte.Length; i++)
+            //int entier_hello = 45*image.Convertir_Char_En_Int('H')+image.Convertir_Char_En_Int('E');
+            //Console.WriteLine(entier_hello);
+            //byte[] tab = image.Convertir_Int_En_Tab_De_Byte(entier_hello, 3, 2, 11);
+            //Console.WriteLine(Convert.ToString(tab[0],2));
+            //Console.WriteLine(Convert.ToString(tab[1],2));
+
+
+            //byte[] Hello_byte = image.Convertir_Chaine_Char(Hello, 1);
+
+            //for (int i = 0; i < Hello_byte.Length; i++)
             //{
-            //    Console.WriteLine(Convert.ToString(Hello_byte[i], 2));
+            //    Console.WriteLine(Hello_byte[i]);
             //}
             int[] masque = {1,1,1,0,1,1,1,1,1,0,0,0,1,0,0};
             image.QRCode(2,masque).ToFile("QRCode","bmp");
@@ -212,6 +217,9 @@ namespace TD_1
             Process.Start("QRCode.bmp");
             Process.Start("QRGRAND.bmp");
             Console.ReadLine();
+
+
+
         }
     }
 }

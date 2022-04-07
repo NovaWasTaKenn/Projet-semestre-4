@@ -153,9 +153,9 @@ namespace AppProjetSemestre4
                     traitements["Le"] = false;
                     Le.Background = Bckbrush_Autres1;
                     traitements["Cry"] = false;
-                    Cry.Background = Bckbrush_Autres1;
-                    traitements["Dcr"] = false;
-                    Dcr.Background = Bckbrush_Autres1;
+                    //Cry.Background = Bckbrush_Autres1;
+                    //traitements["Dcr"] = false;
+                    //Dcr.Background = Bckbrush_Autres1;
                     break;
                 case "Ro":
                     
