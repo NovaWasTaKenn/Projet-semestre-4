@@ -372,6 +372,24 @@ namespace TD_1
             return retour;
         }
 
+        #region Utilisation de BitConverter
+        //public int Convertir_Endian_To_Int32(byte[] tab)
+        //{
+        //    tab.Reverse<byte>();
+        //    return BitConverter.ToInt32(tab, 0);
+        //}
+        //public int Convertir_Endian_To_Int16(byte[] tab)
+        //{
+        //    tab.Reverse<byte>();
+        //    return BitConverter.ToInt16(tab, 0);
+        //}
+        //public byte[] Convertir_Int_To_Endian(int nb)
+        //{
+        //    byte[] retour = BitConverter.GetBytes(nb);
+        //    retour.Reverse<byte>();
+        //    return retour;
+        //}
+        #endregion
 
         public int Convertir_Endian_To_Int(byte[] tab)
         {            
@@ -450,9 +468,28 @@ namespace TD_1
             int[] binaire = new int[8];
             for (int i = 0; i < binaire.Length; i++)
             {
-                if (nb - Puissance(2, binaire.Length - 1 - i) >= 0)
+                    if(nb - Puissance(2, binaire.Length - 1 - i) >= 0)
+                    {
+                        binaire[i] = 1;
+                    }
+            }
+            return binaire;
+        }
+
+        public string ConvertirInt_To_stringBinaire(int nb)
+        {
+            string binaire = "";
+            for (int i = 0; i < 8; i++)
+            {
+                if (nb - Puissance(2, 7 - i) >= 0)
                 {
-                    binaire[i] = 1;
+                    nb -= Puissance(2, 7 - i);
+                    binaire += '1';
+                }
+
+                else
+                {
+                    binaire += '0';
                 }
             }
             return binaire;
@@ -461,16 +498,38 @@ namespace TD_1
         public int ConvertirBinaire_To_Int(int[] binaire)
         {
             int retour = 0;
-            for (int i = 0; i < binaire.Length; i++)
+            for(int i = 0; i < binaire.Length; i++)
             {
-                if (binaire[i] == 1)
-                {
+                if(binaire[i] == 1)
+                { 
                     retour += Puissance(2, binaire.Length - 1 - i);
                 }
             }
 
             return retour;
         }
+        public bool[] Convertir_Int_to_Bool_Tab_9(int nb, int taille)
+        {
+            bool[] binaire = new bool[taille];
+            for (int i = 0; i < binaire.Length; i++)
+            {
+                int puissance = Puissance(2, binaire.Length - 1 - i);
+                if (nb - puissance >= 0)
+                {
+                    binaire[i] = true;
+                    nb -= puissance;
+                }
+
+                else
+                {
+                    binaire[i] = false;
+                }
+            }
+
+            
+            return binaire;
+        }
+
         #endregion
 
         #region TD 3
@@ -1289,7 +1348,7 @@ namespace TD_1
             }
 
             int multi = 3;
-            MyImage histogramme = new MyImage(this, this.height * 10 + 1, 256 * multi + 1);
+            MyImage histogramme = new MyImage(max_pixel + 1, 256 * multi + 1);
             for (int i = 0; i < histogramme.height; i++)
             {
                 for (int j = 0; j < histogramme.width; j++)
@@ -1413,9 +1472,9 @@ namespace TD_1
             return retour;
         }
 
-        public MyImage DecoderImageCachee(MyImage imagecachee)
+        public MyImage DecoderImageCachee()
         {
-            MyImage doubleimage = new MyImage(imagecachee.height, imagecachee.width * 2);
+            MyImage doubleimage = new MyImage(this.height, this.width * 2);
             for (int i = 0; i < doubleimage.height; i++)
             {
                 for (int j = 0; j < doubleimage.width; j++)
@@ -1435,13 +1494,13 @@ namespace TD_1
             int[] binaire = new int[8];
             int pixelNumber = 0;
 
-            for (int i = 0; i < imagecachee.height; i++)
+            for (int i = 0; i < this.height; i++)
             {
-                for (int j = 0; j < imagecachee.width; j++)
+                for (int j = 0; j < this.width; j++)
                 {
 
                     //Pixel Rouge
-                    binaire = ConvertirInt_To_Binaire(imagecachee.image[i, j].R);
+                    binaire = ConvertirInt_To_Binaire(this.image[i, j].R);
                     for (int index = 0; index < binaire.Length / 2; index++)
                     {
                         binaireR1[index] = binaire[index];
@@ -1460,9 +1519,9 @@ namespace TD_1
 
                     //Deuxième Image
                     pixelNumber = ConvertirBinaire_To_Int(binaireR2);
-                    doubleimage.image[i, j + imagecachee.width].R = pixelNumber;
+                    doubleimage.image[i, j + this.width].R = pixelNumber;
 
-                    binaire = ConvertirInt_To_Binaire(imagecachee.image[i, j].G);
+                    binaire = ConvertirInt_To_Binaire(this.image[i, j].G);
 
                     for (int index = 0; index < binaire.Length / 2; index++)
                     {
@@ -1482,11 +1541,11 @@ namespace TD_1
 
                     //Deuxième Image
                     pixelNumber = ConvertirBinaire_To_Int(binaireG2);
-                    doubleimage.image[i, j + imagecachee.width].G = pixelNumber;
+                    doubleimage.image[i, j + this.width].G = pixelNumber;
 
 
                     //Pixel Bleu
-                    binaire = ConvertirInt_To_Binaire(imagecachee.image[i, j].B);
+                    binaire = ConvertirInt_To_Binaire(this.image[i, j].B);
 
                     for (int index = 0; index < binaire.Length / 2; index++)
                     {
@@ -1506,7 +1565,7 @@ namespace TD_1
 
                     //Deuxième Image
                     pixelNumber = ConvertirBinaire_To_Int(binaireB2);
-                    doubleimage.image[i, j + imagecachee.width].B = pixelNumber;
+                    doubleimage.image[i, j + this.width].B = pixelNumber;
 
                 }
             }
@@ -1555,6 +1614,7 @@ namespace TD_1
                     break;
                 case ':':
                     return 44;
+                    break;
                 default:
                     if ((int)c >= 55)
                     {
@@ -1661,7 +1721,9 @@ namespace TD_1
 
                         if (8 - remplissage_Octet_Chaine_Finale < reste_Bytes_Couple_Char)
                         {
-                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale; remplissage_Octet_Chaine_Finale = 0; j++;
+                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale; 
+                            remplissage_Octet_Chaine_Finale = 0; 
+                            j++;
                         }
                         else { remplissage_Octet_Chaine_Finale = reste_Bytes_Couple_Char; reste_Bytes_Couple_Char = 0; }
                     }
@@ -1780,132 +1842,36 @@ namespace TD_1
             }
             #endregion
 
-            #region ECC
-            byte[] bytes_ECC = ReedSolomon.ReedSolomonAlgorithm.Encode(chaine_non_ECC, 7, ReedSolomon.ErrorCorrectionCodeType.QRCode);
-            byte[] chaine_finale_ECC = chaine_non_ECC.Concat<byte>(bytes_ECC).ToArray();
-            #endregion
-
-
-
-
-            return chaine_finale_ECC;
+            return chaine_non_ECC;
         }
 
-        public MyImage QRCode(int version, int[] masquage)
+        public MyImage QRCode(int version, int[] masquage, byte[] donnee, bool masque)
         {
-            MyImage retour = new MyImage(25, 25);
-            int[,] matricebinaire;
-            for (int i = 0; i < 25; i++)
-            {
-                for (int j = 0; j < 25; j++)
-                {
-                    retour.image[i, j] = new Pixel(255, 0, 0);
-                }
-            }
+            MyImage retour = new MyImage(0, 0);
+            string donnee_binaire = "";
 
             if (version == 1)
             {
-                matricebinaire = new int[21, 21];
+                retour = new MyImage(21, 21);
+                byte[] bytes_ECC = ReedSolomon.ReedSolomonAlgorithm.Encode(donnee, 7, ReedSolomon.ErrorCorrectionCodeType.QRCode);
+                byte[] chaine_finale_ECC = donnee.Concat<byte>(bytes_ECC).ToArray();
 
-                for (int i = 0; i < 7; i++)
+                for(int indexchaine = 0; indexchaine < chaine_finale_ECC.Length; indexchaine++)
                 {
-                    for (int j = 0; j < 7; j++)
-                    {
-                        if (j == 1)
-                        {
-                            for (int l = 1; l < 6; l++)
-                            {
-
-                                retour.image[l, j] = new Pixel(255, 255, 255);
-                                retour.image[l, retour.width - 1 - j] = new Pixel(255, 255, 255);
-                                retour.image[retour.height - 1 - l, j] = new Pixel(255, 255, 255);
-
-                                retour.image[j, l] = new Pixel(255, 255, 255);
-                                retour.image[retour.width - 1 - j, l] = new Pixel(255, 255, 255);
-                                retour.image[j, retour.height - 1 - l] = new Pixel(255, 255, 255);
-
-                                retour.image[l, j + 4] = new Pixel(255, 255, 255);
-                                retour.image[l, retour.width - 1 - j - 4] = new Pixel(255, 255, 255);
-                                retour.image[retour.height - 1 - l, j + 4] = new Pixel(255, 255, 255);
-
-                                retour.image[j + 4, l] = new Pixel(255, 255, 255);
-                                retour.image[retour.width - 1 - j - 4, l] = new Pixel(255, 255, 255);
-                                retour.image[j + 4, retour.height - 1 - l] = new Pixel(255, 255, 255);
-                            }
-                        }
-
-                        retour.image[i, j] = new Pixel(0, 0, 0);
-                        retour.image[i, retour.width - 1 - j] = new Pixel(0, 0, 0);
-                        retour.image[retour.height - 1 - i, j] = new Pixel(0, 0, 0);
-                    }
+                    donnee_binaire += ConvertirInt_To_stringBinaire(Convert.ToInt32(chaine_finale_ECC[indexchaine]));
                 }
-
-                for (int i = 0; i < 8; i++)
-                {
-                    retour.image[i, 7] = new Pixel(255, 255, 255);
-                    retour.image[i, retour.width - 1 - 7] = new Pixel(255, 255, 255);
-                    retour.image[retour.height - 1 - i, 7] = new Pixel(255, 255, 255);
-
-                    retour.image[7, i] = new Pixel(255, 255, 255);
-                    retour.image[7, retour.width - 1 - i] = new Pixel(255, 255, 255);
-                    retour.image[retour.height - 1 - 7, i] = new Pixel(255, 255, 255);
-                }
-
-
-
-                for (int j = 8; j < retour.width - 8; j++)
-                {
-                    if (j % 2 == 0)
-                    {
-                        retour.image[6, j] = new Pixel(0, 0, 0);
-                        retour.image[j, 6] = new Pixel(0, 0, 0);
-                    }
-
-                    else
-                    {
-                        retour.image[6, j] = new Pixel(255, 255, 255);
-                        retour.image[j, 6] = new Pixel(255, 255, 255);
-                    }
-                }
-
-                retour.image[retour.height - 8, 8] = new Pixel(0, 0, 0);
             }
 
             if (version == 2)
             {
-                //retour = MyImage(25,25);
-                for (int i = 0; i < 7; i++)
+                retour = new MyImage(25, 25);
+                byte[] bytes_ECC = ReedSolomon.ReedSolomonAlgorithm.Encode(donnee, 10, ReedSolomon.ErrorCorrectionCodeType.QRCode);
+                byte[] chaine_finale_ECC = donnee.Concat<byte>(bytes_ECC).ToArray();
+
+                for (int indexchaine = 0; indexchaine < chaine_finale_ECC.Length; indexchaine++)
                 {
-                    for (int j = 0; j < 7; j++)
-                    {
-                        if (j == 1)
-                        {
-                            for (int l = 1; l < 6; l++)
-                            {
-                                retour.image[l, j] = new Pixel(255, 255, 255);
-                                retour.image[l, retour.width - 1 - j] = new Pixel(255, 255, 255);
-                                retour.image[retour.height - 1 - l, j] = new Pixel(255, 255, 255);
-
-                                retour.image[j, l] = new Pixel(255, 255, 255);
-                                retour.image[retour.width - 1 - j, l] = new Pixel(255, 255, 255);
-                                retour.image[j, retour.height - 1 - l] = new Pixel(255, 255, 255);
-
-                                retour.image[l, j + 4] = new Pixel(255, 255, 255);
-                                retour.image[l, retour.width - 1 - j - 4] = new Pixel(255, 255, 255);
-                                retour.image[retour.height - 1 - l, j + 4] = new Pixel(255, 255, 255);
-
-                                retour.image[j + 4, l] = new Pixel(255, 255, 255);
-                                retour.image[retour.width - 1 - j - 4, l] = new Pixel(255, 255, 255);
-                                retour.image[j + 4, retour.height - 1 - l] = new Pixel(255, 255, 255);
-                            }
-                        }
-
-                        retour.image[i, j] = new Pixel(0, 0, 0);
-                        retour.image[i, retour.width - 1 - j] = new Pixel(0, 0, 0);
-                        retour.image[retour.height - 1 - i, j] = new Pixel(0, 0, 0);
-                    }
+                    donnee_binaire += ConvertirInt_To_stringBinaire(Convert.ToInt32(chaine_finale_ECC[indexchaine]));
                 }
-
 
                 for (int i = -2; i < 3; i++)
                 {
@@ -1925,18 +1891,6 @@ namespace TD_1
 
                 retour.image[18, 18] = new Pixel(0, 0, 0);
 
-                for (int i = 0; i < 8; i++)
-                {
-                    retour.image[i, 7] = new Pixel(255, 255, 255);
-                    retour.image[i, retour.width - 1 - 7] = new Pixel(255, 255, 255);
-                    retour.image[retour.height - 1 - i, 7] = new Pixel(255, 255, 255);
-
-                    retour.image[7, i] = new Pixel(255, 255, 255);
-                    retour.image[7, retour.width - 1 - i] = new Pixel(255, 255, 255);
-                    retour.image[retour.height - 1 - 7, i] = new Pixel(255, 255, 255);
-                }
-
-
                 for (int j = 8; j < retour.width - 8; j++)
                 {
                     if (j % 2 == 0)
@@ -1953,8 +1907,76 @@ namespace TD_1
                 }
 
                 retour.image[retour.height - 8, 8] = new Pixel(0, 0, 0);
+
+                donnee_binaire += "00000000";
             }
 
+            #region Remplissage des coins
+            for (int i = 0; i < 7; i++)
+            {
+                for (int j = 0; j < 7; j++)
+                {
+                    if (j == 1)
+                    {
+                        for (int l = 1; l < 6; l++)
+                        {
+
+                            retour.image[l, j] = new Pixel(255, 255, 255);
+                            retour.image[l, retour.width - 1 - j] = new Pixel(255, 255, 255);
+                            retour.image[retour.height - 1 - l, j] = new Pixel(255, 255, 255);
+
+                            retour.image[j, l] = new Pixel(255, 255, 255);
+                            retour.image[retour.width - 1 - j, l] = new Pixel(255, 255, 255);
+                            retour.image[j, retour.height - 1 - l] = new Pixel(255, 255, 255);
+
+                            retour.image[l, j + 4] = new Pixel(255, 255, 255);
+                            retour.image[l, retour.width - 1 - j - 4] = new Pixel(255, 255, 255);
+                            retour.image[retour.height - 1 - l, j + 4] = new Pixel(255, 255, 255);
+
+                            retour.image[j + 4, l] = new Pixel(255, 255, 255);
+                            retour.image[retour.width - 1 - j - 4, l] = new Pixel(255, 255, 255);
+                            retour.image[j + 4, retour.height - 1 - l] = new Pixel(255, 255, 255);
+                        }
+                    }
+
+                    retour.image[i, j] = new Pixel(0, 0, 0);
+                    retour.image[i, retour.width - 1 - j] = new Pixel(0, 0, 0);
+                    retour.image[retour.height - 1 - i, j] = new Pixel(0, 0, 0);
+                }
+            }
+
+            for (int i = 0; i < 8; i++)
+            {
+                retour.image[i, 7] = new Pixel(255, 255, 255);
+                retour.image[i, retour.width - 1 - 7] = new Pixel(255, 255, 255);
+                retour.image[retour.height - 1 - i, 7] = new Pixel(255, 255, 255);
+
+                retour.image[7, i] = new Pixel(255, 255, 255);
+                retour.image[7, retour.width - 1 - i] = new Pixel(255, 255, 255);
+                retour.image[retour.height - 1 - 7, i] = new Pixel(255, 255, 255);
+            }
+
+
+
+            for (int j = 8; j < retour.width - 8; j++)
+            {
+                if (j % 2 == 0)
+                {
+                    retour.image[6, j] = new Pixel(0, 0, 0);
+                    retour.image[j, 6] = new Pixel(0, 0, 0);
+                }
+
+                else
+                {
+                    retour.image[6, j] = new Pixel(255, 255, 255);
+                    retour.image[j, 6] = new Pixel(255, 255, 255);
+                }
+            }
+
+            retour.image[retour.height - 8, 8] = new Pixel(0, 0, 0);
+            #endregion
+
+            #region information (masque, erreur, etc...)
             for (int index = 0; index < masquage.Length; index++)
             {
                 if (index < masquage.Length / 2)
@@ -2023,11 +2045,378 @@ namespace TD_1
                     }
                 }
             }
+            #endregion
+
+            bool libre; //Savoir si la case est libre ou non 
+            int indexchainebinaire = 0;//Index de la chaine de donnée
+            int sens = 0; //Pour connaitre si c'est vers le haut ou vers le bas
+
+            #region Remplissage du QRCode Sans Masque
+            if (masque == false)
+            {
+           
+                for (int j = retour.width - 1; j >= 0; j -= 2)
+                {
+                    if (j == 6)
+                    {
+                        j--;
+                    }
+
+                    if (sens % 2 == 0)
+                    {
+                        for (int i = retour.height - 1; i >= 0; i--)
+                    {
+                            libre = true;
+                            while (libre)
+                            {
+                            
+                                if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
+                                {
+
+                                }
+
+                                else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                {
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+
+                                    }
+                                }
+
+                                else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+
+                                    }
+                                }
+
+                                else
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+
+                                        if (donnee_binaire[indexchainebinaire] == '1')
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                            indexchainebinaire++;
+                                        }
+
+                                        else
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                            indexchainebinaire++;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+
+                                        if (donnee_binaire[indexchainebinaire] == '1')
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                            indexchainebinaire++;
+                                        }
+
+                                        else
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                            indexchainebinaire++;
+                                        }
+                                    }
+                                }                           
+                                libre = false;
+                            }
+                        }
+                    }
+
+                    if (sens % 2 != 0)
+                    {
+                        for (int i = 0; i < retour.height; i++)
+                        {
+                            libre = true;
+                            while (libre)
+                            {                                
+                                if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
+                                {
+
+                                }
+
+                                else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+                                    }
+                                }
+
+                                else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+
+                                    }
+                                }
+
+                                else
+                                {
+
+                                    if (donnee_binaire[indexchainebinaire] == '1')
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                        indexchainebinaire++;
+
+                                        if (donnee_binaire[indexchainebinaire] == '0')
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                            indexchainebinaire++;
+                                        }
+
+                                        else
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                            indexchainebinaire++;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                        indexchainebinaire++;
+
+                                        if (donnee_binaire[indexchainebinaire] == '1')
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                            indexchainebinaire++;
+                                        }
+
+                                        else
+                                        {
+                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                            indexchainebinaire++;
+                                        }
+                                    }
+                                }                                                               
+                                libre = false;
+                            }
+                        }
+                    }
+                    sens++;              
+                }
+                
+            }
+            #endregion
+
+            #region Remplissage du QRCode Avec Masque
+            else
+            {
+                int bitmasque = 0;
+                //Ajouter le masque avec la méthode modulo à la place d'un XOR
+                for (int j = retour.width - 1; j >= 0; j -= 2)
+                {
+                    if(j == 6)
+                    {
+                        j--;
+                    }
+
+                    if (sens % 2 == 0)
+                    {
+                        for (int i = retour.height - 1; i >= 0; i--)
+                        {
+                            bitmasque = (i + j) % 2;
+                            libre = true;
+                            while (libre)
+                            {                        
+                                if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
+                                {
+
+                                }
+
+                                else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                {
+                                    bitmasque = (i + (j - 1)) % 2;
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                    }
+
+                                    indexchainebinaire++;
+                                }
+
+                                else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
+                                {
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                    }
+
+                                    indexchainebinaire++;
+                                }
+
+                                else
+                                {
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j] = new Pixel(0, 0, 0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255, 255, 255);
+                                    }
+                                    indexchainebinaire++;
+
+                                    bitmasque = (i + (j - 1)) % 2;
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(0, 0, 0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                    }
+
+                                    indexchainebinaire++;
+                                }                                                            
+                                libre = false;
+                            }
+                        }
+                    }
+
+                    if (sens % 2 != 0)
+                    {
+                        for (int i = 0; i < retour.height; i++)
+                        {
+                            bitmasque = (i + j) % 2;
+                            libre = true;
+                            while (libre)
+                            {                                
+                                if (retour.image[i, j] != null && retour.image[i, j - 1] != null)
+                                {
+
+                                }
+
+                                else if (retour.image[i, j] != null && retour.image[i, j - 1] == null)
+                                {
+                                    bitmasque = (i + (j - 1)) % 2;
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(0,0,0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255, 255, 255);
+                                    }
+                                    indexchainebinaire++;
+                                }
+
+                                else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
+                                {
+
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j] = new Pixel(0,0,0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255,255,255) ;
+                                    }
+                                    indexchainebinaire++;
+                                }
+
+                                else
+                                {
+
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j] = new Pixel(0,0,0) ;
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j] = new Pixel(255,255,255);
+                                    }
+                                    indexchainebinaire++;
+
+                                    bitmasque = (i + (j - 1)) % 2;
+                                    if ((Convert.ToInt32(donnee_binaire[indexchainebinaire] + bitmasque) % 2 == 0))
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(0,0,0);
+                                    }
+
+                                    else
+                                    {
+                                        retour.image[i, j - 1] = new Pixel(255,255,255);
+                                    }
+
+                                    indexchainebinaire++;
+                                }                                                            
+                                libre = false;
+                            }
+                        }
+                    }
+                    sens++;
+                }
+            }
+            #endregion
 
             return retour;
         }
 
         #endregion
-
     }
 }

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TD 1", "TD 1\TD 1.csproj", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppProjetSemestre4", "AppProjetSemestre4\AppProjetSemestre4.csproj", "{23F8D3D6-7F66-4542-839E-48C9B7C1C162}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp2", "..\..\..\Downloads\UtilisationReedSolomon\UtilisationReedSolomon\ConsoleApp2\ConsoleApp2.csproj", "{F771F2E7-E324-4349-9BFC-7ED19FAE116E}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7189F4BB-7008-4232-A402-9A3A34BE6F1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{23F8D3D6-7F66-4542-839E-48C9B7C1C162}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{23F8D3D6-7F66-4542-839E-48C9B7C1C162}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{23F8D3D6-7F66-4542-839E-48C9B7C1C162}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F771F2E7-E324-4349-9BFC-7ED19FAE116E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F771F2E7-E324-4349-9BFC-7ED19FAE116E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F771F2E7-E324-4349-9BFC-7ED19FAE116E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F771F2E7-E324-4349-9BFC-7ED19FAE116E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

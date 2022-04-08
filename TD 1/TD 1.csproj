@@ -45,19 +45,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GenericGF.cs" />
+    <Compile Include="GenericGFPoly.cs" />
     <Compile Include="MyImage.cs" />
     <Compile Include="Pixel.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReedSolomonAlgorithm.cs" />
+    <Compile Include="ReedSolomonDecoder.cs" />
+    <Compile Include="ReedSolomonEncoder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Downloads\UtilisationReedSolomon\UtilisationReedSolomon\ConsoleApp2\ConsoleApp2.csproj">
-      <Project>{f771f2e7-e324-4349-9bfc-7ed19fae116e}</Project>
-      <Name>ConsoleApp2</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

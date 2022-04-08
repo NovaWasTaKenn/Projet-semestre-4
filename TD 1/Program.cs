@@ -133,7 +133,7 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
-            string name = "tour eiffel.bmp";
+            string name = "fleur.bmp";
             MyImage image = new MyImage(name);
     
             Console.WriteLine("Type de l'image : "+image.Type);
@@ -160,7 +160,7 @@ namespace TD_1
             int[,] Flou = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
 
             image.Convolution(Flou, 9).ToFile("TestConvo.bmp");
-            Process.Start("TestConvo.bmp");
+            //Process.Start("TestConvo.bmp");
 
             //image.Flou(Flou, 15).ToFile("TestBords","bmp");
 
@@ -193,7 +193,8 @@ namespace TD_1
 
             //bool[] tab = { false, false, false, false, false, true, false, true, true };
 
-            //string Hello = "HELLO WORLD";
+            string Hello = "AAAAAAAAAAAAAAAAAAAAAAAA";
+            Console.Write(Hello.Length);
 
             //int entier_hello = 45*image.Convertir_Char_En_Int('H')+image.Convertir_Char_En_Int('E');
             //Console.WriteLine(entier_hello);
@@ -202,12 +203,24 @@ namespace TD_1
             //Console.WriteLine(Convert.ToString(tab[1],2));
 
 
-            //byte[] Hello_byte = image.Convertir_Chaine_Char(Hello, 1);
+            byte[] Hello_byte = image.Convertir_Chaine_Char(Hello, 2);
 
-            //for (int i = 0; i < Hello_byte.Length; i++)
-            //{
-            //    Console.WriteLine(Hello_byte[i]);
-            //}
+            /*for (int i = 0; i < Hello_byte.Length; i++)
+            {
+                Console.WriteLine(Hello_byte[i]);
+            }*/
+           
+
+            int[] masque= {1,1,1,0,1,1,1,1,1,0,0,0,1,0,0};
+            image.QRCode(2, masque, Hello_byte, false).ToFile("QRCodeSansMasque","bmp");
+            image.QRCode(2, masque, Hello_byte, true).ToFile("QRCodeAvecMasque", "bmp");
+            MyImage qrcode = new MyImage("QRCodeSansMasque.bmp");
+            MyImage qr = new MyImage("QRCodeAvecMasque.bmp");
+            qrcode.Aggrandir(10).ToFile("QRGrandSansMasque","bmp");
+            qr.Aggrandir(10).ToFile("QRGrandAvecMasque", "bmp");
+            //Process.Start("QRCode.bmp");
+            Process.Start("QRGrandSansMasque.bmp");
+            Process.Start("QRGrandAvecMasque.bmp");
             Console.ReadLine();
 
 
