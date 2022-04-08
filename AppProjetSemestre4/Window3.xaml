@@ -1,20 +1,18 @@
-﻿<Window x:Class="AppProjetSemestre4.Window1"
+﻿<Window x:Class="AppProjetSemestre4.Window3"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppProjetSemestre4"
         mc:Ignorable="d"
-        Title="Window1" 
-        Height="350" Width="275" 
+        Title="Window2" Height="350" Width="275"
         Background="#FF828282"
         WindowStyle="None"
-        MouseDown="Window1_MouseDown"
+        MouseDown="Window3_MouseDown"
         >
-    <!--Essayer d'arrondir la fenêtre avec un template-->
-    <!--Vérifier que tt est centré 
-    ajouter la possibilité de drag la fenêtre-->
     <Window.Resources>
+
+
         <Style x:Key="ButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="#FF828282"/>
             <Setter Property="Foreground" Value="White"/>
@@ -29,34 +27,29 @@
         </Style>
 
         <ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
-            <Border  CornerRadius="6" Padding="7" Background="{TemplateBinding Background}">
+            <Border Width="Auto" Height="Auto" CornerRadius="6" Padding="7" Background="{TemplateBinding Background}">
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
         </ControlTemplate>
-    </Window.Resources>
 
+
+    </Window.Resources>
     <Grid Background="#FF222222" Margin="10,10,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="133*" />
-            <RowDefinition Height="133*"/>
+            <RowDefinition Height="188*" />
+            <RowDefinition Height="20*"/>
             <RowDefinition Height="65*"/>
         </Grid.RowDefinitions>
-
+        
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-            <Label Content="Angle de rotation en degrés" Foreground="White" FontSize="14"/>
-            <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,0,0">
-                <TextBox x:Name ="TbxAngle" Background="#FF4B4B4B" Foreground="White"/>
+            <TextBlock Text="Image à traiter" Foreground="White" Margin="5,2,0,0" FontSize="14" HorizontalAlignment="Center"/>
+            <Button Click="Image_Click" ClickMode="Press" Content="Parcourir" FontSize="14" Foreground="White" Margin="5,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Cliquez pour sélectionner une image dans le gestionnaire de fichiers" Cursor="Hand" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}"/>
+            <TextBlock Text="Image choisie" Foreground="White" Margin="5,35,0,0" FontSize="14" HorizontalAlignment="Center"/>
+            <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0">
+                <TextBlock x:Name ="TblCheminImage" Background="#FF4B4B4B" Foreground="White"/>
             </Border>
-
-        </StackPanel >
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
-            <Label Content="Sens de rotation" Foreground="White" FontSize="14"/>
-            <StackPanel Orientation="Horizontal">
-                <Button Click ="BtnSh_Click" ClickMode="Press" x:Name ="BtnSh" Content="Sens horaire" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,0"/>
-                <Button Click ="BtnSah_Click" ClickMode="Press" x:Name ="BtnSah" Content="Sens anti-horaire" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="15,5,0,0"/>
-            </StackPanel>
-
         </StackPanel>
+
         <Button x:Name ="BtnFermer" Click="BtnFermer_Click" ClickMode="Press" Grid.Row="2" Content ="Enregistrer et fermer" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </Window>

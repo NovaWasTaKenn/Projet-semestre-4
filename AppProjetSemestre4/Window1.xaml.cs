@@ -27,6 +27,7 @@ namespace AppProjetSemestre4
         {
             InitializeComponent();
         }
+
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
             MainWindow.Angle = Convert.ToDouble(TbxAngle.Text);
