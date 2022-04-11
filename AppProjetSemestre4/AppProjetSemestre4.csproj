@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft-WindowsAPICodePack-Shell" Version="1.1.4" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TD 1\TD 1.csproj" />
   </ItemGroup>
 

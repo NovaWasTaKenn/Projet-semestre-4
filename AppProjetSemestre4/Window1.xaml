@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:AppProjetSemestre4"
         mc:Ignorable="d"
         Title="Window1" 
-        Height="350" Width="275" 
+        Height="500" Width="275" 
         Background="#FF828282"
         WindowStyle="None"
         MouseDown="Window1_MouseDown"
@@ -37,19 +37,29 @@
 
     <Grid Background="#FF222222" Margin="10,10,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="133*" />
-            <RowDefinition Height="133*"/>
-            <RowDefinition Height="65*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Image à traiter" Foreground="White" Margin="5,2,0,0" FontSize="14" HorizontalAlignment="Center"/>
+            <Button Click="Image_Click" ClickMode="Press" Content="Parcourir" FontSize="14" Foreground="White" Margin="5,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Cliquez pour sélectionner une image dans le gestionnaire de fichiers" Cursor="Hand" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}"/>
+            <TextBlock Text="Image choisie" Foreground="White" Margin="5,15,0,0" FontSize="14" HorizontalAlignment="Center"/>
+            <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,10,0,0">
+                <TextBlock x:Name ="TblCheminImage" Background="#FF4B4B4B" Foreground="White"/>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Label Content="Angle de rotation en degrés" Foreground="White" FontSize="14"/>
             <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,0,0">
                 <TextBox x:Name ="TbxAngle" Background="#FF4B4B4B" Foreground="White"/>
             </Border>
 
         </StackPanel >
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" >
+        <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" >
             <Label Content="Sens de rotation" Foreground="White" FontSize="14"/>
             <StackPanel Orientation="Horizontal">
                 <Button Click ="BtnSh_Click" ClickMode="Press" x:Name ="BtnSh" Content="Sens horaire" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,0"/>
@@ -57,6 +67,6 @@
             </StackPanel>
 
         </StackPanel>
-        <Button x:Name ="BtnFermer" Click="BtnFermer_Click" ClickMode="Press" Grid.Row="2" Content ="Enregistrer et fermer" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button x:Name ="BtnFermer" Click="BtnFermer_Click" ClickMode="Press" Grid.Row="3" Content ="Enregistrer et fermer" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </Window>

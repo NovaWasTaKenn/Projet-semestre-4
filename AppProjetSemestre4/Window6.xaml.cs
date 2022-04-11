@@ -21,6 +21,7 @@ namespace AppProjetSemestre4
         public Window6()
         {
             InitializeComponent();
+            TblCheminImage2.Text = MainWindow.ImagePath;
 
         }
         public void Image_Click(object sender, RoutedEventArgs e)
@@ -35,8 +36,20 @@ namespace AppProjetSemestre4
 
             mainWindow.ImageBox.Source = new BitmapImage(new Uri(MainWindow.ImagePath));
         }
+
+        public void Cachée_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = (MainWindow)Owner;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                MainWindow.ImageCachéePath = openFileDialog.FileName;
+            }
+        }
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
+            this.Owner = null;
             this.Close();
         }
         public void Window2_MouseDown(object sender, MouseButtonEventArgs e)

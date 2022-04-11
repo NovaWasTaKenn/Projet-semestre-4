@@ -21,6 +21,7 @@ namespace AppProjetSemestre4
         public Window3()
         {
             InitializeComponent();
+            TblCheminImage.Text = MainWindow.ImagePath;
         }
         public void Image_Click(object sender, RoutedEventArgs e)
         {
@@ -33,6 +34,7 @@ namespace AppProjetSemestre4
             }
 
             mainWindow.ImageBox.Source = new BitmapImage(new Uri(MainWindow.ImagePath));
+            TblCheminImage.Text = MainWindow.ImagePath;
         }
         public void Window3_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -40,6 +42,7 @@ namespace AppProjetSemestre4
         }
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
+            this.Owner = null;
             this.Close();
         }
     }

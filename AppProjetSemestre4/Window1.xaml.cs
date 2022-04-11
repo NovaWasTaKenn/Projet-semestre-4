@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -26,10 +27,26 @@ namespace AppProjetSemestre4
         public Window1()
         {
             InitializeComponent();
+            TblCheminImage.Text = MainWindow.ImagePath;
+        }
+
+        public void Image_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = (MainWindow)Owner;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                MainWindow.ImagePath = openFileDialog.FileName;
+            }
+
+            mainWindow.ImageBox.Source = new BitmapImage(new Uri(MainWindow.ImagePath));
+            TblCheminImage.Text = MainWindow.ImagePath;
         }
 
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
+            this.Owner = null;
             MainWindow.Angle = Convert.ToDouble(TbxAngle.Text);
             MainWindow.Sens = sh;
             this.Close();
@@ -50,12 +67,12 @@ namespace AppProjetSemestre4
             BtnSh.Background = Bckbrush;
             Color Brdcolor = Color.FromArgb(255, 130, 130, 130);
             SolidColorBrush Brdbrush = new SolidColorBrush(Brdcolor);
-            BtnSh.BorderBrush = Brdbrush;
+            //BtnSh.BorderBrush = Brdbrush;
 
             Color Bckcolor_Sah = Color.FromArgb(255, 75, 75, 75);
             SolidColorBrush Bckbrush_Sah = new SolidColorBrush(Bckcolor_Sah);
-            BtnSah.Background = Bckbrush_Sah;
-            BtnSah.BorderBrush = Brushes.Transparent;
+            BtnSah.Background = Brdbrush;
+            //BtnSah.BorderBrush = Brushes.Transparent;
 
         }
         public void BtnSah_Click(object sender, RoutedEventArgs e)
@@ -74,12 +91,12 @@ namespace AppProjetSemestre4
             BtnSah.Background = Bckbrush;
             Color Brdcolor = Color.FromArgb(255, 130, 130, 130);
             SolidColorBrush Brdbrush = new SolidColorBrush(Brdcolor);
-            BtnSah.BorderBrush = Brdbrush;
+            //BtnSah.BorderBrush = Brdbrush;
 
             Color Bckcolor_Sh = Color.FromArgb(255, 75, 75, 75);
             SolidColorBrush Bckbrush_Sh = new SolidColorBrush(Bckcolor_Sh);
-            BtnSh.Background = Bckbrush_Sh;
-            BtnSh.BorderBrush = Brushes.Transparent;
+            BtnSh.Background = Brdbrush;
+            //BtnSh.BorderBrush = Brushes.Transparent;
 
         }
         public void Window1_MouseDown(object sender, MouseButtonEventArgs e)

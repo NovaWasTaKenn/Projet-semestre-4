@@ -5,8 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppProjetSemestre4"
         mc:Ignorable="d"
-        Title="Window4" Height="450" Width="800">
-    <Grid>
-        
+        Title="Window4" Height="300" Width="275"
+        Background="#FF828282"
+        WindowStyle="None"
+        MouseDown="Window2_MouseDown"
+        >
+    <Window.Resources>
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#FF828282"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="FontWeight" Value="Medium"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <ControlTemplate x:Key="ButtonTemplate" TargetType="Button">
+            <Border Width="Auto" Height="Auto" CornerRadius="6" Padding="7" Background="{TemplateBinding Background}">
+                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+        </ControlTemplate>
+    </Window.Resources>
+
+    <Grid Background="#FF222222" Margin="10,10,10,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="7*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Dossier de sortie des images" Foreground="White" Margin="5,2,0,0" FontSize="14" HorizontalAlignment="Center"/>
+            <Button Click="Save_Click" ClickMode="Press" Content="Parcourir" FontSize="14" Margin="5,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Cliquez pour sélectionner le dossier dans lequel les résultats des traitements seront suavegardés" Cursor="Hand" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}"/>
+            <TextBlock Text="Dossier choisi"  Foreground="White" Margin="5,10,0,0" FontSize="14" HorizontalAlignment="Center"/>
+            <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0">
+                <TextBlock x:Name ="TblCheminImage" TextWrapping="Wrap" Background="#FF4B4B4B" Foreground="White"/>
+            </Border>
+        </StackPanel>
+
+
+        <Button x:Name ="BtnFermer" Click="BtnFermer_Click" ClickMode="Press" Grid.Row="2" Content ="Enregistrer et Fermer" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
     </Grid>
 </Window>

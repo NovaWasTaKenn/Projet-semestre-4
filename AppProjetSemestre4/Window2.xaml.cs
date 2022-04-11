@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Win32;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -20,10 +21,26 @@ namespace AppProjetSemestre4
         public Window2()
         {
             InitializeComponent();
+            TblCheminImage.Text = MainWindow.ImagePath;
+        }
+
+        public void Image_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = (MainWindow)Owner;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                MainWindow.ImagePath = openFileDialog.FileName;
+            }
+
+            mainWindow.ImageBox.Source = new BitmapImage(new Uri(MainWindow.ImagePath));
+            TblCheminImage.Text = MainWindow.ImagePath;
         }
 
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
+            this.Owner = null;
             MainWindow.Pourcent_AeR = Convert.ToInt32(TbxPourcent.Text);
             this.Close();
         }

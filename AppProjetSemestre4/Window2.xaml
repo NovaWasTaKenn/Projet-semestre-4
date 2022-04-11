@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AppProjetSemestre4"
         mc:Ignorable="d"
-        Title="Window2" Height="350" Width="275"
+        Title="Window2" Height="400" Width="275"
         Background="#FF828282"
         WindowStyle="None"
         MouseDown="Window2_MouseDown"
@@ -33,12 +33,21 @@
 
     <Grid Background="#FF222222" Margin="10,10,10,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="188*" />
-            <RowDefinition Height="65*"/>
-            <RowDefinition Height="65*"/>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <TextBlock Text="Image à traiter" Foreground="White" Margin="5,2,0,0" FontSize="14" HorizontalAlignment="Center"/>
+            <Button Click="Image_Click" ClickMode="Press" Content="Parcourir" FontSize="14" Foreground="White" Margin="5,10,0,0" HorizontalAlignment="Center" VerticalAlignment="Top" ToolTip="Cliquez pour sélectionner une image dans le gestionnaire de fichiers" Cursor="Hand" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}"/>
+            <TextBlock Text="Image choisie" Foreground="White" Margin="5,10,0,0" FontSize="14" HorizontalAlignment="Center"/>
+            <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0">
+                <TextBlock x:Name ="TblCheminImage" Background="#FF4B4B4B" Foreground="White"/>
+            </Border>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <TextBlock Text="Pourcentage de la taille  originale" TextWrapping="WrapWithOverflow" TextAlignment="Center" Foreground="White" FontSize="14"/>
             <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,5,0,0">
                 <TextBox x:Name ="TbxPourcent" Background="#FF4B4B4B" Foreground="White"/>

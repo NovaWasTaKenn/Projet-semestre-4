@@ -10,7 +10,6 @@
         Background="#FF4B4B4B"
         WindowStyle="None"
         MouseDown="MainWindow_MouseDown"
-        ResizeMode="NoResize"
     >
     <!--#region Ressources-->
     <Window.Resources>
@@ -48,12 +47,6 @@
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
                     <Setter Property="FontWeight" Value="Medium"/>
-                    <Setter Property="Background" Value="Aquamarine"/>
-                </Trigger>
-                <Trigger Property="IsPressed" Value="False">
-                    <Setter Property="Background" Value="ForestGreen"/>
-                    <Setter Property="FontSize" Value="30"/>
-                    <Setter Property="FontWeight" Value="Heavy"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -96,47 +89,20 @@
 
             <!--#region Grid Def-->
             <Grid.RowDefinitions>
-                <RowDefinition Height="70" />
-                <RowDefinition Height="70"/>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="220"/>
-                <RowDefinition Height="Auto" />
+                <RowDefinition Height="5*" />
+                <RowDefinition Height="90*"/>
+                <RowDefinition Height="5*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="20"/>
-                <ColumnDefinition Width="285" />
-                <ColumnDefinition Width="90"/>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="20*" />
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="35*" />
+                <ColumnDefinition Width="2*" />
             </Grid.ColumnDefinitions>
             <!--#endregion-->
-            
-            <!--#region Liste menu-->
-            <!--<Border Grid.Row="0" Grid.Column="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Grid.RowSpan="5" Margin="0,40,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="285" Height="490">
-                <ListBox Name="LstMenu" Background="#FF222222" >
-                    <ListBoxItem Content="Traitements" x:Name="MnmTrt" Foreground="White" FontSize="16" Margin="0,5,0,0" />
-                    <ListBoxItem Content="Noir et Blanc" x:Name="FcnNeB" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Rotation" x:Name="FcnRo" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Agrandissement et Rétrécissement" x:Name="FcnAeR" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Effet miroir" x:Name="FcnEm" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Détection de contours" x:Name="FcnDdC" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Renforcement des bords" x:Name="FcnRdB" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Flou" x:Name="FcnFl" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Repoussage" x:Name="FcnRpg" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Fractale" x:Name="FcnFrl" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Histogramme" x:Name="FcnHst" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Coder et décoder une image cachée" x:Name="MnmCdic"  Foreground="White" Margin="0,5,0,0" FontSize="16"/>
-                    <ListBoxItem Content="Coder" x:Name="FcnCo" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Décoder" x:Name="FcnDc" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="QR Code" x:Name="MnmQRc" Foreground="White" Margin="0,5,0,0" FontSize="16" />
-                    <ListBoxItem Content="Création" x:Name="FcnCr" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Lecteur" x:Name="FcnLe" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    --><!--<ListBoxItem Content="Crytage" Foreground="White" Margin="10,2,0,0" FontSize="16"/>
-                    <ListBoxItem Content="Cryter" x:Name="Cry" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>
-                    <ListBoxItem Content="Décryter" x:Name="Dcr" Foreground="White" Margin="10,2,0,0" FontSize="14" Selected="Traitement_Click" Style="{StaticResource ListBoxItemStyle}"/>--><!--
-                </ListBox>
-            </Border>-->
 
-            <Border Grid.Row="0" Grid.Column="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Grid.RowSpan="5" Margin="0,40,0,0" HorizontalAlignment="Left" VerticalAlignment="Stretch" Width="285" Height="490">
+            <Border Grid.Row="1" Grid.Column="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <StackPanel Name="SpMenu" >
                     <TextBlock Text="Traitements" Foreground="White" FontSize="15" Margin="5,3,0,3"/>
                     <Button Click="FcnGénéral_Click" ClickMode="Press"  Content="Noir et Blanc" Name ="FcnNeB"  Margin="20,2,20,0" HorizontalAlignment="Left" Style="{StaticResource ButtonStyle}" Template="{StaticResource MenuTemplate}" Cursor="Hand"/>
@@ -153,40 +119,19 @@
                     <Button Click="FcnCo_Click" ClickMode="Press" Content="Coder" Name ="FcnCo"   Margin="20,2,20,0" HorizontalAlignment="Left"   Style="{StaticResource ButtonStyle}" Template="{StaticResource MenuTemplate}"/>
                     <Button Click="FcnGénéral_Click" ClickMode="Press" Content="Décoder" Name ="FcnDc"  Margin="20,2,20,0" HorizontalAlignment="Left"   Style="{StaticResource ButtonStyle}" Template="{StaticResource MenuTemplate}"/>
                     <TextBlock Text="QR code" Foreground="White" FontSize="15" Margin="5,3,0,3" />
-                    <Button Click="FcnCr_Click" ClickMode="Press" Content="Création" Name ="FcnCr"  Margin="20,2,20,0" HorizontalAlignment="Left"   Style="{StaticResource ButtonStyle}" Template="{StaticResource MenuTemplate}" Cursor="Hand"/>
+                    <Button Click="FcnCr_Click" ClickMode="Press" Content="Création" Name ="FcnCr"  Margin="20,2,20,0" HorizontalAlignment="Left"   Style="{StaticResource ButtonStyle}" Template="{StaticResource MenuTemplate}"/>
+                    <Button Click="Lancer_Click" ClickMode="Press" Content="Lancer" Margin="20,25,20,20" Name ="Lancer" Style="{StaticResource ButtonStyle}" Template="{StaticResource LancerTemplate}"/>
                 </StackPanel>
             </Border>
             <!--#endregion-->
 
             <!--#region Image à Traiter Sortie lancer-->
-            <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Horizontal">
-                <Border BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Width="375" HorizontalAlignment="Left" VerticalAlignment="Stretch" Height="67">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
-
-                        <StackPanel>
-                            <TextBlock Text="Image à traiter" Foreground="White" Margin="5,2,0,0" FontSize="14" />
-                            <Button Click="Image_Click" ClickMode="Press" Content="Parcourir" FontSize="14" Foreground="White" Background="#FF4B4B4B" Margin="5,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" ToolTip="Cliquez pour sélectionner une image dans le gestionnaire de fichiers" Cursor="Hand" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}"/>
-                        </StackPanel>
-                        <StackPanel Grid.Column ="1" >
-                            <TextBlock Text="Emplacement de sortie" Foreground="White" Margin="5,2,0,0" FontSize="14" />
-                            <Button Click="Save_Click" ClickMode="Press" Content="Parcourir" FontSize="14" Foreground="White" Background="#FF4B4B4B" Margin="5,10,0,0" HorizontalAlignment="Left" ToolTip="Cliquez pour sélectionner une image dans le gestionnaire de fichiers" Cursor="Hand" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}"/>
-
-                        </StackPanel>
-
-                    </Grid>
-                </Border>
-
-                <Button Content="Lancer" Click="Lancer_Click" ClickMode="Press" Foreground="White" Margin="10,0,0,0" FontSize="16"  Style="{StaticResource ButtonStyle}" Template="{StaticResource LancerTemplate}" Background="#FF4B4B4B"/>
-            </StackPanel>
+           
             
             <!--#endregion-->
 
             <!--#region Image-->
-            <Border Grid.Column="3" Grid.Row="2" Grid.RowSpan="2" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Background="#FF828282" VerticalAlignment="Top" Margin="0,20,37,0" HorizontalAlignment="Center" >
+            <Border Grid.Column="3" Grid.Row="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Background="#FF828282" VerticalAlignment="Center" HorizontalAlignment="Center" >
                 <Image Name="ImageBox" Source="/foret riviere.bmp" Stretch="Uniform"/>
             </Border>
             <!--#endregion-->

@@ -9,40 +9,50 @@ using System.Windows.Media;
 using System.Collections.Generic;
 using System.Windows.Input;
 using System.Linq;
+using System.IO;
 
 namespace AppProjetSemestre4
 {
 
     /*A faire :
         - Garder en mémoire l'image source et la sortie pour pouvoir faire un autre traitement sans resélectionner
-                - Créer automatiquement différents fichiers de sortie pour les différents traitements 
-        - try Catch  SUPER IMPORTANT
-        - Resize Soit technique des tailles en mode auto soit calculer le ratio de resize et l'appliquer a ttes les tailles
-        - revoir position du choix image et sortie car pas nécessaire pr tts les traitements
+                - Créer automatiquement différents fichiers de sortie pour les différents traitements                           OK
+        - try Catch  SUPER IMPORTANT GERER LES EXCEPTIONS SUR TOUT LES I/O
+        - Resize Soit technique des tailles en mode auto soit calculer le ratio de resize et l'appliquer a ttes les tailles    Commencé à verif mettre une taille min mainwindow le menu resize pas
         - créer des nouvelles images pr croix fermer et trait pour avoir les symboles en blanc
-        - Possibilité de faire plusieurs traitements à la fois 
+        - Possibilité de faire plusieurs traitements à la fois                                                                  OK
         - Activable depuis un menu option
         - aide mode d'emploi (possiblité d'avoir des tips qui apparaissent qd on hover sur un controle (ToolTip propriété))
-        - Gérer les positions d'apparition des fenetres secondaires*/
+        - Gérer lancer                                                                                                          OK
+        - Mode d'emploi bouton en forme de ?
+        */
 
-    //Gérer le cas ou un traitement a ete sélectionné et est déselectionné : dequeue tout ds list supprimer la bonne valeur requeue
+    //Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove
+    //POssibilité de fermer les fenetres secondaires sans rien rentrer dedans et sans crash --> soit avoir une valeur par défaut soit try catch + message pour indiquer que l'opération sélectionner ne pourra pas etre réalisée 
+    // N'afficher que le nom de l'image sélectionnée
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        private static string imagePath;
-        private string savePath;
+        private static string imagePath = "/foret riviere.bmp";
+        private static string savePath;
         private static double angle;
         private static bool sens;
         private static int pourcent_AeR;
         private static int coefficient_flou;
+        private static string imageCachéepath;
+        private Queue<string> queue_fonctions = new Queue<string>();
+        private static int queueCount;
 
-        private SolidColorBrush[] bckColors = new SolidColorBrush[2];
+        SolidColorBrush bckBrushPressed;
+        SolidColorBrush bckBrush;
+
+        bool[] button_pressed = new bool[13]; 
+
         
-
-        private Queue<string>  queue_fonctions = new Queue<string>();
+        #region accesseur
         public static double Angle 
         {
             get { return angle; }
@@ -52,6 +62,16 @@ namespace AppProjetSemestre4
         {
             get { return imagePath; }
             set { imagePath = value; }
+        }
+        public static string ImageCachéePath
+        {
+            get { return imageCachéepath; }
+            set { imageCachéepath = value; }
+        }
+        public static string SavePath
+        {
+            get { return savePath; }
+            set { savePath = value; }
         }
         public static int Pourcent_AeR
         {
@@ -68,104 +88,202 @@ namespace AppProjetSemestre4
             get { return sens; }
             set { sens = value; }
         }
-        
+        #endregion
+
         public MainWindow()
         {
             InitializeComponent();
-            Color Bckcolor1 = Color.FromArgb(255, 50, 50, 50);
-            //Color BckColor2 = Color.FromArgb(255, 75, 75, 75);
-            //bckColors[0] = new SolidColorBrush(Bckcolor1);
-            //bckColors[1] = new SolidColorBrush();
+
+            this.Show();
+
+            Window4 win4 = new Window4();
+            win4.Owner = this;
+            win4.Left = this.Left + this.Width / 2 - win4.Width/2;
+            win4.Top = this.Top + this.Height / 2  - win4.Height/2;
+            win4.Show();
+
+            Color bckColorPressed = Color.FromArgb(255, 50, 50, 50);
+            Color bckColor = Color.FromArgb(255, 75, 75, 75);
+            bckBrushPressed = new SolidColorBrush(bckColorPressed);
+            bckBrush = new SolidColorBrush(bckColor);
         }
+        
         public void MainWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            DragMove();
+            try
+            {
+                DragMove();
+            }
+            catch (System.InvalidOperationException) { }
+            catch (Exception ex)
+            { Console.WriteLine(ex.Message); }
         }
-
 
         public void FcnGénéral_Click(object sender, RoutedEventArgs e)
         {
-            Window3 win3 = new Window3();
-            win3.Owner = this;
-            win3.Left = win3.Owner.Left + win3.Owner.Width;
-            win3.Top = win3.Owner.Top;
-            win3.Show();
-
             Button btn = sender as Button;
-            queue_fonctions.Enqueue(btn.Name);
 
-            //if(btn.Background == bckColors[1]) { btn.Background = bckColors[0]; }
-            //if(btn.Background == bckColors[0]) { btn.Background = bckColors[1]; }
+            Dictionary<string, int> Fcn_index = new Dictionary<string, int>() 
+            {
+                {"FcnNeB", 0 },
+                {"FcnEm", 3 },
+                {"FcnDdC", 4 },
+                {"FcnRdB", 5 },
+                {"FcnRpg", 7 },
+                {"FcnHst", 9 },
+                {"FcnDc", 11 },
+
+            };
+
+            int index = Fcn_index[btn.Name];
+
+            if (button_pressed[index] == true) 
+            { 
+                button_pressed[index] = false; 
+                btn.Background = bckBrush;
+                int count = queue_fonctions.Count;
+                for(int i = 0; i< count; i++)
+                {
+                    string element = queue_fonctions.Dequeue();
+                    if(element != btn.Name) { queue_fonctions.Enqueue(element); }
+                }
+                queueCount = queue_fonctions.Count;
+            }
+            else
+            {
+                Window3 win3 = new Window3();
+                win3.Owner = this;
+                win3.Left = win3.Owner.Left + win3.Owner.Width;
+                win3.Top = win3.Owner.Top;
+                win3.Show();
+                button_pressed[index] = true; btn.Background = bckBrushPressed;
+                queue_fonctions.Enqueue(btn.Name);
+                queueCount = queue_fonctions.Count;
+            }
         }
 
         public void FcnRo_Click(object sender, RoutedEventArgs e)
         {
-            Window1 win1 = new Window1();
-            win1.Owner = this;
-            win1.Left = win1.Owner.Left + win1.Owner.Width;
-            win1.Top = win1.Owner.Top;
-            win1.Show();
 
-            queue_fonctions.Enqueue("FcnRo");
+            if (button_pressed[1] == true) 
+            { 
+                button_pressed[1] = false; 
+                FcnRo.Background = bckBrush;
+                int count = queue_fonctions.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    string element = queue_fonctions.Dequeue();
+                    if (element != "FcnRo") { queue_fonctions.Enqueue(element); }
+                    
+                }
+                queueCount = queue_fonctions.Count;
+            }
+            else
+            {
+                Window1 win1 = new Window1();
+                win1.Owner = this;
+                win1.Left = win1.Owner.Left + win1.Owner.Width;
+                win1.Top = win1.Owner.Top;
+                win1.Show();
+                button_pressed[1] = true; 
+                FcnRo.Background = bckBrushPressed;
+                queue_fonctions.Enqueue("FcnRo");
+                queueCount = queue_fonctions.Count;
+            }
 
-            Button btn = (Button)sender;
-            //if (btn.Background == bckColors[1]) { btn.Background = bckColors[0]; }
-            //if (btn.Background == bckColors[0]) { btn.Background = bckColors[1]; }
         }
 
         public void FcnAeR_Click(object sender, RoutedEventArgs e)
         {
-            Window2 win2 = new Window2();
-            win2.Owner = this;
-            win2.Left = win2.Owner.Left + win2.Owner.Width;
-            win2.Top = win2.Owner.Top;
-            win2.Show();
-
-            queue_fonctions.Enqueue("FcnAeR");
 
             Button btn = (Button)sender;
-            //if (btn.Background == bckColors[1]) { btn.Background = bckColors[0]; }
-            //if (btn.Background == bckColors[0]) { btn.Background = bckColors[1]; }
+            if (button_pressed[2] == true) 
+            { 
+                button_pressed[2] = false; 
+                FcnAeR.Background = bckBrush;
+                int count = queue_fonctions.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    string element = queue_fonctions.Dequeue();
+                    if (element != "FcnAeR") { queue_fonctions.Enqueue(element); }
+                }
+                queueCount = queue_fonctions.Count;
+            }
+            else
+            {
+                Window2 win2 = new Window2();
+                win2.Owner = this;
+                win2.Left = win2.Owner.Left + win2.Owner.Width;
+                win2.Top = win2.Owner.Top;
+                win2.Show();
+                button_pressed[2] = true; 
+                FcnAeR.Background = bckBrushPressed;
+                queue_fonctions.Enqueue("FcnAeR");
+                queueCount = queue_fonctions.Count;
+            }
         }
         public void FcnFl_Click(object sender, RoutedEventArgs e)
         {
-            Window5 win5 = new Window5();
-            win5.Owner = this;
-            win5.Left = win5.Owner.Left + win5.Owner.Width;
-            win5.Top = win5.Owner.Top;
-            win5.Show();
-
-            queue_fonctions.Enqueue("FcnFl");
-
             Button btn = (Button)sender;
-            //if (btn.Background == bckColors[1]) { btn.Background = bckColors[0]; }
-            //if (btn.Background == bckColors[0]) { btn.Background = bckColors[1]; }
+            if (button_pressed[6] == true) 
+            { 
+                button_pressed[6] = false; 
+                FcnFl.Background = bckBrush;
+                int count = queue_fonctions.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    string element = queue_fonctions.Dequeue();
+                    if (element != "FcnFl") { queue_fonctions.Enqueue(element); }
+                }
+                queueCount = queue_fonctions.Count;
+            }
+            else
+            {
+                Window5 win5 = new Window5();
+                win5.Owner = this;
+                win5.Left = win5.Owner.Left + win5.Owner.Width;
+                win5.Top = win5.Owner.Top;
+                win5.Show();
+                button_pressed[6] = true; 
+                FcnFl.Background = bckBrushPressed;
+                queue_fonctions.Enqueue("FcnFl");
+                queueCount = queue_fonctions.Count;
+            }
         }
 
         public void FcnCo_Click(object sender, RoutedEventArgs e)
         {
-            Window6 win6 = new Window6();
-            win6.Owner = this;
-            win6.Left = win6.Owner.Left + win6.Owner.Width;
-            win6.Top = win6.Owner.Top;
-            win6.Show();
-
-            queue_fonctions.Enqueue("FcnCo");
-
             Button btn = (Button)sender;
-            //if (btn.Background == bckColors[1]) { btn.Background = bckColors[0]; }
-            //if (btn.Background == bckColors[0]) { btn.Background = bckColors[1]; }
-        }
-        public void FcnCr_Click(object sender, RoutedEventArgs e)
-        {
-
+            if (button_pressed[10] == true) 
+            { 
+                button_pressed[10] = false; 
+                FcnCo.Background = bckBrush;
+                int count = queue_fonctions.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    string element = queue_fonctions.Dequeue();
+                    if (element != "FcnCo") { queue_fonctions.Enqueue(element); }
+                }
+                queueCount = queue_fonctions.Count;
+            }
+            else
+            {
+                Window6 win6 = new Window6();
+                win6.Owner = this;
+                win6.Left = win6.Owner.Left + win6.Owner.Width;
+                win6.Top = win6.Owner.Top;
+                win6.Show();
+                button_pressed[10] = true; 
+                FcnCo.Background = bckBrushPressed;
+                queue_fonctions.Enqueue("FcnCo");
+                queueCount = queue_fonctions.Count;
+            }
         }
         public void FcnFrl_Click(object sender, RoutedEventArgs e)
         {
 
-        }
-
-        public void Mn_Click(object sender, RoutedEventArgs e)
+        } // Penser à interdire la sélection si d'autres traitements son sélectionnés : si queueCount >0 nop 
+        public void FcnCr_Click(object sender, RoutedEventArgs e)
         {
 
         }
@@ -177,19 +295,95 @@ namespace AppProjetSemestre4
             ImageBox.Source = new BitmapImage(new Uri(savePath));
         }
 
-        public void Lancer_Click(object sender, RoutedEventArgs e)//Voir comment supprimer certains des Run ex : NeB et les regrouper.
+        public void Lancer_Click(object sender, RoutedEventArgs e)//Gérer me cas ou la queue est vide      +     chaque fct retourne une nouvelle image a prendre en compte
         {
             MyImage image = new MyImage(ImagePath);
-            for(int i =0; i<queue_fonctions.Count; i++)
+            MyImage image_fcn = null;
+            string fonction = "";
+            string nom_fichier;
+            int queueCount = queue_fonctions.Count;
+
+            if(queueCount < 1)  // Cas ou queue
             {
-                string fonction = queue_fonctions.Dequeue();
+
+            }
+           
+
+            for (int i =0; i<queueCount; i++)
+            {
+                fonction = queue_fonctions.Dequeue();
 
                 switch (fonction)
                 {
-
+                    case "FcnNeB":
+                        image_fcn = image.CouleurToNoiretBlanc();
+                        break;
+                    case "FcnRo":
+                        image_fcn = image.RotationV2(angle, sens);
+                        break;
+                    case "FcnAeR":
+                        if (pourcent_AeR >= 100)
+                        {
+                            image_fcn = image.Aggrandir((int) pourcent_AeR/100);
+                        }
+                        else
+                        {
+                            image_fcn = image.Rétrecissement((double) pourcent_AeR/100);
+                        }
+                        break;
+                    case "FcnEm":
+                        image_fcn = image.EffetMiroir();
+                        break;
+                    case "FcnDdC":
+                        int[,] DdC = { {0,1,0 },{1,-4,1 },{0,1,0 } };
+                        image_fcn = image.Convolution(DdC);
+                        break;
+                    case "FcnRdB":
+                        int[,] RdB = { { 0, 0, 0 }, { 1, -1, 0 }, { 0, 0, 0 } };
+                        image_fcn = image.Convolution(RdB);
+                        break;
+                    case "FcnRpg":
+                        int[,] Repoussage = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
+                        image_fcn = image.Convolution(Repoussage);
+                        break;
+                    case "FcnFl":
+                        int[,] Flou = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+                        image_fcn = image.Convolution(Flou);
+                        break;
+                    case "FcnFrl":
+                        break;
+                    case "FcnHst":
+                        image_fcn = image.Histogramme();
+                        break;
+                    case "FcnCo":
+                        MyImage imageCachée = new MyImage(imageCachéepath);
+                        image_fcn = image.CacherImage_dans_Image(imageCachée);
+                        break;
+                    case "FcnDc":
+                        image_fcn = image.DecoderImageCachee();
+                        break;
+                    case "FcnCr":
+                        break;
                 }
+                image = image_fcn;
             }
-            image.ToFile(savePath);
+
+            if (queueCount > 1) { fonction = "mixte"; }
+
+            string[] fichier_sortie_existants = Directory.GetFiles(savePath, fonction + "*");
+            nom_fichier = fonction + Convert.ToString(fichier_sortie_existants.Length);
+            image.ToFile(savePath+"\\"+nom_fichier+".bmp");
+            ImageBox.Source = new BitmapImage(new Uri(savePath + "\\" + nom_fichier + ".bmp"));
+
+
+            foreach(var element in SpMenu.Children.OfType<Button>())
+            {
+                element.Background = bckBrush;
+            }
+            for(int i = 0; i<button_pressed.Length; i++)
+            {
+                button_pressed[i] = false;
+            }
         }
         public void FermerMain_Click(object sender, RoutedEventArgs e)
         {
