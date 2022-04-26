@@ -29,7 +29,7 @@ namespace AppProjetSemestre4
 
     //Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove
     //POssibilité de fermer les fenetres secondaires sans rien rentrer dedans et sans crash --> soit avoir une valeur par défaut soit try catch + message pour indiquer que l'opération sélectionner ne pourra pas etre réalisée 
-    // N'afficher que le nom de l'image sélectionnée
+    // N'afficher que le nom de l'image sélectionnée  A REVOIR NE DETECTE PAS LE BACKSLASH
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -37,12 +37,14 @@ namespace AppProjetSemestre4
     public partial class MainWindow : Window
     {
         private static string imagePath = "/foret riviere.bmp";
+        private static string imageName= "foret riviere";
         private static string savePath;
         private static double angle;
         private static bool sens;
         private static int pourcent_AeR;
         private static int coefficient_flou;
         private static string imageCachéepath;
+        private static string textQR = "";
         private Queue<string> queue_fonctions = new Queue<string>();
         private static int queueCount;
 
@@ -73,10 +75,20 @@ namespace AppProjetSemestre4
             get { return savePath; }
             set { savePath = value; }
         }
+        public static string TextQR
+        {
+            get { return textQR; }
+            set { textQR = value; }
+        }
         public static int Pourcent_AeR
         {
             get { return pourcent_AeR; }
             set { pourcent_AeR = value; }
+        }
+        public static string ImageName
+        {
+            get { return imageName; }
+            set { imageName = value; }
         }
         public static int Coefficient_Flou
         {
@@ -285,7 +297,31 @@ namespace AppProjetSemestre4
         } // Penser à interdire la sélection si d'autres traitements son sélectionnés : si queueCount >0 nop 
         public void FcnCr_Click(object sender, RoutedEventArgs e)
         {
-
+            Button btn = (Button)sender;
+            if (button_pressed[12] == true)
+            {
+                button_pressed[12] = false;
+                FcnCr.Background = bckBrush;
+                int count = queue_fonctions.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    string element = queue_fonctions.Dequeue();
+                    if (element != "FcnCr") { queue_fonctions.Enqueue(element); }
+                }
+                queueCount = queue_fonctions.Count;
+            }
+            else
+            {
+                CreationQR creationQR = new CreationQR();
+                creationQR.Owner = this;
+                creationQR.Left = creationQR.Owner.Left + creationQR.Owner.Width;
+                creationQR.Top = creationQR.Owner.Top;
+                creationQR.Show();
+                button_pressed[12] = true;
+                FcnCr.Background = bckBrushPressed;
+                queue_fonctions.Enqueue("FcnCr");
+                queueCount = queue_fonctions.Count;
+            }
         }
         public void RunFlou(object sender, EventArgs e)
         {
@@ -295,7 +331,7 @@ namespace AppProjetSemestre4
             ImageBox.Source = new BitmapImage(new Uri(savePath));
         }
 
-        public void Lancer_Click(object sender, RoutedEventArgs e)//Gérer me cas ou la queue est vide      +     chaque fct retourne une nouvelle image a prendre en compte
+        public void Lancer_Click(object sender, RoutedEventArgs e)//Gérer me cas ou la queue est vide
         {
             MyImage image = new MyImage(ImagePath);
             MyImage image_fcn = null;
@@ -363,6 +399,13 @@ namespace AppProjetSemestre4
                         image_fcn = image.DecoderImageCachee();
                         break;
                     case "FcnCr":
+                        int version = 1;
+                        Console.WriteLine(textQR);
+                        if(textQR.Length <= 25) { version = 1; }
+                        if(textQR.Length > 25) { version = 2; }
+                        byte[] donnee = image.Convertir_Chaine_Char(textQR, version);
+                        int[] masquage = { 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
+                        image_fcn = image.QRCode(version, masquage,donnee, true);
                         break;
                 }
                 image = image_fcn;

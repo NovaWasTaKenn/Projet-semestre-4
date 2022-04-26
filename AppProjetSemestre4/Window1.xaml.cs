@@ -27,7 +27,7 @@ namespace AppProjetSemestre4
         public Window1()
         {
             InitializeComponent();
-            TblCheminImage.Text = MainWindow.ImagePath;
+            TblCheminImage.Text = MainWindow.ImageName;
         }
 
         public void Image_Click(object sender, RoutedEventArgs e)
@@ -37,11 +37,19 @@ namespace AppProjetSemestre4
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
-                MainWindow.ImagePath = openFileDialog.FileName;
+                string imagePath = openFileDialog.FileName;
+                string nom = "";
+                for (int i = imagePath.Length; !imagePath[i].Equals('\u005C'); i--)
+                {
+                    nom = imagePath[i] + nom;
+                }
+
+                MainWindow.ImagePath = imagePath;
+                MainWindow.ImageName = nom;
             }
 
             mainWindow.ImageBox.Source = new BitmapImage(new Uri(MainWindow.ImagePath));
-            TblCheminImage.Text = MainWindow.ImagePath;
+            TblCheminImage.Text = MainWindow.ImageName;
         }
 
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
