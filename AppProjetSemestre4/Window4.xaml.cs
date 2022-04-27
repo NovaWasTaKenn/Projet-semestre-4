@@ -28,7 +28,15 @@ namespace AppProjetSemestre4
         }
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            if(MainWindow.SavePath == null || MainWindow.SavePath.Length == 0)
+            {
+                MessageBox.Show("Le chemin de sauvegarde n'est pas défini, veuillez sélectionner un fichier de sortie en cliquant \"Parcourir\"", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                this.Close();
+            }
+            
         }
         public void Window2_MouseDown(object sender, MouseButtonEventArgs e)
         {

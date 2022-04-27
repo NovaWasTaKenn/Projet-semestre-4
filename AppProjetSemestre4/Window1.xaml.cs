@@ -39,7 +39,7 @@ namespace AppProjetSemestre4
             {
                 string imagePath = openFileDialog.FileName;
                 string nom = "";
-                for (int i = imagePath.Length; !imagePath[i].Equals('\u005C'); i--)
+                for (int i = imagePath.Length-1; !imagePath[i].Equals('\\'); i--)
                 {
                     nom = imagePath[i] + nom;
                 }
@@ -55,9 +55,24 @@ namespace AppProjetSemestre4
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
             this.Owner = null;
-            MainWindow.Angle = Convert.ToDouble(TbxAngle.Text);
-            MainWindow.Sens = sh;
-            this.Close();
+            bool erreur = false;
+            try
+            {
+                MainWindow.Angle = Convert.ToDouble(TbxAngle.Text);
+                MainWindow.Sens = sh;
+            }
+            catch 
+            {
+                MessageBox.Show("L'angle saisi est incorrect, veuillez saisir unn angle ne contennant que des chiffres", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                erreur = true;
+            }
+            if(MainWindow.ImagePath == "/foret riviere.bmp") 
+            { 
+                erreur = true;
+                MessageBox.Show("Aucune image n'est sélectionnée, veuillez cliquer sur \"Parcourir\" pour en sélectionner une", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            if (!erreur) { this.Close(); }
+            
         }
         public void BtnSh_Click(object sender, RoutedEventArgs e)
         {

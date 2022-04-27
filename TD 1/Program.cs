@@ -193,35 +193,44 @@ namespace TD_1
 
             //bool[] tab = { false, false, false, false, false, true, false, true, true };
 
-            string Hello = "AAAAAAAAAAAAAAAAAAAAAAAA";
-            Console.Write(Hello.Length);
+            //string Hello = "AAAAAAAAAAAAAAAAAAAAAAAA";
+            //Console.Write(Hello.Length);
 
-            //int entier_hello = 45*image.Convertir_Char_En_Int('H')+image.Convertir_Char_En_Int('E');
-            //Console.WriteLine(entier_hello);
-            //byte[] tab = image.Convertir_Int_En_Tab_De_Byte(entier_hello, 3, 2, 11);
-            //Console.WriteLine(Convert.ToString(tab[0],2));
-            //Console.WriteLine(Convert.ToString(tab[1],2));
+            ////int entier_hello = 45*image.Convertir_Char_En_Int('H')+image.Convertir_Char_En_Int('E');
+            ////Console.WriteLine(entier_hello);
+            ////byte[] tab = image.Convertir_Int_En_Tab_De_Byte(entier_hello, 3, 2, 11);
+            ////Console.WriteLine(Convert.ToString(tab[0],2));
+            ////Console.WriteLine(Convert.ToString(tab[1],2));
 
 
-            byte[] Hello_byte = image.Convertir_Chaine_Char(Hello, 2);
+            //byte[] Hello_byte = image.Convertir_Chaine_Char(Hello, 2);
 
-            /*for (int i = 0; i < Hello_byte.Length; i++)
-            {
-                Console.WriteLine(Hello_byte[i]);
-            }*/
-           
+            ///*for (int i = 0; i < Hello_byte.Length; i++)
+            //{
+            //    Console.WriteLine(Hello_byte[i]);
+            //}*/
 
-            int[] masque= {1,1,1,0,1,1,1,1,1,0,0,0,1,0,0};
-            image.QRCode(2, masque, Hello_byte, false).ToFile("QRCodeSansMasque","bmp");
-            image.QRCode(2, masque, Hello_byte, true).ToFile("QRCodeAvecMasque", "bmp");
-            MyImage qrcode = new MyImage("QRCodeSansMasque.bmp");
-            MyImage qr = new MyImage("QRCodeAvecMasque.bmp");
-            qrcode.Aggrandir(10).ToFile("QRGrandSansMasque","bmp");
-            qr.Aggrandir(10).ToFile("QRGrandAvecMasque", "bmp");
-            //Process.Start("QRCode.bmp");
-            Process.Start("QRGrandSansMasque.bmp");
-            Process.Start("QRGrandAvecMasque.bmp");
+
+            //int[] masque= {1,1,1,0,1,1,1,1,1,0,0,0,1,0,0};
+            //image.QRCode(2, masque, Hello_byte, false).ToFile("QRCodeSansMasque","bmp");
+            //image.QRCode(2, masque, Hello_byte, true).ToFile("QRCodeAvecMasque", "bmp");
+            //MyImage qrcode = new MyImage("QRCodeSansMasque.bmp");
+            //MyImage qr = new MyImage("QRCodeAvecMasque.bmp");
+            //qrcode.Aggrandir(10).ToFile("QRGrandSansMasque","bmp");
+            //qr.Aggrandir(10).ToFile("QRGrandAvecMasque", "bmp");
+            ////Process.Start("QRCode.bmp");
+            //Process.Start("QRGrandSansMasque.bmp");
+            //Process.Start("QRGrandAvecMasque.bmp");
+            char pikzgrepigzk = Convert.ToChar(92);
+            Console.WriteLine(pikzgrepigzk);
+
+
+            
+
+
             Console.ReadLine();
+
+           
 
 
 

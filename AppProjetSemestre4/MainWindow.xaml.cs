@@ -14,22 +14,63 @@ using System.IO;
 namespace AppProjetSemestre4
 {
 
-    /*A faire :
-        - Garder en mémoire l'image source et la sortie pour pouvoir faire un autre traitement sans resélectionner
-                - Créer automatiquement différents fichiers de sortie pour les différents traitements                           OK
-        - try Catch  SUPER IMPORTANT GERER LES EXCEPTIONS SUR TOUT LES I/O
-        - Resize Soit technique des tailles en mode auto soit calculer le ratio de resize et l'appliquer a ttes les tailles    Commencé à verif mettre une taille min mainwindow le menu resize pas
-        - créer des nouvelles images pr croix fermer et trait pour avoir les symboles en blanc
+    /*Fait:
+        - Garder en mémoire l'image source et la sortie pour pouvoir faire un autre traitement sans resélectionner              OK
+                - Créer automatiquement différents fichiers de sortie pour les différents traitements                           OK  
+        pb avec l'image par défaut, elle est considérée nnull qd le diretory de sortie a pas été défini                         OK il faut nécéssairement choisir une image maintenant image par défaut seulement pour le style de la fenetre
         - Possibilité de faire plusieurs traitements à la fois                                                                  OK
-        - Activable depuis un menu option
-        - aide mode d'emploi (possiblité d'avoir des tips qui apparaissent qd on hover sur un controle (ToolTip propriété))
-        - Gérer lancer                                                                                                          OK
-        - Mode d'emploi bouton en forme de ?
+                - Gérer lancer                                                                                                  OK
         */
 
-    //Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove
-    //POssibilité de fermer les fenetres secondaires sans rien rentrer dedans et sans crash --> soit avoir une valeur par défaut soit try catch + message pour indiquer que l'opération sélectionner ne pourra pas etre réalisée 
-    // N'afficher que le nom de l'image sélectionnée  A REVOIR NE DETECTE PAS LE BACKSLASH
+    /*Reste à faire
+        Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove       Geré A voir au cours de l'utilisation pas de pb poour l'instant
+
+        - Resize Soit technique des tailles en mode auto soit calculer le ratio de resize et l'appliquer a ttes les tailles    Commencé à verif mettre une taille min mainwindow le menu resize pas
+
+        Gérer les possibles pb d''IO avec try Catch + messagebox
+        POssibilité de fermer les fenetres secondaires sans rien rentrer dedans et sans crash --> soit avoir une valeur par défaut soit try catch + message pour indiquer que l'opération sélectionner ne pourra pas etre réalisée
+                
+                        -------->               Bien avancé géré sur entrée du dossier save + entrée image + entrée porcent angle coeff, ...
+
+        Retrecissement sort div par 0 qd poucentage = 50
+
+        sur le image_click parfois mainWindow.ImageBox.Source sort ue nullexception avec MainWindow null
+
+        - aide mode d'emploi (possiblité d'avoir des tips qui apparaissent qd on hover sur un controle (ToolTip propriété))
+        
+        Fractale à impémenter
+
+     */
+
+    /*Pas important
+     - créer des nouvelles images pr croix fermer et trait pour avoir les symboles en blanc
+        - Activable depuis un menu option
+
+     */
+
+
+    /*A faire projet entier
+     Commentaire 
+     Clean le code 
+            Peut impliqué de refaire certaines chose 
+     Rétrecissement revoir, 
+     rotation peut etre
+     Histogramme Faudrait faire en sorte que a sortie n'ai pas une hauteur abérrante
+     Test unitaire 
+     
+     */
+
+    //
+
+    //
+
+    //                                                                                      
+    //
+    //
+    //
+
+    //
+    //
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -37,7 +78,7 @@ namespace AppProjetSemestre4
     public partial class MainWindow : Window
     {
         private static string imagePath = "/foret riviere.bmp";
-        private static string imageName= "foret riviere";
+        private static string imageName= "";
         private static string savePath;
         private static double angle;
         private static bool sens;
@@ -339,7 +380,7 @@ namespace AppProjetSemestre4
             string nom_fichier;
             int queueCount = queue_fonctions.Count;
 
-            if(queueCount < 1)  // Cas ou queue
+            if(queueCount < 1)  // Cas ou queue vide
             {
 
             }

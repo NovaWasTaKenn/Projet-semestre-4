@@ -33,7 +33,7 @@ namespace AppProjetSemestre4
             {
                 string imagePath= openFileDialog.FileName;
                 string nom = "";
-                for(int i = imagePath.Length; !imagePath[i].Equals('\u005C') ; i--)
+                for(int i = imagePath.Length; !imagePath[i].Equals('\\') ; i--)
                 {
                     nom =  imagePath[i] + nom;
                 }
@@ -55,7 +55,7 @@ namespace AppProjetSemestre4
             {
                 string imagecachéPath = openFileDialog.FileName;
                 string nom = "";
-                for (int i = imagecachéPath.Length; !imagecachéPath[i].Equals('\u005C'); i--)
+                for (int i = imagecachéPath.Length-1; !imagecachéPath[i].Equals('\u005C'); i--)
                 {
                     nom = imagecachéPath[i] + nom;
                 }
@@ -66,7 +66,15 @@ namespace AppProjetSemestre4
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
             this.Owner = null;
-            this.Close();
+            if (MainWindow.ImagePath == "/foret riviere.bmp")
+            {
+                MessageBox.Show("Aucune image n'est sélectionnée, veuillez cliquer sur \"Parcourir\" pour en sélectionner une", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            else
+            {
+                this.Close();
+            }
+            
         }
         public void Window2_MouseDown(object sender, MouseButtonEventArgs e)
         {
