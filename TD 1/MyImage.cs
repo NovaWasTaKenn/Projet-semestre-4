@@ -1254,10 +1254,6 @@ namespace TD_1
 
             int iterations = (int)Complexes_Julia[index_Fractale][2];
             int mult_couleurs = (int)Complexes_Julia[index_Fractale][3];
-            Console.WriteLine(index_Fractale);
-            Console.WriteLine(iterations);
-            Console.WriteLine(mult_couleurs);
-
 
             for (int i = 0; i < coté; i++)
             {
@@ -1807,8 +1803,6 @@ namespace TD_1
 
             #region terminaison
             int taille_terminaison = 0;
-            Console.WriteLine(j);
-            Console.WriteLine(Convert.ToString(chaine_non_ECC[j], 2));
             if (chaine_non_ECC.Length - ((j-1)*8+remplissage_Octet_Chaine_Finale)< 4)
             {
                 taille_terminaison = chaine_non_ECC.Length - ((j - 1) * 8 + remplissage_Octet_Chaine_Finale);
@@ -1820,16 +1814,12 @@ namespace TD_1
             if (remplissage_Octet_Chaine_Finale > 8 - taille_terminaison)
             {
                 remplissage_Octet_Chaine_Finale = taille_terminaison - (8 - remplissage_Octet_Chaine_Finale);
-                Console.WriteLine(Convert.ToString(chaine_non_ECC[j], 2));
                 j++;
             }
             else
             {
                 remplissage_Octet_Chaine_Finale = remplissage_Octet_Chaine_Finale + taille_terminaison;
-                Console.WriteLine(Convert.ToString(chaine_non_ECC[j], 2));
             }
-            Console.WriteLine(j);
-            Console.WriteLine(Convert.ToString(chaine_non_ECC[j], 2));
             #endregion
 
             #region multiple 8
@@ -1864,7 +1854,7 @@ namespace TD_1
         /// <summary>
         /// Création de notre QRCode
         /// <param name="version"></param> Version du QRCode que l'on souhaite obtenir
-        /// <param name="masquage"></param> Bits de version, de masque et d'erreur
+        /// <param name="masquage"></param> masque de format appliqué
         /// <param name="donnee"></param> Chaine de caractères convertie en octets
         /// <param name="masque"></param> S'il on veut appliquer le masque ou non
         /// <returns></returns> Retourne : QRCode
@@ -2422,12 +2412,464 @@ namespace TD_1
             return retour;
         }
 
-        //Faire le programme du décodage si on a le temps
+        public char Convertir_Int_En_Char(int n)
+        {
+
+            switch (n)
+            {
+                case 36:
+                    return ' ';
+                    break;
+                case 37:
+                    return '$';
+                    break;
+                case 38:
+                    return '%';
+                    break;
+                case 39:
+                    return '*';
+                    break;
+                case 40:
+                    return '+';
+                    break;
+                case 41:
+                    return '-';
+                    break;
+                case 42:
+                    return ',';
+                    break;
+                case 43:
+                    return '/';
+                    break;
+                case 44:
+                    return ':';
+                    break;
+                default:
+                    if (n >= 10)
+                    {
+                        return (char)(n + 55);
+                    }
+                    else
+                    {
+                        return (char)(n + 48);
+                    }
+                    break;
+            }
+
+
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string Decoder_QRCode()
         {
-            string decodage = "";
+            string chaine = "";
+            int[] decodage = new int[152];
+            int index = 0;
+            int version;
+            string masque_de_format = "";
+            string bit;
+            int sens = 0;
+            #region Code pour récupérer le masque de format d'un QRCode
+            for (int i = 0; i <= 6; i++)
+            {
+                if(this.image[this.height - 1 - i, 8].B == 255)
+                {
+                    bit = "0";
+                }
 
-            return decodage;
+                else
+                {
+                    bit = "1";
+                }
+                masque_de_format += bit;
+                bit = "";
+            }
+
+            for(int  j = 7; j >= 0; j--)
+            {
+                if (this.image[8,this.width - 1 - j].B == 255)
+                {
+                    bit = "0";
+                }
+
+                else
+                {
+                    bit = "1";
+                }
+
+                masque_de_format += bit;
+                bit = "";
+            }
+            #endregion
+
+            #region Code pour la version
+            if (this.height == 21)
+            {
+                version = 1;
+            }
+
+            else
+            {
+                version = 2;
+            }
+            #endregion
+
+            if(version == 1)
+            {
+                while (index != 152)
+                {
+                    for (int j = this.width - 1; j >= this.width - 8; j -= 2)
+                    {
+                        if(sens%2 == 0)
+                        {
+                            for (int i = this.height - 1; i >= this.height - 12; i--)
+                            {
+                                if (this.image[i, j].B == 255)
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+
+                                if (this.image[i, j - 1].B == 255)
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+                            }
+                        }
+
+
+                        else
+                        {
+                            for (int i = this.height - 12; i < this.height; i++)
+                            {
+                                if (this.image[i, j].B == 255)
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+
+                                if (this.image[i, j - 1].B == 255)
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+                            }
+                        }
+                        sens++;
+                    }
+
+                    for(int j = this.width - 9; j >= this.width - 12; j -= 2)
+                    {
+                        if(sens%2 == 0)
+                        {
+                            for (int i = this.width - 1; i >= 0; i--)
+                            {
+                                if (i == 6)
+                                {                                  
+                                }
+
+                                else
+                                {
+                                    if (this.image[i, j].B == 255)
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+
+                                    if (this.image[i, j - 1].B == 255)
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+                                }
+                            }
+                        }
+
+                        else
+                        {
+                            for(int i = 0; i <= 8; i++)
+                            {
+                                if (i == 6)
+                                {
+                                }
+
+                                else
+                                {
+                                    if (this.image[i, j].B == 255)
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+
+                                    if (this.image[i, j - 1].B == 255)
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+                                }
+                            }
+                        }
+                        sens++;
+                    }
+                }
+            }
+
+
+            #region Code de décryptage
+            int[] nom_carac = new int[9];
+            for(int i = 0; i < nom_carac.Length; i++)
+            {
+                nom_carac[i] = decodage[i + 4];
+            }
+
+            int nb_carac = ConvertirBinaire_To_Int(nom_carac);
+            int[] bit_carac;
+            int[] stock;
+            if(nb_carac%2 == 0)
+            {
+                int val = 0;
+                stock = new int[11];
+                bit_carac = new int[nb_carac/2 * 11];
+                for (int i = 0; i < bit_carac.Length; i++)
+                {
+                    bit_carac[i] = decodage[i + 13];
+                }
+
+                for (int i = 0; i < bit_carac.Length; i += 11)
+                {
+                    for (int j = 0; j < stock.Length; j++)
+                    {
+                        stock[i] = bit_carac[i + j];
+                    }
+
+                    val = ConvertirBinaire_To_Int(stock);
+
+                    chaine += Convertir_Int_En_Char(val / 45);
+
+                    val -= 45 * (val / 45);
+
+                    chaine += Convertir_Int_En_Char(val);
+                }
+            }
+
+            else
+            {
+                int val = 0;
+                stock = new int[11];
+                bit_carac = new int[(nb_carac / 2 * 11) + 6];
+                for (int i = 0; i < bit_carac.Length; i++)
+                {
+                    bit_carac[i] = decodage[i + 13];
+                }
+
+                for (int i = 0; i < bit_carac.Length - 6; i += 11)
+                {
+                    for (int j = 0; j < stock.Length; j++)
+                    {
+                        stock[j] = bit_carac[i + j];
+                    }
+
+                    val = ConvertirBinaire_To_Int(stock);
+
+                    chaine += Convertir_Int_En_Char(val / 45);
+
+                    val -= 45 * (val / 45);
+
+                    chaine += Convertir_Int_En_Char(val);
+                }
+
+                stock = new int[6];
+
+                for(int i = 0; i < 6; i++)
+                {
+                    stock[i] = bit_carac[bit_carac.Length - 6 + i];
+                }
+
+                val = ConvertirBinaire_To_Int(stock);
+                chaine += Convertir_Int_En_Char(val);
+            }
+            #endregion
+            return chaine;
         }
         #endregion
     }
