@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -26,12 +27,52 @@ namespace AppProjetSemestre4
         public Window1()
         {
             InitializeComponent();
+            TblCheminImage.Text = MainWindow.ImageName;
         }
+
+        public void Image_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow mainWindow = (MainWindow)Owner;
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string imagePath = openFileDialog.FileName;
+                string nom = "";
+                for (int i = imagePath.Length-1; !imagePath[i].Equals('\\'); i--)
+                {
+                    nom = imagePath[i] + nom;
+                }
+
+                MainWindow.ImagePath = imagePath;
+                MainWindow.ImageName = nom;
+            }
+
+            mainWindow.ImageBox.Source = new BitmapImage(new Uri(MainWindow.ImagePath));
+            TblCheminImage.Text = MainWindow.ImageName;
+        }
+
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
-            MainWindow.Angle = Convert.ToDouble(TbxAngle.Text);
-            MainWindow.Sens = sh;
-            this.Close();
+            this.Owner = null;
+            bool erreur = false;
+            try
+            {
+                MainWindow.Angle = Convert.ToDouble(TbxAngle.Text);
+                MainWindow.Sens = sh;
+            }
+            catch 
+            {
+                MessageBox.Show("L'angle saisi est incorrect, veuillez saisir unn angle ne contennant que des chiffres", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                erreur = true;
+            }
+            if(MainWindow.ImagePath == "/foret riviere.bmp") 
+            { 
+                erreur = true;
+                MessageBox.Show("Aucune image n'est sélectionnée, veuillez cliquer sur \"Parcourir\" pour en sélectionner une", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            if (!erreur) { this.Close(); }
+            
         }
         public void BtnSh_Click(object sender, RoutedEventArgs e)
         {
@@ -49,12 +90,12 @@ namespace AppProjetSemestre4
             BtnSh.Background = Bckbrush;
             Color Brdcolor = Color.FromArgb(255, 130, 130, 130);
             SolidColorBrush Brdbrush = new SolidColorBrush(Brdcolor);
-            BtnSh.BorderBrush = Brdbrush;
+            //BtnSh.BorderBrush = Brdbrush;
 
             Color Bckcolor_Sah = Color.FromArgb(255, 75, 75, 75);
             SolidColorBrush Bckbrush_Sah = new SolidColorBrush(Bckcolor_Sah);
-            BtnSah.Background = Bckbrush_Sah;
-            BtnSah.BorderBrush = Brushes.Transparent;
+            BtnSah.Background = Brdbrush;
+            //BtnSah.BorderBrush = Brushes.Transparent;
 
         }
         public void BtnSah_Click(object sender, RoutedEventArgs e)
@@ -73,12 +114,12 @@ namespace AppProjetSemestre4
             BtnSah.Background = Bckbrush;
             Color Brdcolor = Color.FromArgb(255, 130, 130, 130);
             SolidColorBrush Brdbrush = new SolidColorBrush(Brdcolor);
-            BtnSah.BorderBrush = Brdbrush;
+            //BtnSah.BorderBrush = Brdbrush;
 
             Color Bckcolor_Sh = Color.FromArgb(255, 75, 75, 75);
             SolidColorBrush Bckbrush_Sh = new SolidColorBrush(Bckcolor_Sh);
-            BtnSh.Background = Bckbrush_Sh;
-            BtnSh.BorderBrush = Brushes.Transparent;
+            BtnSh.Background = Brdbrush;
+            //BtnSh.BorderBrush = Brushes.Transparent;
 
         }
         public void Window1_MouseDown(object sender, MouseButtonEventArgs e)
