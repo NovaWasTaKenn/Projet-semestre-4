@@ -470,6 +470,7 @@ namespace TD_1
             {
                     if(nb - Puissance(2, binaire.Length - 1 - i) >= 0)
                     {
+                        nb -= Puissance(2, binaire.Length - 1 - i);
                         binaire[i] = 1;
                     }
             }
@@ -1128,7 +1129,7 @@ namespace TD_1
             int mult_pas_G = rnd.Next(1, 10);
             int mult_pas_B = rnd.Next(1, 10);
 
-            for (int i = 0; i< coté; i++)
+            for (int i = 0; i   < coté; i++)
             {
                 for(int j =0; j< coté; j++)
                 {
@@ -1292,6 +1293,10 @@ namespace TD_1
             return fractale;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public MyImage Histogramme()
         {
             int[] stockR = new int[256];
@@ -1389,6 +1394,11 @@ namespace TD_1
             return histogramme;
         }
 
+        /// <summary>
+        /// Cache l'image en paramètre dans l'image par défaut peut importe la taille des deux images
+        /// </summary>
+        /// <param name="image"></param>
+        /// <returns></returns>
         public MyImage CacherImage_dans_Image(MyImage image)
         {
             MyImage retour = new MyImage(this, this.height, this.width);
@@ -1472,6 +1482,10 @@ namespace TD_1
             return retour;
         }
 
+        /// <summary>
+        /// Récupère l'image à décoder et on fait apparaitre côte à côte les deux images
+        /// </summary>
+        /// <returns></returns>
         public MyImage DecoderImageCachee()
         {
             MyImage doubleimage = new MyImage(this.height, this.width * 2);
@@ -1606,7 +1620,7 @@ namespace TD_1
                 case '-':
                     return 41;
                     break;
-                case '.':
+                case ',':
                     return 42;
                     break;
                 case '/':
@@ -1630,6 +1644,7 @@ namespace TD_1
 
 
         }
+
         /// <summary>
         /// <para>Converti un entier <paramref name="nb"/> en tableau d'octets de taille définie par <paramref name="taille"/> et de nombre de bit défini par <paramref name="nb_bits" />. 
         /// Le premier octet est constitué de la gauche vers la droite de <paramref name="remplissage_Octet_Chaine_Finale"/> zéros et 8 -<paramref name="remplissage_Octet_Chaine_Finale"/> valeurs dévrivant <paramref name="nb"/></para>
@@ -1672,6 +1687,7 @@ namespace TD_1
             }
             return retour;
         }
+
         /// <summary>
         /// <para> Crée une tableau d'octet contenant toutes les données du QR code à partir de la chaine de caractères alphanumériques <paramref name="chaine"/>. Le tableau contient tous les mots de données et les mots de correction d'erreur. </para>
         /// <returns> Retourne : Un tableau de bytes </returns>
@@ -1844,12 +1860,20 @@ namespace TD_1
 
             return chaine_non_ECC;
         }
-
+        
+        /// <summary>
+        /// Création de notre QRCode
+        /// <param name="version"></param> Version du QRCode que l'on souhaite obtenir
+        /// <param name="masquage"></param> Bits de version, de masque et d'erreur
+        /// <param name="donnee"></param> Chaine de caractères convertie en octets
+        /// <param name="masque"></param> S'il on veut appliquer le masque ou non
+        /// <returns></returns> Retourne : QRCode
         public MyImage QRCode(int version, int[] masquage, byte[] donnee, bool masque)
         {
             MyImage retour = new MyImage(0, 0);
             string donnee_binaire = "";
 
+            //Appliquer la correction en fonction de la verison souhaitée
             if (version == 1)
             {
                 retour = new MyImage(21, 21);
@@ -1861,7 +1885,6 @@ namespace TD_1
                     donnee_binaire += ConvertirInt_To_stringBinaire(Convert.ToInt32(chaine_finale_ECC[indexchaine]));
                 }
             }
-
             if (version == 2)
             {
                 retour = new MyImage(25, 25);
@@ -1908,7 +1931,7 @@ namespace TD_1
 
                 retour.image[retour.height - 8, 8] = new Pixel(0, 0, 0);
 
-                donnee_binaire += "00000000";
+                donnee_binaire += "0000000";
             }
 
             #region Remplissage des coins
@@ -1976,7 +1999,7 @@ namespace TD_1
             retour.image[retour.height - 8, 8] = new Pixel(0, 0, 0);
             #endregion
 
-            #region information (masque, erreur, etc...)
+            #region Information (masque, erreur, version)
             for (int index = 0; index < masquage.Length; index++)
             {
                 if (index < masquage.Length / 2)
@@ -2080,15 +2103,13 @@ namespace TD_1
                                     if (donnee_binaire[indexchainebinaire] == '1')
                                     {
                                         retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                        indexchainebinaire++;
                                     }
 
                                     else
                                     {
                                         retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                        indexchainebinaire++;
-
                                     }
+                                    indexchainebinaire++;
                                 }
 
                                 else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
@@ -2096,17 +2117,14 @@ namespace TD_1
 
                                     if (donnee_binaire[indexchainebinaire] == '1')
                                     {
-                                        retour.image[i, j] = new Pixel(0, 0, 0);
-                                        indexchainebinaire++;
-
+                                        retour.image[i, j] = new Pixel(0, 0, 0);                                        
                                     }
 
                                     else
                                     {
-                                        retour.image[i, j] = new Pixel(255, 255, 255);
-                                        indexchainebinaire++;
-
+                                        retour.image[i, j] = new Pixel(255, 255, 255);                                        
                                     }
+                                    indexchainebinaire++;
                                 }
 
                                 else
@@ -2120,14 +2138,13 @@ namespace TD_1
                                         if (donnee_binaire[indexchainebinaire] == '1')
                                         {
                                             retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                            indexchainebinaire++;
                                         }
 
                                         else
                                         {
-                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                            indexchainebinaire++;
+                                            retour.image[i, j - 1] = new Pixel(255, 255, 255);                                       
                                         }
+                                        indexchainebinaire++;
                                     }
 
                                     else
@@ -2137,15 +2154,14 @@ namespace TD_1
 
                                         if (donnee_binaire[indexchainebinaire] == '1')
                                         {
-                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                            indexchainebinaire++;
+                                            retour.image[i, j - 1] = new Pixel(0, 0, 0);                                    
                                         }
 
                                         else
                                         {
                                             retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                            indexchainebinaire++;
                                         }
+                                        indexchainebinaire++;
                                     }
                                 }                           
                                 libre = false;
@@ -2171,14 +2187,13 @@ namespace TD_1
                                     if (donnee_binaire[indexchainebinaire] == '1')
                                     {
                                         retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                        indexchainebinaire++;
                                     }
 
                                     else
                                     {
                                         retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                        indexchainebinaire++;
                                     }
+                                    indexchainebinaire++;
                                 }
 
                                 else if (retour.image[i, j] == null && retour.image[i, j - 1] != null)
@@ -2187,16 +2202,13 @@ namespace TD_1
                                     if (donnee_binaire[indexchainebinaire] == '1')
                                     {
                                         retour.image[i, j] = new Pixel(0, 0, 0);
-                                        indexchainebinaire++;
-
                                     }
 
                                     else
                                     {
                                         retour.image[i, j] = new Pixel(255, 255, 255);
-                                        indexchainebinaire++;
-
                                     }
+                                    indexchainebinaire++;
                                 }
 
                                 else
@@ -2210,14 +2222,13 @@ namespace TD_1
                                         if (donnee_binaire[indexchainebinaire] == '0')
                                         {
                                             retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                            indexchainebinaire++;
                                         }
 
                                         else
                                         {
                                             retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                            indexchainebinaire++;
                                         }
+                                        indexchainebinaire++;
                                     }
 
                                     else
@@ -2228,14 +2239,13 @@ namespace TD_1
                                         if (donnee_binaire[indexchainebinaire] == '1')
                                         {
                                             retour.image[i, j - 1] = new Pixel(0, 0, 0);
-                                            indexchainebinaire++;
                                         }
 
                                         else
                                         {
                                             retour.image[i, j - 1] = new Pixel(255, 255, 255);
-                                            indexchainebinaire++;
                                         }
+                                        indexchainebinaire++;
                                     }
                                 }                                                               
                                 libre = false;
@@ -2243,8 +2253,7 @@ namespace TD_1
                         }
                     }
                     sens++;              
-                }
-                
+                }             
             }
             #endregion
 
@@ -2285,7 +2294,6 @@ namespace TD_1
                                     {
                                         retour.image[i, j - 1] = new Pixel(255, 255, 255);
                                     }
-
                                     indexchainebinaire++;
                                 }
 
@@ -2300,7 +2308,6 @@ namespace TD_1
                                     {
                                         retour.image[i, j] = new Pixel(255, 255, 255);
                                     }
-
                                     indexchainebinaire++;
                                 }
 
@@ -2327,7 +2334,6 @@ namespace TD_1
                                     {
                                         retour.image[i, j - 1] = new Pixel(255, 255, 255);
                                     }
-
                                     indexchainebinaire++;
                                 }                                                            
                                 libre = false;
@@ -2402,7 +2408,6 @@ namespace TD_1
                                     {
                                         retour.image[i, j - 1] = new Pixel(255,255,255);
                                     }
-
                                     indexchainebinaire++;
                                 }                                                            
                                 libre = false;
@@ -2417,6 +2422,13 @@ namespace TD_1
             return retour;
         }
 
+        //Faire le programme du décodage si on a le temps
+        public string Decoder_QRCode()
+        {
+            string decodage = "";
+
+            return decodage;
+        }
         #endregion
     }
 }
