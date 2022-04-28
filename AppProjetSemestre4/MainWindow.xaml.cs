@@ -38,7 +38,7 @@ namespace AppProjetSemestre4
 
         - aide mode d'emploi (possiblité d'avoir des tips qui apparaissent qd on hover sur un controle (ToolTip propriété))
         
-        Fractale à impémenter
+        Fractale à impémenter : menu déroulant a finir peut etre un bouton qui fait apparaitre un Sp de bouton, code intéraction + back
 
      */
 
@@ -60,17 +60,6 @@ namespace AppProjetSemestre4
      
      */
 
-    //
-
-    //
-
-    //                                                                                      
-    //
-    //
-    //
-
-    //
-    //
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
