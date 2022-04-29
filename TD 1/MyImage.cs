@@ -20,7 +20,7 @@ namespace TD_1
         Pixel[,] image;
 
         //Rotation fct pour les multiples de 90° mais artefacts blancs sur les rotations quelconques
-        // refaire convolution plus proprement
+        //refaire convolution plus proprement
         //Try catch sur les entrées sorties znes à pbs acces fichier
 
         #region Constructeurs
@@ -2460,18 +2460,23 @@ namespace TD_1
         }
 
         /// <summary>
-        /// 
+        /// Ce décodeur lit le QRCode et stock les bits dans un tableau de int (decodage). La taille de ce tableau dépend de la version du QRCode 
+        /// qu'on souhaite décoder. Par exemple pour la version 1, taille de 152. 
+        /// Il lit aussi le masque de format utilisé. 
         /// </summary>
-        /// <returns></returns>
+        /// 
+        /// <returns></returns> Retourne un string avec le masque de format, la version et la chaine de caractère 
         public string Decoder_QRCode()
         {
+            string texte = "";
             string chaine = "";
-            int[] decodage = new int[152];
+            int[] decodage;
             int index = 0;
             int version;
             string masque_de_format = "";
             string bit;
             int sens = 0;
+
             #region Code pour récupérer le masque de format d'un QRCode
             for (int i = 0; i <= 6; i++)
             {
@@ -2509,18 +2514,18 @@ namespace TD_1
             if (this.height == 21)
             {
                 version = 1;
+                decodage = new int[152];
             }
 
             else
             {
                 version = 2;
+                decodage = new int[272];
             }
             #endregion
 
             if(version == 1)
-            {
-                while (index != 152)
-                {
+            {             
                     for (int j = this.width - 1; j >= this.width - 8; j -= 2)
                     {
                         if(sens%2 == 0)
@@ -2791,9 +2796,619 @@ namespace TD_1
                         }
                         sens++;
                     }
-                }
+                
             }
 
+            if(version == 2)
+            {
+                    for(int j = this.width - 1; j >= this.width - 4; j -= 2)
+                    {
+                        if(sens%2 == 0)
+                        {
+                            for(int i = this.height - 1; i >= this.height - 16; i--)
+                            {
+                                if (this.image[i, j].B == 255)
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+
+                                if (this.image[i, j - 1].B == 255)
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+                            }
+                        }
+
+                        else
+                        {
+                            for(int i = this.height - 16; i < this.height; i++)
+                            {
+                                if (this.image[i, j].B == 255)
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+
+                                if (this.image[i, j - 1].B == 255)
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+                            }
+                        }
+
+                        sens++;
+                    }
+
+                    for(int j = this.width - 5; j >= this.width - 8; j-= 2)
+                    {
+                        if(sens%2 == 0)
+                        {
+                            for(int i = this.height - 1; i >= this.height - 16; i--)
+                            {
+                                if(i >= this.width - 9 && i <= this.width - 5) { }
+                                
+                                else
+                                {
+                                    if (this.image[i, j].B == 255)
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+
+                                    if (this.image[i, j - 1].B == 255)
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+                                }
+                            }
+                        }
+
+                        else
+                        {
+                            for(int i = this.height - 16; i < this.height; i++)
+                            {
+                                if(i >= this.width - 9 && i <= this.width - 5) { }
+
+                                else
+                                {
+                                    if (this.image[i, j].B == 255)
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+
+                                    if (this.image[i, j - 1].B == 255)
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+                                }
+                            }
+                        }
+
+                        sens++;
+                    }
+               
+                    for(int i = this.height - 1; i >= 0; i--)
+                    {
+                        int j = this.width - 9;
+
+                        if (i == 6)
+                        {
+
+                        }
+
+                        else
+                        {
+                            if (i >= this.height - 9 && i <= this.height - 5)
+                            {
+                                if (this.image[i, j - 1].B == 255)
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+                            }
+
+                            else
+                            {
+                                if (this.image[i, j].B == 255)
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+
+                                if (this.image[i, j - 1].B == 255)
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 1;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 0;
+                                    }
+                                }
+
+                                else
+                                {
+                                    if ((i + j - 1) % 2 == 0)
+                                    {
+                                        decodage[index] = 0;
+                                    }
+
+                                    else
+                                    {
+                                        decodage[index] = 1;
+                                    }
+                                }
+
+                                index++;
+                            }
+                        }
+                    }
+
+                    sens++;
+
+                    for(int j = this.width - 11; j >= this.height - 14; j -=    2)
+                    {
+                        if(sens%2 == 0)
+                        {
+                            for(int i = this.height - 1; i >= 0; i--)
+                            {
+                                if(i == 6) { }
+                                
+                                else
+                                {
+                                    if (this.image[i, j].B == 255)
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+
+                                    if (this.image[i, j - 1].B == 255)
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+                                }
+                            }
+                        }
+
+                        else
+                        {
+                            for(int i = 0; i < this.height; i++)
+                            {
+                                if(i == 6) { }
+
+                                else
+                                {
+                                    if (this.image[i, j].B == 255)
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+
+                                    if (this.image[i, j - 1].B == 255)
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 1;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 0;
+                                        }
+                                    }
+
+                                    else
+                                    {
+                                        if ((i + j - 1) % 2 == 0)
+                                        {
+                                            decodage[index] = 0;
+                                        }
+
+                                        else
+                                        {
+                                            decodage[index] = 1;
+                                        }
+                                    }
+
+                                    index++;
+                                }
+                            }
+                        }
+
+                        sens++;
+                    }
+
+                    for(int i = 0; i <= 12; i++)
+                    {
+                        int j = this.width - 15;
+                        if(i == 6) { }
+
+                        else
+                        {
+                            if (this.image[i, j].B == 255)
+                            {
+                                if ((i + j) % 2 == 0)
+                                {
+                                    decodage[index] = 1;
+                                }
+
+                                else
+                                {
+                                    decodage[index] = 0;
+                                }
+                            }
+
+                            else
+                            {
+                                if ((i + j) % 2 == 0)
+                                {
+                                    decodage[index] = 0;
+                                }
+
+                                else
+                                {
+                                    decodage[index] = 1;
+                                }
+                            }
+
+                            index++;
+
+                            if (this.image[i, j - 1].B == 255)
+                            {
+                                if ((i + j - 1) % 2 == 0)
+                                {
+                                    decodage[index] = 1;
+                                }
+
+                                else
+                                {
+                                    decodage[index] = 0;
+                                }
+                            }
+
+                            else
+                            {
+                                if ((i + j - 1) % 2 == 0)
+                                {
+                                    decodage[index] = 0;
+                                }
+
+                                else
+                                {
+                                    decodage[index] = 1;
+                                }
+                            }
+
+                            index++;
+                        }
+                    }
+
+                    int h = 13;
+                    int w = 10;
+                    if (this.image[h, w].B == 255)
+                    {
+                        if ((h + w) % 2 == 0)
+                        {
+                            decodage[index] = 1;
+                        }
+
+                        else
+                        {
+                            decodage[index] = 0;
+                        }
+                    }
+
+                    else
+                    {
+                        if ((h + w) % 2 == 0)
+                        {
+                            decodage[index] = 0;
+                        }
+
+                        else
+                        {
+                            decodage[index] = 1;
+                        }
+                    }
+                
+
+                
+            }
 
             #region Code de décryptage
             int[] nom_carac = new int[9];
@@ -2869,7 +3484,11 @@ namespace TD_1
                 chaine += Convertir_Int_En_Char(val);
             }
             #endregion
-            return chaine;
+
+            texte = "Masque de format appliqué : " + masque_de_format + "\n"
+                + "Version du QRCode : " + version + "\n"
+                + "Chaine de caractères : " + chaine;
+            return texte;
         }
         #endregion
     }
