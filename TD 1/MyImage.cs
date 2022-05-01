@@ -331,7 +331,7 @@ namespace TD_1
                 Console.WriteLine("-------------------------------------------------------------------------------------------------");
             }
         }
-        public int Puissance(int x, int exp, int valeur = 1)
+        public static int Puissance(int x, int exp, int valeur = 1)
         {
             if(exp == 0)
             {
@@ -493,7 +493,7 @@ namespace TD_1
             return binaire;
         }
 
-        public string ConvertirInt_To_stringBinaire(int nb)
+        public static string ConvertirInt_To_stringBinaire(int nb)
         {
             string binaire = "";
             for (int i = 0; i < 8; i++)
@@ -1343,7 +1343,7 @@ namespace TD_1
         /// </summary>
         /// <param name="c"></param>
         /// <returns></returns>
-        public int Convertir_Char_En_Int(char c)
+        public static int Convertir_Char_En_Int(char c)
         {
 
             switch (c)
@@ -1453,7 +1453,7 @@ namespace TD_1
         /// <param name="remplissage_Octet_Chaine_Finale"></param>
         /// <param name="taille"></param>
         /// <returns></returns>
-        public byte[] Convertir_Int_En_Tab_De_Byte(int nb, int nb_bits, int remplissage_Octet_Chaine_Finale, int taille) 
+        public static byte[] Convertir_Int_En_Tab_De_Byte(int nb, int nb_bits, int remplissage_Octet_Chaine_Finale, int taille) 
         {
             byte[] retour = new byte[taille];
             for (int i = 0; i < taille * 8; i++)
@@ -1490,7 +1490,7 @@ namespace TD_1
         /// <param name="chaine"></param>
         /// <param name="version"></param>
         /// <returns></returns>
-        public byte[] Convertir_Chaine_Char(string chaine, int version)  
+        public static byte[] Convertir_Chaine_Char(string chaine, int version)  
         {                                                  // Fonctionne sur test hello world
                                                           //Tester le chgmt de découpe vers convertir int en bytes tab    
                                                          //Peut etre moyen de faire tt plus facilement en travaillant sur les octets sous forme d'int
@@ -1659,7 +1659,7 @@ namespace TD_1
         /// <param name="chaine_non_ECC"></param> Chaine de caractères convertie en octets
         /// <param name="masque"/> </param> Applique ou non le masque. Utilisé aussi dans le debogage pour savoir si les bits ont bien été placé
         /// <returns></returns> Retourne : QRCode
-        public MyImage QRCode(int version, int[] masque_de_format, byte[] chaine_non_ECC, bool masque)
+        public static MyImage QRCode(int version, int[] masque_de_format, byte[] chaine_non_ECC, bool masque)
         {
             MyImage retour = new MyImage(0, 0);
             string donnee_binaire = "";
@@ -2271,10 +2271,15 @@ namespace TD_1
                 decodage = new int[152];
             }
 
-            else
+            else if(this.height == 25)
             {
                 version = 2;
                 decodage = new int[272];
+            }
+
+            else
+            {
+                return "QRCode ou Image non traitable";
             }
             #endregion
 

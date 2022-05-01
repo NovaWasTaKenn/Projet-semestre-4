@@ -133,18 +133,272 @@ namespace TD_1
             }*/
             #endregion
 
+            Console.WriteLine("Projet Scientifique Informatique A2");
+            Console.ReadLine();
 
-            string name = "foret1600par900.bmp";
-            MyImage image = new MyImage(name);
-    
-            Console.WriteLine("Type de l'image : "+ image.Type);
+            Console.Write("Saisir le nom du fichier que vous voulez traiter : ");
+            string nomFichier = Console.ReadLine();
+            Console.WriteLine();
+            while (File.Exists(nomFichier + ".bmp") == false)
+            {
+                Console.Write("Le fichier que vous voulez traiter n'existe pas. Saisir un autre : ");
+                nomFichier = Console.ReadLine();
+                Console.Clear();
+            }
+
+            Console.Clear();
+            string imageTraitee = nomFichier + ".bmp";
+            MyImage image = new MyImage(imageTraitee);
+
+            Console.WriteLine("Informations de l'image traitée : \n");
+            Console.WriteLine("Nom du fichier : " + nomFichier);
+            Console.WriteLine("Type de l'image : " + image.Type);
             Console.WriteLine("Taille en octets de l'image : " + image.Size);
             Console.WriteLine("Largeur en pixels de l'image : " + image.Width);
             Console.WriteLine("Hauteur en pixels de l'image : " + image.Height);
-            Console.WriteLine("Nombre de bits par pixel :" + image.Bits_per_color);
+            Console.WriteLine("Nombre de bits par pixel : " + image.Bits_per_color);
             Console.WriteLine();
+            Process.Start(imageTraitee);
+            Console.ReadKey();
 
+            Console.WriteLine("Si vous voulez arrêter le programme, appuyez sur Escape");
+            Console.WriteLine("Sinon, appuyez sur une autre touche");
 
+            while (Console.ReadKey().Key != ConsoleKey.Escape)
+            {
+                Console.Clear();
+                Console.WriteLine("Traitement de l'image\n");
+                Console.WriteLine("Tapez le numéro en fonction de ce que vous voulez faire : \n");
+                Console.WriteLine("1 : Noir et Blanc");
+                Console.WriteLine("2 : Rotation");
+                Console.WriteLine("3 : Aggrandissement et Rétrécissement");
+                Console.WriteLine("4 : Effet Miroir");
+                Console.WriteLine("5 : Détection des contours");
+                Console.WriteLine("6 : Renforcement des bords");
+                Console.WriteLine("7 : Floutage");
+                Console.WriteLine("8 : Repoussage");
+                Console.WriteLine("9 : Fractale");
+                Console.WriteLine("10 : Histogramme");
+
+                Console.WriteLine("\nPour coder et décoder une image cachée : ");
+                Console.WriteLine("11 : Coder");
+                Console.WriteLine("12 : Décoder");
+
+                Console.WriteLine("\nPour coder et décoder un QRCode : ");
+                Console.WriteLine("13 : Création d'un QRCode");
+                Console.WriteLine("14 : Décoder un QRCode");
+                Console.WriteLine();
+
+                int reponse = Convert.ToInt32(Console.ReadLine());
+                Console.ReadKey();
+                Console.Clear();
+
+                switch(reponse)
+                {
+                    case 1:
+                        Console.WriteLine("NOIR ET BLANC");
+                        image.CouleurToNoiretBlanc().ToFile(nomFichier + "_NoiretBlanc", "bmp");
+                        Console.WriteLine("Nom du fichier : " + nomFichier + "_NoiretBlanc");
+                        Process.Start(nomFichier + "_NoiretBlanc.bmp");
+                        break;
+
+                    case 2:
+                        Console.WriteLine("ROTATION\n");
+                        Console.Write("Saisir un angle de rotation de l'image : ");
+                        int rotation = Convert.ToInt32(Console.ReadLine());
+                        while(rotation < 0)
+                        {
+                            Console.Write("Saisir un angle de rotation de l'image : ");
+                            rotation = Convert.ToInt32(Console.ReadLine());
+                        }
+                        Console.Write("Sens horaire ? (Oui ou Non) : ");
+                        string sens = Console.ReadLine().ToLower();
+                        bool sens_horaire;
+                        if (sens == "oui")
+                        {
+                            sens_horaire = true;
+                        }
+                        else
+                        {
+                            sens_horaire = false;
+                        }
+
+                        image.RotationV2(rotation, sens_horaire).ToFile(nomFichier + "_Rotation", "bmp");
+                        Console.WriteLine("\nNom du fichier : " + nomFichier + "_Rotation");
+                        Process.Start(nomFichier + "_Rotation.bmp");
+                        break;
+
+                    case 3:
+                        Console.WriteLine("Aggrandissement et Rétrécissement\n".ToUpper());
+                        Console.Write("Saisir une valeur d'aggradissement et de rétrécissement :");
+                        int valeur = Convert.ToInt32(Console.ReadLine());
+                        while (valeur < 0)
+                        {
+                            Console.Write("Saisir une valeur d'aggradissement et de rétrécissement :");
+                            valeur = Convert.ToInt32(Console.ReadLine());
+                        }
+
+                        image.Aggrandir(valeur).ToFile(nomFichier + "_Aggrandie", "bmp");
+                        Console.WriteLine("\nNom du fichier : " + nomFichier + "_Aggrandie");
+                        Process.Start(nomFichier + "_Aggrandie.bmp");
+
+                        image.Rétrecissement(valeur).ToFile(nomFichier + "_Rétrécie", "bmp");
+                        Console.WriteLine("\nNom du fichier : " + nomFichier + "_Rétrécie");
+                        Process.Start(nomFichier + "_Rétrécie.bmp");
+                        break;
+
+                    case 4:
+                        Console.WriteLine("Effet Miroir".ToUpper());
+                        image.EffetMiroir().ToFile(nomFichier + "_EffetMiroir", "bmp");
+                        Console.WriteLine("Nom du fichier : " + nomFichier + "_EffetMiroir");
+                        Process.Start(nomFichier + "_EffetMiroir.bmp");
+                        break;
+
+                    case 5:
+                        Console.WriteLine("Détection des contours".ToUpper());
+                        int[,] matrice_détectiondescontours = { { 0, 1, 0 }, { 1, -4, 1 }, { 0, 1, 0 } };
+                        image.Convolution(matrice_détectiondescontours, 1).ToFile(nomFichier + "_DectContour", "bmp");
+                        Console.WriteLine("Nom du fichier : " + nomFichier + "_DecContour");
+                        Process.Start(nomFichier + "_DectContour.bmp");
+                        break;
+
+                    case 6:
+                        Console.WriteLine("Renforcement des bords".ToUpper());
+                        int[,] matrice_renforcementdesbords = { { 0, 0, 0 }, { -1, 1, 0 }, { 0, 0, 0 } };
+                        image.Convolution(matrice_renforcementdesbords, 1).ToFile(nomFichier + "_RenfContour", "bmp");
+                        Console.WriteLine("Nom du fichier : " + nomFichier + "_RenfContour");
+                        Process.Start(nomFichier + "_RenfContour.bmp");
+                        break;
+
+                    case 7:
+                        Console.WriteLine("Floutage".ToUpper());
+                        int[,] matrice_floutage = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+                        image.Convolution(matrice_floutage, 9).ToFile(nomFichier + "_Flou", "bmp");
+                        Console.WriteLine("Nom du fichier : " + nomFichier + "_Flou");
+                        Process.Start(nomFichier + "_Flou.bmp");
+                        break;
+
+                    case 8:
+                        Console.WriteLine("Repoussage".ToUpper());
+                        int[,] matrice_repoussage = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
+                        image.Convolution(matrice_repoussage, 9).ToFile(nomFichier + "_Repoussage", "bmp");
+                        Console.WriteLine("Nom du fichier : " + nomFichier + "_Repoussage");
+                        Process.Start(nomFichier + "_Repoussage.bmp");
+                        break;
+
+                    case 9:
+                        Console.WriteLine("Fractale".ToUpper());
+                        break;
+
+                    case 10:
+                        Console.WriteLine("Histogramme".ToUpper());
+                        image.Histogramme().ToFile(nomFichier + "_Histogramme", "bmp");
+                        Console.WriteLine("Nom du fichier : " + nomFichier + "_Histogramme");
+                        Process.Start(nomFichier + "_Histogramme.bmp");
+                        break;
+
+                    case 11:
+                        Console.WriteLine("Coder une image dans une autre".ToUpper());
+                        Console.Write("\nSaisir le nom du fichier que vous voulez cacher dans l'image traitée : ");
+                        string imagecachee = Console.ReadLine();
+
+                        while(File.Exists(imagecachee + ".bmp") == false)
+                        {
+                            Console.Write("Le fichier que vous voulez traiter n'existe pas. Saisir un autre : ");
+                            imagecachee = Console.ReadLine();
+                            Console.Clear();
+                        }
+
+                        string imageacachee = imagecachee + ".bmp";
+                        MyImage image1 = new MyImage(imageacachee);
+
+                        image.CacherImage_dans_Image(image1).ToFile(imagecachee + "_CachéeDans_" + nomFichier, "bmp");
+                        Console.WriteLine("Nom du fichier : " + imagecachee + "_CachéeDans_" + nomFichier);
+                        Process.Start(imagecachee + "_CachéeDans_" + nomFichier + ".bmp");
+                        break;
+
+                    case 12:
+                        Console.WriteLine("Décoder une image".ToUpper());
+                        Console.Write("\nSaisir le nom du fichier que vous voulez décoder : ");
+                        string decoder = Console.ReadLine();
+
+                        while (File.Exists(decoder + ".bmp") == false)
+                        {
+                            Console.Write("Le fichier que vous voulez traiter n'existe pas. Saisir un autre : ");
+                            decoder = Console.ReadLine();
+                            Console.Clear();
+                        }
+
+                        string imageDecoder = decoder + ".bmp";
+                        MyImage image2 = new MyImage(imageDecoder);
+
+                        image2.DecoderImageCachee().ToFile(decoder + "_Décodée", "bmp");
+                        Console.WriteLine("Nom du fichier : " + decoder + "_Décodée");
+                        Process.Start(decoder + "_Décodée.bmp");
+                        break;
+
+                    case 13:
+                        Console.WriteLine("Création d'un QRCode".ToUpper());
+                        Console.Write("\nSaisir une phrase à encoder : ");
+                        string phrase = Console.ReadLine().ToUpper();
+                        while(phrase.Length > 45)
+                        {
+                            Console.Write("Le code ne traite pas les chaines de caractères supérieures à 45. Saisir une autre phrase : ");
+                            phrase = Console.ReadLine().ToUpper();
+                        }
+
+                        byte[] phraseEncodee;
+                        int[] masque_de_format = { 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
+                        if (phrase.Length <=25)
+                        {
+                            Console.WriteLine("QRCode Version 1");
+                            phraseEncodee = MyImage.Convertir_Chaine_Char(phrase, 1);
+                            MyImage.QRCode(1, masque_de_format, phraseEncodee, false).Aggrandir(10).ToFile("QRCodeV1_SansMasque", "bmp");
+                            MyImage.QRCode(1, masque_de_format, phraseEncodee, true).Aggrandir(10).ToFile("QRCodeV1_AvecMasque", "bmp");
+                            Console.WriteLine("Nom du fichier sans masque : QRCodeV1_SansMasque");
+                            Console.WriteLine("Nom du fichier avec masque : QRCodeV1_AvecMasque");
+                            Process.Start("QRCodeV1_SansMasque.bmp");
+                            Process.Start("QRCodeV1_AvecMasque.bmp");
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("QRCode Version 2");
+                            phraseEncodee = MyImage.Convertir_Chaine_Char(phrase, 2);
+                            MyImage.QRCode(2, masque_de_format, phraseEncodee, false).Aggrandir(10).ToFile("QRCodeV2_SansMasque", "bmp");
+                            MyImage.QRCode(2, masque_de_format, phraseEncodee, true).Aggrandir(10).ToFile("QRCodeV2_AvecMasque", "bmp");
+                            Console.WriteLine("Nom du fichier sans masque : QRCodeV2_SansMasque");
+                            Console.WriteLine("Nom du fichier avec masque : QRCodeV2_AvecMasque");
+                            Process.Start("QRCodeV2_SansMasque.bmp");
+                            Process.Start("QRCodeV2_AvecMasque.bmp");
+
+                        }
+                        break;
+
+                    case 14:
+                        Console.WriteLine("Décoder un QRCode".ToUpper());
+                        Console.Write("\nSaisir le nom du fichier du QRCode que vous voulez décoder : ");
+                        string QRCode = Console.ReadLine();
+
+                        while (File.Exists(QRCode + ".bmp") == false)
+                        {
+                            Console.Write("Le fichier que vous voulez traiter n'existe pas. Saisir un autre : ");
+                            QRCode = Console.ReadLine();
+                            Console.Clear();
+                        }
+
+                        string QRCodeDecodee= QRCode + ".bmp";
+                        MyImage image3 = new MyImage(QRCodeDecodee);
+
+                        string decodage = image3.Decoder_QRCode();
+                        Console.WriteLine(decodage);
+                        break;
+
+                    default:
+                        Console.WriteLine("Veuillez saisir un nombre parmi la liste");
+                        break;
+                }
+            }
             //Console.WriteLine("Convertir un format little endian en entier : {214 , 5 , 0 , 0} en entier ");
             //byte[] test_convert1 = {214, 5, 0, 0};
             //Console.WriteLine(image.Convertir_Endian_To_Int(test_convert1));
