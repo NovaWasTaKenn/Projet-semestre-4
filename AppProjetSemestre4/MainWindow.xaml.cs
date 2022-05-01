@@ -20,32 +20,37 @@ namespace AppProjetSemestre4
         pb avec l'image par défaut, elle est considérée nnull qd le diretory de sortie a pas été défini                         OK il faut nécéssairement choisir une image maintenant image par défaut seulement pour le style de la fenetre
         - Possibilité de faire plusieurs traitements à la fois                                                                  OK
                 - Gérer lancer                                                                                                  OK
+        Fractale à impémenter : menu déroulant a finir peut etre un bouton qui fait apparaitre un Sp de bouton, code intéraction + back    OK
         */
 
-    /*Reste à faire
-        Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove       Geré A voir au cours de l'utilisation pas de pb poour l'instant
 
-        - Resize Soit technique des tailles en mode auto soit calculer le ratio de resize et l'appliquer a ttes les tailles    Commencé à verif mettre une taille min mainwindow le menu resize pas
+    /*Reste à faire
+        Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove       Geré A voir au cours de l'utilisation pas de pb poour l'instant    : la event pour activé doit etre MouseLeftDown le bouton gauche pas le droit doit activé la méthode   Nnormalement OK
 
         Gérer les possibles pb d''IO avec try Catch + messagebox
         POssibilité de fermer les fenetres secondaires sans rien rentrer dedans et sans crash --> soit avoir une valeur par défaut soit try catch + message pour indiquer que l'opération sélectionner ne pourra pas etre réalisée
                 
                         -------->               Bien avancé géré sur entrée du dossier save + entrée image + entrée porcent angle coeff, ...
 
+
         Retrecissement sort div par 0 qd poucentage = 50
 
-        sur le image_click parfois mainWindow.ImageBox.Source sort ue nullexception avec MainWindow null
+        sur le image_click parfois mainWindow.ImageBox.Source sort ue nullexception avec mainWindow null qd on selectionnne une image 32 try catch
 
         - aide mode d'emploi (possiblité d'avoir des tips qui apparaissent qd on hover sur un controle (ToolTip propriété))
+                Indiquer que par défaut fractale fait le dernier fractale sélectionné ou l'index 0
+                Pour Coder Décoder, l'image cachée ne doit pas être trop petite par rapport à l'image cachette sinon on ne la voie pas 
         
-        Fractale à impémenter : menu déroulant a finir peut etre un bouton qui fait apparaitre un Sp de bouton, code intéraction + back
+        
+
+       Bouton croix pour fermer les fenetres secondaires sans faire d'autres actions
 
      */
 
     /*Pas important
      - créer des nouvelles images pr croix fermer et trait pour avoir les symboles en blanc
         - Activable depuis un menu option
-
+        - Resize Soit technique des tailles en mode auto soit calculer le ratio de resize et l'appliquer a ttes les tailles    Commencé à verif mettre une taille min mainwindow le menu resize pas
      */
 
 
@@ -70,18 +75,26 @@ namespace AppProjetSemestre4
         private static string imageName= "";
         private static string savePath;
         private static double angle;
+
         private static bool sens;
         private static int pourcent_AeR;
         private static int coefficient_flou;
         private static string imageCachéepath;
         private static string textQR = "";
         private Queue<string> queue_fonctions = new Queue<string>();
-        private static int queueCount;
+        private int coté;
+        private bool fractale_Random = false;
+        private int index_Fractale = 0;
+        private bool fractale_Personnalisé = false;
+        private double reel_Personnalisé;
+        private double im_Personnalisé;
+        private int itérations_Personnalisé;
+        private int mult_Couleurs_Personnalisé;
 
         SolidColorBrush bckBrushPressed;
         SolidColorBrush bckBrush;
 
-        bool[] button_pressed = new bool[13]; 
+        bool[] button_pressed = new bool[14]; 
 
         
         #region accesseur
@@ -115,6 +128,48 @@ namespace AppProjetSemestre4
             get { return pourcent_AeR; }
             set { pourcent_AeR = value; }
         }
+        public int Coté
+        {
+            get { return coté; }
+            set { coté = value; }
+        }
+        public bool Fractale_Random
+        {
+            get { return fractale_Random; }
+          
+            set { fractale_Random = value; }
+        }
+        public bool Fractale_Personnalisé
+        {
+            get { return fractale_Personnalisé; }
+            set { fractale_Personnalisé = value; }
+        }
+        public int Index_Fractale
+        {
+            get { return index_Fractale; }
+            set { index_Fractale = value; }
+        }
+        public int Mult_Couleurs_Personnalisé
+        {
+            get { return mult_Couleurs_Personnalisé; }
+            set { mult_Couleurs_Personnalisé = value; }
+        }
+        public int Itérations_Personnalisé
+        {
+            get { return itérations_Personnalisé; }
+            set { itérations_Personnalisé = value; }
+        }
+        public double Reel_Personnalisé
+        {
+            get { return reel_Personnalisé; }
+            set { reel_Personnalisé = value; }
+        }
+        public double Im_Personnalisé
+        {
+            get { return im_Personnalisé; }
+            set { im_Personnalisé = value; }
+        }
+
         public static string ImageName
         {
             get { return imageName; }
@@ -174,12 +229,13 @@ namespace AppProjetSemestre4
                 {"FcnRpg", 7 },
                 {"FcnHst", 9 },
                 {"FcnDc", 11 },
+                {"FcnLc",13 },
 
             };
 
             int index = Fcn_index[btn.Name];
 
-            if (button_pressed[index] == true) 
+            if (button_pressed[index] == true) //Tester le background du bouton aurait été mieux
             { 
                 button_pressed[index] = false; 
                 btn.Background = bckBrush;
@@ -189,7 +245,7 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if(element != btn.Name) { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -200,7 +256,7 @@ namespace AppProjetSemestre4
                 win3.Show();
                 button_pressed[index] = true; btn.Background = bckBrushPressed;
                 queue_fonctions.Enqueue(btn.Name);
-                queueCount = queue_fonctions.Count;
+                
             }
         }
 
@@ -218,7 +274,7 @@ namespace AppProjetSemestre4
                     if (element != "FcnRo") { queue_fonctions.Enqueue(element); }
                     
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -230,7 +286,7 @@ namespace AppProjetSemestre4
                 button_pressed[1] = true; 
                 FcnRo.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnRo");
-                queueCount = queue_fonctions.Count;
+               
             }
 
         }
@@ -249,7 +305,7 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if (element != "FcnAeR") { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -261,7 +317,7 @@ namespace AppProjetSemestre4
                 button_pressed[2] = true; 
                 FcnAeR.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnAeR");
-                queueCount = queue_fonctions.Count;
+                
             }
         }
         public void FcnFl_Click(object sender, RoutedEventArgs e)
@@ -277,7 +333,7 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if (element != "FcnFl") { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -289,7 +345,7 @@ namespace AppProjetSemestre4
                 button_pressed[6] = true; 
                 FcnFl.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnFl");
-                queueCount = queue_fonctions.Count;
+                
             }
         }
 
@@ -306,9 +362,9 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if (element != "FcnCo") { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
-            else
+            if(button_pressed[10] == false)
             {
                 Window6 win6 = new Window6();
                 win6.Owner = this;
@@ -318,13 +374,36 @@ namespace AppProjetSemestre4
                 button_pressed[10] = true; 
                 FcnCo.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnCo");
-                queueCount = queue_fonctions.Count;
+                
             }
         }
         public void FcnFrl_Click(object sender, RoutedEventArgs e)
         {
-
-        } // Penser à interdire la sélection si d'autres traitements son sélectionnés : si queueCount >0 nop 
+            Button btn = (Button)sender;
+            if (button_pressed[8] == true)
+            {
+                button_pressed[8] = false;
+                FcnFrl.Background = bckBrush;
+                int count = queue_fonctions.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    string element = queue_fonctions.Dequeue();
+                    if (element != "FcnCo") { queue_fonctions.Enqueue(element); }
+                }
+                
+            }
+            if(button_pressed[8] == false && queue_fonctions.Count == 0)
+            {
+                Fractale fractale = new Fractale();
+                fractale.Owner = this;
+                fractale.Left = fractale.Owner.Left + fractale.Owner.Width;
+                fractale.Top = fractale.Owner.Top;
+                fractale.Show();
+                button_pressed[8] = true;
+                FcnFrl.Background = bckBrushPressed;
+                queue_fonctions.Enqueue("FcnFrl");
+            }
+        } 
         public void FcnCr_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
@@ -338,9 +417,9 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if (element != "FcnCr") { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
-            else
+            if(button_pressed[12] == false && queue_fonctions.Count == 0)
             {
                 CreationQR creationQR = new CreationQR();
                 creationQR.Owner = this;
@@ -350,7 +429,7 @@ namespace AppProjetSemestre4
                 button_pressed[12] = true;
                 FcnCr.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnCr");
-                queueCount = queue_fonctions.Count;
+               
             }
         }
         public void RunFlou(object sender, EventArgs e)
@@ -417,6 +496,7 @@ namespace AppProjetSemestre4
                         image_fcn = image.Convolution(Flou);
                         break;
                     case "FcnFrl":
+                        image_fcn = MyImage.FractaleJulia(coté, fractale_Random, index_Fractale, fractale_Personnalisé, reel_Personnalisé, im_Personnalisé, itérations_Personnalisé, mult_Couleurs_Personnalisé);
                         break;
                     case "FcnHst":
                         image_fcn = image.Histogramme();
@@ -432,10 +512,22 @@ namespace AppProjetSemestre4
                         int version = 1;
                         Console.WriteLine(textQR);
                         if(textQR.Length <= 25) { version = 1; }
-                        if(textQR.Length > 25) { version = 2; }
+                        if(textQR.Length > 25 && textQR.Length <= 47) { version = 2; }
+                        if(textQR.Length < 47)
+                        {
+                            MessageBox.Show("La phrase doit comprendre au maximum 47 caractères", "erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                         byte[] donnee = image.Convertir_Chaine_Char(textQR, version);
                         int[] masquage = { 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
                         image_fcn = image.QRCode(version, masquage,donnee, true);
+
+                        ImageBorder.MaxHeight = 150;
+                        ImageBorder.MaxWidth = 150;
+                        break;
+                    case "FcnLc":
+                        string message = image.Decoder_QRCode();
+                        MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+
                         break;
                 }
                 image = image_fcn;
@@ -443,10 +535,14 @@ namespace AppProjetSemestre4
 
             if (queueCount > 1) { fonction = "mixte"; }
 
-            string[] fichier_sortie_existants = Directory.GetFiles(savePath, fonction + "*");
-            nom_fichier = fonction + Convert.ToString(fichier_sortie_existants.Length);
-            image.ToFile(savePath+"\\"+nom_fichier+".bmp");
-            ImageBox.Source = new BitmapImage(new Uri(savePath + "\\" + nom_fichier + ".bmp"));
+            if (fonction != "FcnLc") 
+            {
+                string[] fichier_sortie_existants = Directory.GetFiles(savePath, fonction + "*");
+                nom_fichier = fonction + Convert.ToString(fichier_sortie_existants.Length);
+                image.ToFile(savePath + "\\" + nom_fichier + ".bmp");
+                ImageBox.Source = new BitmapImage(new Uri(savePath + "\\" + nom_fichier + ".bmp"));
+            }
+           
 
 
             foreach(var element in SpMenu.Children.OfType<Button>())
@@ -457,6 +553,9 @@ namespace AppProjetSemestre4
             {
                 button_pressed[i] = false;
             }
+
+            ImageBox.MaxHeight = 10000;
+            ImageBox.MaxWidth = 10000;
         }
         public void FermerMain_Click(object sender, RoutedEventArgs e)
         {

@@ -33,14 +33,14 @@ namespace AppProjetSemestre4
             {
                 string imagePath= openFileDialog.FileName;
                 string nom = "";
-                for(int i = imagePath.Length; !imagePath[i].Equals('\\') ; i--)
+                for(int i = imagePath.Length-1; !imagePath[i].Equals('\\') ; i--)
                 {
                     nom =  imagePath[i] + nom;
                 }
 
                 MainWindow.ImagePath = imagePath;
                 MainWindow.ImageName = nom;
-                TblCheminImage2.Text = MainWindow.ImageName;
+                TblCheminImage1.Text = MainWindow.ImageName;
             }
 
             mainWindow.ImageBox.Source = new BitmapImage(new Uri(MainWindow.ImagePath));
@@ -55,12 +55,12 @@ namespace AppProjetSemestre4
             {
                 string imagecachéPath = openFileDialog.FileName;
                 string nom = "";
-                for (int i = imagecachéPath.Length-1; !imagecachéPath[i].Equals('\u005C'); i--)
+                for (int i = imagecachéPath.Length-1; !imagecachéPath[i].Equals('\\'); i--)
                 {
                     nom = imagecachéPath[i] + nom;
                 }
                 MainWindow.ImageCachéePath = imagecachéPath;
-                TblCheminImage1.Text = nom;
+                TblCheminImage2.Text = nom;
             }
         }
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
