@@ -3434,7 +3434,7 @@ namespace TD_1
                 {
                     for (int j = 0; j < stock.Length; j++)
                     {
-                        stock[i] = bit_carac[i + j];
+                        stock[j] = bit_carac[i + j];
                     }
 
                     val = ConvertirBinaire_To_Int(stock);
