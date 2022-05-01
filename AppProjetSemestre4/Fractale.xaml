@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         Title="Fractale" 
         MaxWidth="700"
-        MinHeight="250"
+        MinHeight="300"
         MaxHeight="500"
         Background="#FF828282"
         WindowStyle="None"
-        MouseDown="Window1_MouseDown"
+        MouseDown="Window2_MouseDown"
         >
 
     <Window.Resources>
@@ -33,18 +33,49 @@
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
         </ControlTemplate>
-        <ControlTemplate x:Key="ExpanderTemplate" TargetType="Expander">
-            <Border  CornerRadius="6" Padding="4" Background="#FF828282">
-                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </Border>
+        <ControlTemplate x:Key="Expanderbutton" TargetType="ToggleButton">
+            
         </ControlTemplate>
+        <ControlTemplate x:Key="ExpanderTemplate" TargetType="Expander">
+            <Border x:Name="ExpanderBorder" CornerRadius="6" Padding="7" Background="#FF828282">
+                <Grid >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <ToggleButton>
+                        <ContentPresenter x:Name="HeaderContent" Content="{TemplateBinding Header}" HorizontalAlignment="Center"/>
+                    </ToggleButton>
+
+                    
+
+                    <ContentPresenter x:Name="ExpanderContent" Content="{TemplateBinding Content}" Visibility="Collapsed"/>
+                </Grid>
+            </Border>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsExpanded" Value="True" >
+                    <Setter TargetName="ExpanderContent" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="ExpanderBorder" Property="Padding" Value="1"/>
+                </Trigger>
+                <Trigger Value="True">
+                    
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+        
+        
     </Window.Resources>
     
     <Grid Background="#FF222222" Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*" MinHeight="125" />
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="*" MinHeight="60"/>
+            <RowDefinition Height="3*" MinHeight="125" />
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="*" MinHeight="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" MinHeight="10"/>
+            <RowDefinition Height="2*" MinHeight="60"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -52,30 +83,62 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel VerticalAlignment="Center">
-            <TextBlock Text="Sélectionner le mode aléatoire" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center"/>
-            <Button Click ="BtnSh_Click" ClickMode="Press" VerticalAlignment="Center" Content="Aléatoire" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="5"/>
+        <StackPanel VerticalAlignment="Center" Grid.ColumnSpan="3" Grid.Row="1" Panel.ZIndex="1">
+            <TextBlock Text="Largeur de l'image" TextWrapping="WrapWithOverflow" TextAlignment="Center" Foreground="White" FontSize="14"/>
+            <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0">
+                <TextBox x:Name ="TbxCoté" Background="#FF4B4B4B" Foreground="White"/>
+            </Border>
+
         </StackPanel>
-        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+
+        <StackPanel x:Name="Sp1" VerticalAlignment="Center">
+            <TextBlock Text="Sélectionner le mode aléatoire" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center"/>
+            <Button x:Name="BtnAléatoire" Click ="Aléatoire_Click" ClickMode="Press" VerticalAlignment="Center" Content="Aléatoire" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="5"/>
+        </StackPanel>
+        <StackPanel x:Name="Sp2" Grid.Column="1" VerticalAlignment="Top" Grid.RowSpan="2">
+            <StackPanel.Margin>
+                <Binding ElementName="Sp1" Path="Margin"/>
+            </StackPanel.Margin>
             <TextBlock Text="Sélectionner un fractale pré-existant" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center"/>
-            <Expander Name="ExpFractale" Grid.RowSpan="2" Margin="5"  Header="Bibliothèque"  Foreground="White">
+            <Expander Panel.ZIndex="2" Name="ExpFractale" Grid.RowSpan="2" Margin="5"  Header="Bibliothèque"  Foreground="White" Template="{StaticResource ExpanderTemplate}" ExpandDirection="Down">
                 <Border  CornerRadius="4" BorderThickness="3" BorderBrush="#FF828282">
-                    <StackPanel  Name="SpFractale"  Background="#FF4B4B4B">
-                        <Button Click ="BtnSh_Click" ClickMode="Press" VerticalAlignment="Center" Content="Aléatoire" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="5"/>
-                        <Button Click ="BtnSh_Click" ClickMode="Press" VerticalAlignment="Center" Content="Aléatoire" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="5"/>
+                    <StackPanel  Name="SpFractale"  Background="#FF4B4B4B" CanVerticallyScroll="True" MaxHeight="200">
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_0" Content="Julia" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_1" Content="Dendrite" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_2" Content="Poussière_Fatou_1" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_3" Content="Poussière_Fatou_2" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_4" Content="Poussière_Fatou_3" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_5" Content="Lapin_Douady" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_6" Content="Chou_fleur" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_7" Content="Siegel_epais" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_8" Content="Avion" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_9" Content="Avion epais" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_10" Content="Lemniscate de Bernouilli" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_11" Content="Galaxie 1" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_12" Content="Galaxie 2" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_13" Content="Galaxie 3" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_14" Content="Galaxie 4" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
                     </StackPanel>
                 </Border>
-                
+
             </Expander>
         </StackPanel>
         <StackPanel Grid.Column="2" VerticalAlignment="Center">
             <TextBlock Text="Sélectionner le mode personnalisé" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center"/>
-            <Button Click ="BtnSh_Click" ClickMode="Press" VerticalAlignment="Center" Content="Personnalisé" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="5"/>
+            <Button x:Name="BtnPersonnalisé" Click ="Personnalisé_Click" ClickMode="Press" VerticalAlignment="Center" Content="Personnalisé" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="5"/>
         </StackPanel>
 
 
-        <Grid Grid.Row="1" Grid.ColumnSpan="3"  Visibility="Visible">
+        <!--<Button Click ="BtnSh_Click" ClickMode="Press" VerticalAlignment="Center" Content="Aléatoire" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="5"/>
+            <StackPanel>
+                
+            </StackPanel>-->
+
+        
+
+        <Grid x:Name="GrdPersonnalisé" Grid.Row="3" Grid.ColumnSpan="3"  Visibility="Collapsed">
             <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
@@ -85,26 +148,26 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="Partie réelle" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center" />
                 <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" HorizontalAlignment="Center" Margin="0,7,0,0" MinWidth="150">
                     <TextBox x:Name ="TbxRe" Background="#FF4B4B4B" Foreground="White"/>
                 </Border>
                 
             </StackPanel>
-            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+            <StackPanel Grid.Column="2" Grid.Row="1" VerticalAlignment="Center">
                 <TextBlock Text="Partie imaginaire" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center"/>
                 <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" HorizontalAlignment="Center" Margin="0,7,0,0" MinWidth="150">
                     <TextBox x:Name ="TbxIm" Background="#FF4B4B4B" Foreground="White"/>
                 </Border>
             </StackPanel>
-            <StackPanel Grid.Column="2" Grid.Row="1" VerticalAlignment="Center">
+            <StackPanel Grid.Column="2" Grid.Row="2" VerticalAlignment="Center">
                 <TextBlock Text="Nombre d'itérations" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center"/>
                 <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" HorizontalAlignment="Center" Margin="0,7,0,0" MinWidth="150">
                     <TextBox x:Name ="TbxIteration" Background="#FF4B4B4B" Foreground="White" Padding="75,0"/>
                 </Border>
             </StackPanel>
-            <StackPanel Grid.Row="1" VerticalAlignment="Center">
+            <StackPanel Grid.Row="2" VerticalAlignment="Center">
                 <TextBlock Text="Coefficient" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center"/>
                 <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" HorizontalAlignment="Center" Margin="0,7,0,0" MinWidth="150">
                     <TextBox x:Name ="TbxCoeff" Background="#FF4B4B4B" Foreground="White"/>
@@ -112,7 +175,7 @@
             </StackPanel>
         </Grid>
 
-        <Button x:Name ="BtnFermer" Click="BtnFermer_Click" ClickMode="Press" Grid.Column="1" Grid.Row="3" Content ="Enregistrer et fermer" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Button x:Name ="BtnFermer" Click="BtnFermer_Click" ClickMode="Press" Grid.Column="1" Grid.Row="5" Content ="Enregistrer et fermer" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
     </Grid>
 </Window>

@@ -76,7 +76,14 @@ namespace AppProjetSemestre4
         private static string imageCachéepath;
         private static string textQR = "";
         private Queue<string> queue_fonctions = new Queue<string>();
-        private static int queueCount;
+        private int coté;
+        private bool fractale_Random = true;
+        private int index_Fractale;
+        private bool fractale_Personnalisé = false;
+        private double reel_Personnalisé;
+        private double im_Personnalisé;
+        private int itérations_Personnalisé;
+        private int mult_Couleurs_Personnalisé;
 
         SolidColorBrush bckBrushPressed;
         SolidColorBrush bckBrush;
@@ -115,6 +122,48 @@ namespace AppProjetSemestre4
             get { return pourcent_AeR; }
             set { pourcent_AeR = value; }
         }
+        public int Coté
+        {
+            get { return coté; }
+            set { coté = value; }
+        }
+        public bool Fractale_Random
+        {
+            get { return fractale_Random; }
+          
+            set { fractale_Random = value; }
+        }
+        public bool Fractale_Personnalisé
+        {
+            get { return fractale_Personnalisé; }
+            set { fractale_Personnalisé = value; }
+        }
+        public int Index_Fractale
+        {
+            get { return index_Fractale; }
+            set { index_Fractale = value; }
+        }
+        public int Mult_Couleurs_Personnalisé
+        {
+            get { return mult_Couleurs_Personnalisé; }
+            set { mult_Couleurs_Personnalisé = value; }
+        }
+        public int Itérations_Personnalisé
+        {
+            get { return itérations_Personnalisé; }
+            set { itérations_Personnalisé = value; }
+        }
+        public double Reel_Personnalisé
+        {
+            get { return reel_Personnalisé; }
+            set { reel_Personnalisé = value; }
+        }
+        public double Im_Personnalisé
+        {
+            get { return im_Personnalisé; }
+            set { im_Personnalisé = value; }
+        }
+
         public static string ImageName
         {
             get { return imageName; }
@@ -189,7 +238,7 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if(element != btn.Name) { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -200,7 +249,7 @@ namespace AppProjetSemestre4
                 win3.Show();
                 button_pressed[index] = true; btn.Background = bckBrushPressed;
                 queue_fonctions.Enqueue(btn.Name);
-                queueCount = queue_fonctions.Count;
+                
             }
         }
 
@@ -218,7 +267,7 @@ namespace AppProjetSemestre4
                     if (element != "FcnRo") { queue_fonctions.Enqueue(element); }
                     
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -230,7 +279,7 @@ namespace AppProjetSemestre4
                 button_pressed[1] = true; 
                 FcnRo.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnRo");
-                queueCount = queue_fonctions.Count;
+               
             }
 
         }
@@ -249,7 +298,7 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if (element != "FcnAeR") { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -261,7 +310,7 @@ namespace AppProjetSemestre4
                 button_pressed[2] = true; 
                 FcnAeR.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnAeR");
-                queueCount = queue_fonctions.Count;
+                
             }
         }
         public void FcnFl_Click(object sender, RoutedEventArgs e)
@@ -277,7 +326,7 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if (element != "FcnFl") { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -289,7 +338,7 @@ namespace AppProjetSemestre4
                 button_pressed[6] = true; 
                 FcnFl.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnFl");
-                queueCount = queue_fonctions.Count;
+                
             }
         }
 
@@ -306,7 +355,7 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if (element != "FcnCo") { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -318,12 +367,35 @@ namespace AppProjetSemestre4
                 button_pressed[10] = true; 
                 FcnCo.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnCo");
-                queueCount = queue_fonctions.Count;
+                
             }
         }
         public void FcnFrl_Click(object sender, RoutedEventArgs e)
         {
-
+            Button btn = (Button)sender;
+            if (button_pressed[8] == true)
+            {
+                button_pressed[8] = false;
+                FcnFrl.Background = bckBrush;
+                int count = queue_fonctions.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    string element = queue_fonctions.Dequeue();
+                    if (element != "FcnCo") { queue_fonctions.Enqueue(element); }
+                }
+                
+            }
+            if(button_pressed[8] == false && queue_fonctions.Count == 0)
+            {
+                Fractale fractale = new Fractale();
+                fractale.Owner = this;
+                fractale.Left = fractale.Owner.Left + fractale.Owner.Width;
+                fractale.Top = fractale.Owner.Top;
+                fractale.Show();
+                button_pressed[8] = true;
+                FcnFrl.Background = bckBrushPressed;
+                queue_fonctions.Enqueue("FcnFrl");
+            }
         } // Penser à interdire la sélection si d'autres traitements son sélectionnés : si queueCount >0 nop 
         public void FcnCr_Click(object sender, RoutedEventArgs e)
         {
@@ -338,7 +410,7 @@ namespace AppProjetSemestre4
                     string element = queue_fonctions.Dequeue();
                     if (element != "FcnCr") { queue_fonctions.Enqueue(element); }
                 }
-                queueCount = queue_fonctions.Count;
+                
             }
             else
             {
@@ -350,7 +422,7 @@ namespace AppProjetSemestre4
                 button_pressed[12] = true;
                 FcnCr.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnCr");
-                queueCount = queue_fonctions.Count;
+               
             }
         }
         public void RunFlou(object sender, EventArgs e)
@@ -417,6 +489,7 @@ namespace AppProjetSemestre4
                         image_fcn = image.Convolution(Flou);
                         break;
                     case "FcnFrl":
+
                         break;
                     case "FcnHst":
                         image_fcn = image.Histogramme();
