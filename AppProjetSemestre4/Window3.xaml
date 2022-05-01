@@ -8,7 +8,7 @@
         Title="Window2" Height="350" Width="275"
         Background="#FF828282"
         WindowStyle="None"
-        MouseDown="Window3_MouseDown"
+        MouseLeftButtonDown="Window3_MouseDown"
         >
     <Window.Resources>
 

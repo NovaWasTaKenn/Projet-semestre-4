@@ -7,11 +7,12 @@
         mc:Ignorable="d"
         Title="Fractale" 
         MaxWidth="700"
-        MinHeight="300"
+        MinHeight="200"
         MaxHeight="500"
         Background="#FF828282"
         WindowStyle="None"
-        MouseDown="Window2_MouseDown"
+        ResizeMode="NoResize"
+        MouseLeftButtonDown="Window2_MouseDown"
         >
 
     <Window.Resources>
@@ -33,44 +34,60 @@
                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Border>
         </ControlTemplate>
-        <ControlTemplate x:Key="Expanderbutton" TargetType="ToggleButton">
+        <!--<ControlTemplate x:Key="Expanderbutton" TargetType="ToggleButton"></ControlTemplate>-->
             
-        </ControlTemplate>
-        <ControlTemplate x:Key="ExpanderTemplate" TargetType="Expander">
-            <Border x:Name="ExpanderBorder" CornerRadius="6" Padding="7" Background="#FF828282">
-                <Grid >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+        
 
-                    <ToggleButton>
-                        <ContentPresenter x:Name="HeaderContent" Content="{TemplateBinding Header}" HorizontalAlignment="Center"/>
-                    </ToggleButton>
+        <ControlTemplate x:Key="SimpleExpanderButtonTemp" 
+             TargetType="{x:Type ToggleButton}">
 
-                    
-
-                    <ContentPresenter x:Name="ExpanderContent" Content="{TemplateBinding Content}" Visibility="Collapsed"/>
-                </Grid>
+            <Border x:Name="ExpanderButtonBorder"
+                CornerRadius="6" 
+                Padding="7" 
+                Background="#FF828282"
+            >
+                <ContentPresenter x:Name="HeaderContent"
+                    HorizontalAlignment="Center"
+                    ContentSource="Content"/>
             </Border>
-
             <ControlTemplate.Triggers>
-                <Trigger Property="IsExpanded" Value="True" >
-                    <Setter TargetName="ExpanderContent" Property="Visibility" Value="Visible"/>
-                    <Setter TargetName="ExpanderBorder" Property="Padding" Value="1"/>
-                </Trigger>
-                <Trigger Value="True">
-                    
+                <Trigger Property="IsMouseOver"
+                         Value="true">
+                    <Setter Property="FontWeight" Value="Medium"/>
                 </Trigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
-        
+
+
+        <ControlTemplate x:Key="SimpleExpanderTemp" TargetType="{x:Type Expander}">
+            <DockPanel>
+                <ToggleButton x:Name="ExpanderButton"
+                      DockPanel.Dock="Top"
+                      Template="{StaticResource SimpleExpanderButtonTemp}"
+                      Content="{TemplateBinding Header}"
+                      IsChecked="{Binding Path=IsExpanded, 
+                      RelativeSource={RelativeSource TemplatedParent}}"
+                      OverridesDefaultStyle="True"
+                      Padding="1.5,0">
+                </ToggleButton>
+                <ContentPresenter x:Name="ExpanderContent"
+                          Visibility="Collapsed"
+                          DockPanel.Dock="Bottom"/>
+            </DockPanel>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsExpanded" Value="True">
+                    <Setter TargetName="ExpanderContent" 
+              Property="Visibility" Value="Visible"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
         
     </Window.Resources>
     
     <Grid Background="#FF222222" Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="3*" MinHeight="125" />
+            <RowDefinition Height="125" MinHeight="125" />
             <RowDefinition Height="2*"/>
             <RowDefinition Height="*" MinHeight="10"/>
             <RowDefinition Height="Auto"/>
@@ -83,42 +100,42 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel VerticalAlignment="Center" Grid.ColumnSpan="3" Grid.Row="1" Panel.ZIndex="1">
+        <StackPanel Grid.ColumnSpan="3" Grid.Row="1" Panel.ZIndex="1" HorizontalAlignment="Center">
             <TextBlock Text="Largeur de l'image" TextWrapping="WrapWithOverflow" TextAlignment="Center" Foreground="White" FontSize="14"/>
-            <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,5,0,0">
+            <Border Background="#FF828282" BorderThickness="3" CornerRadius="4" BorderBrush="#FF828282" Width="215" VerticalAlignment="Top" Margin="0,5,0,0">
                 <TextBox x:Name ="TbxCoté" Background="#FF4B4B4B" Foreground="White"/>
             </Border>
 
         </StackPanel>
-
+        
+    
         <StackPanel x:Name="Sp1" VerticalAlignment="Center">
             <TextBlock Text="Sélectionner le mode aléatoire" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center"/>
             <Button x:Name="BtnAléatoire" Click ="Aléatoire_Click" ClickMode="Press" VerticalAlignment="Center" Content="Aléatoire" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="5"/>
         </StackPanel>
-        <StackPanel x:Name="Sp2" Grid.Column="1" VerticalAlignment="Top" Grid.RowSpan="2">
-            <StackPanel.Margin>
-                <Binding ElementName="Sp1" Path="Margin"/>
-            </StackPanel.Margin>
+        <StackPanel x:Name="Sp2" Grid.Column="1" VerticalAlignment="Top" Grid.RowSpan="3" Margin="0,30,0,0" Panel.ZIndex="2">
             <TextBlock Text="Sélectionner un fractale pré-existant" Foreground="White" TextWrapping="Wrap" Margin="5" TextAlignment="Center"/>
-            <Expander Panel.ZIndex="2" Name="ExpFractale" Grid.RowSpan="2" Margin="5"  Header="Bibliothèque"  Foreground="White" Template="{StaticResource ExpanderTemplate}" ExpandDirection="Down">
+            <Expander PreviewMouseWheel="ExpFractale_MouseWheel" Name="ExpFractale"  Margin="5"  Header="Bibliothèque"  Foreground="White" Template="{StaticResource SimpleExpanderTemp}" ExpandDirection="Down">
                 <Border  CornerRadius="4" BorderThickness="3" BorderBrush="#FF828282">
-                    <StackPanel  Name="SpFractale"  Background="#FF4B4B4B" CanVerticallyScroll="True" MaxHeight="200">
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_0" Content="Julia" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_1" Content="Dendrite" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_2" Content="Poussière_Fatou_1" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_3" Content="Poussière_Fatou_2" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_4" Content="Poussière_Fatou_3" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_5" Content="Lapin_Douady" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_6" Content="Chou_fleur" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_7" Content="Siegel_epais" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_8" Content="Avion" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_9" Content="Avion epais" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_10" Content="Lemniscate de Bernouilli" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_11" Content="Galaxie 1" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_12" Content="Galaxie 2" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_13" Content="Galaxie 3" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                        <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_14" Content="Galaxie 4" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
-                    </StackPanel>
+                    <ScrollViewer x:Name="Scv_Prééxistant" VerticalScrollBarVisibility="Hidden" MaxHeight="200">
+                        <StackPanel Name="SpFractale"  Background="#FF4B4B4B">
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_0" Content="Julia" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_1" Content="Dendrite" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_2" Content="Poussière_Fatou_1" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_3" Content="Poussière_Fatou_2" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_10" Content="Poussière_Fatou_3" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_4" Content="Lapin_Douady" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_5" Content="Chou_fleur" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_6" Content="Siegel_epais" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_7" Content="Avion" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_8" Content="Avion epais" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_9" Content="Lemniscate de Bernouilli" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_11" Content="Galaxie 1" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_12" Content="Galaxie 2" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_13" Content="Galaxie 3" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                            <Button Click ="Prééxistant_Click" ClickMode="Press" VerticalAlignment="Center" x:Name="Fractale_14" Content="Galaxie 4" Style="{StaticResource ButtonStyle}" Template="{StaticResource ButtonTemplate}" Margin="0,5,0,2.5" MaxHeight="30" MaxWidth="155"/>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Border>
 
             </Expander>

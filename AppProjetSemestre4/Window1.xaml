@@ -9,7 +9,7 @@
         Height="500" Width="275" 
         Background="#FF828282"
         WindowStyle="None"
-        MouseDown="Window1_MouseDown"
+        MouseLeftButtonDown="Window1_MouseDown"
         >
     <!--Essayer d'arrondir la fenêtre avec un template-->
     <!--Vérifier que tt est centré 

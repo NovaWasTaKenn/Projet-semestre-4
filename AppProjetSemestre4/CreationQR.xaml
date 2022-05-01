@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         WindowStyle="None"
         Background="#FF828282"
-        Title="CreationQR" Height="275" Width="275">
+        Title="CreationQR" Height="275" Width="275"
+        MouseLeftButtonDown ="Window2_MouseDown"
+        >
     <Window.Resources>
 
 

@@ -8,6 +8,7 @@
         Title="Window6" Height="400" Width="275"
         Background="#FF828282"
         WindowStyle="None"
+        MouseLeftButtonDown ="Window2_MouseDown"
         >
     <Window.Resources>
 

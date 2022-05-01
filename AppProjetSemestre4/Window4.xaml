@@ -8,7 +8,7 @@
         Title="Window4" Height="300" Width="275"
         Background="#FF828282"
         WindowStyle="None"
-        MouseDown="Window2_MouseDown"
+        MouseLeftButtonDown="Window2_MouseDown"
         >
     <Window.Resources>
         <Style x:Key="ButtonStyle" TargetType="Button">

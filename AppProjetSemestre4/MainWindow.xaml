@@ -9,7 +9,7 @@
         Height="600" Width="1000" 
         Background="#FF4B4B4B"
         WindowStyle="None"
-        MouseDown="MainWindow_MouseDown"
+        MouseLeftButtonDown="MainWindow_MouseDown"
     >
     <!--#region Ressources-->
     <Window.Resources>
@@ -120,6 +120,7 @@
                     <Button Click="FcnGénéral_Click" ClickMode="Press" Content="Décoder" Name ="FcnDc"  Margin="20,2,20,0" HorizontalAlignment="Left"   Style="{StaticResource ButtonStyle}" Template="{StaticResource MenuTemplate}"/>
                     <TextBlock Text="QR code" Foreground="White" FontSize="15" Margin="5,3,0,3" />
                     <Button Click="FcnCr_Click" ClickMode="Press" Content="Création" Name ="FcnCr"  Margin="20,2,20,0" HorizontalAlignment="Left"   Style="{StaticResource ButtonStyle}" Template="{StaticResource MenuTemplate}"/>
+                    <Button Click="FcnGénéral_Click" ClickMode="Press" Content="Lecture" Name ="FcnLc"  Margin="20,2,20,0" HorizontalAlignment="Left"   Style="{StaticResource ButtonStyle}" Template="{StaticResource MenuTemplate}"/>
                     <Button Click="Lancer_Click" ClickMode="Press" Content="Lancer" Margin="20,25,20,20" Name ="Lancer" Style="{StaticResource ButtonStyle}" Template="{StaticResource LancerTemplate}"/>
                 </StackPanel>
             </Border>
@@ -131,7 +132,7 @@
             <!--#endregion-->
 
             <!--#region Image-->
-            <Border Grid.Column="3" Grid.Row="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Background="#FF828282" VerticalAlignment="Center" HorizontalAlignment="Center" >
+            <Border x:Name="ImageBorder" Grid.Column="3" Grid.Row="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Background="#FF828282" VerticalAlignment="Center" HorizontalAlignment="Center"  MaxWidth="10000" MaxHeight="10000">
                 <Image Name="ImageBox" Source="/foret riviere.bmp" Stretch="Uniform"/>
             </Border>
             <!--#endregion-->

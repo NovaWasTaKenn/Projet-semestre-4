@@ -20,32 +20,37 @@ namespace AppProjetSemestre4
         pb avec l'image par défaut, elle est considérée nnull qd le diretory de sortie a pas été défini                         OK il faut nécéssairement choisir une image maintenant image par défaut seulement pour le style de la fenetre
         - Possibilité de faire plusieurs traitements à la fois                                                                  OK
                 - Gérer lancer                                                                                                  OK
+        Fractale à impémenter : menu déroulant a finir peut etre un bouton qui fait apparaitre un Sp de bouton, code intéraction + back    OK
         */
 
-    /*Reste à faire
-        Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove       Geré A voir au cours de l'utilisation pas de pb poour l'instant
 
-        - Resize Soit technique des tailles en mode auto soit calculer le ratio de resize et l'appliquer a ttes les tailles    Commencé à verif mettre une taille min mainwindow le menu resize pas
+    /*Reste à faire
+        Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove       Geré A voir au cours de l'utilisation pas de pb poour l'instant    : la event pour activé doit etre MouseLeftDown le bouton gauche pas le droit doit activé la méthode   Nnormalement OK
 
         Gérer les possibles pb d''IO avec try Catch + messagebox
         POssibilité de fermer les fenetres secondaires sans rien rentrer dedans et sans crash --> soit avoir une valeur par défaut soit try catch + message pour indiquer que l'opération sélectionner ne pourra pas etre réalisée
                 
                         -------->               Bien avancé géré sur entrée du dossier save + entrée image + entrée porcent angle coeff, ...
 
+
         Retrecissement sort div par 0 qd poucentage = 50
 
-        sur le image_click parfois mainWindow.ImageBox.Source sort ue nullexception avec MainWindow null
+        sur le image_click parfois mainWindow.ImageBox.Source sort ue nullexception avec mainWindow null qd on selectionnne une image 32 try catch
 
         - aide mode d'emploi (possiblité d'avoir des tips qui apparaissent qd on hover sur un controle (ToolTip propriété))
+                Indiquer que par défaut fractale fait le dernier fractale sélectionné ou l'index 0
+                Pour Coder Décoder, l'image cachée ne doit pas être trop petite par rapport à l'image cachette sinon on ne la voie pas 
         
-        Fractale à impémenter : menu déroulant a finir peut etre un bouton qui fait apparaitre un Sp de bouton, code intéraction + back
+        
+
+       Bouton croix pour fermer les fenetres secondaires sans faire d'autres actions
 
      */
 
     /*Pas important
      - créer des nouvelles images pr croix fermer et trait pour avoir les symboles en blanc
         - Activable depuis un menu option
-
+        - Resize Soit technique des tailles en mode auto soit calculer le ratio de resize et l'appliquer a ttes les tailles    Commencé à verif mettre une taille min mainwindow le menu resize pas
      */
 
 
@@ -70,6 +75,7 @@ namespace AppProjetSemestre4
         private static string imageName= "";
         private static string savePath;
         private static double angle;
+
         private static bool sens;
         private static int pourcent_AeR;
         private static int coefficient_flou;
@@ -77,8 +83,8 @@ namespace AppProjetSemestre4
         private static string textQR = "";
         private Queue<string> queue_fonctions = new Queue<string>();
         private int coté;
-        private bool fractale_Random = true;
-        private int index_Fractale;
+        private bool fractale_Random = false;
+        private int index_Fractale = 0;
         private bool fractale_Personnalisé = false;
         private double reel_Personnalisé;
         private double im_Personnalisé;
@@ -88,7 +94,7 @@ namespace AppProjetSemestre4
         SolidColorBrush bckBrushPressed;
         SolidColorBrush bckBrush;
 
-        bool[] button_pressed = new bool[13]; 
+        bool[] button_pressed = new bool[14]; 
 
         
         #region accesseur
@@ -223,12 +229,13 @@ namespace AppProjetSemestre4
                 {"FcnRpg", 7 },
                 {"FcnHst", 9 },
                 {"FcnDc", 11 },
+                {"FcnLc",13 },
 
             };
 
             int index = Fcn_index[btn.Name];
 
-            if (button_pressed[index] == true) 
+            if (button_pressed[index] == true) //Tester le background du bouton aurait été mieux
             { 
                 button_pressed[index] = false; 
                 btn.Background = bckBrush;
@@ -357,7 +364,7 @@ namespace AppProjetSemestre4
                 }
                 
             }
-            else
+            if(button_pressed[10] == false)
             {
                 Window6 win6 = new Window6();
                 win6.Owner = this;
@@ -396,7 +403,7 @@ namespace AppProjetSemestre4
                 FcnFrl.Background = bckBrushPressed;
                 queue_fonctions.Enqueue("FcnFrl");
             }
-        } // Penser à interdire la sélection si d'autres traitements son sélectionnés : si queueCount >0 nop 
+        } 
         public void FcnCr_Click(object sender, RoutedEventArgs e)
         {
             Button btn = (Button)sender;
@@ -412,7 +419,7 @@ namespace AppProjetSemestre4
                 }
                 
             }
-            else
+            if(button_pressed[12] == false && queue_fonctions.Count == 0)
             {
                 CreationQR creationQR = new CreationQR();
                 creationQR.Owner = this;
@@ -489,7 +496,7 @@ namespace AppProjetSemestre4
                         image_fcn = image.Convolution(Flou);
                         break;
                     case "FcnFrl":
-
+                        image_fcn = MyImage.FractaleJulia(coté, fractale_Random, index_Fractale, fractale_Personnalisé, reel_Personnalisé, im_Personnalisé, itérations_Personnalisé, mult_Couleurs_Personnalisé);
                         break;
                     case "FcnHst":
                         image_fcn = image.Histogramme();
@@ -505,10 +512,22 @@ namespace AppProjetSemestre4
                         int version = 1;
                         Console.WriteLine(textQR);
                         if(textQR.Length <= 25) { version = 1; }
-                        if(textQR.Length > 25) { version = 2; }
+                        if(textQR.Length > 25 && textQR.Length <= 47) { version = 2; }
+                        if(textQR.Length < 47)
+                        {
+                            MessageBox.Show("La phrase doit comprendre au maximum 47 caractères", "erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                         byte[] donnee = image.Convertir_Chaine_Char(textQR, version);
                         int[] masquage = { 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
                         image_fcn = image.QRCode(version, masquage,donnee, true);
+
+                        ImageBorder.MaxHeight = 150;
+                        ImageBorder.MaxWidth = 150;
+                        break;
+                    case "FcnLc":
+                        string message = image.Decoder_QRCode();
+                        MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+
                         break;
                 }
                 image = image_fcn;
@@ -516,10 +535,14 @@ namespace AppProjetSemestre4
 
             if (queueCount > 1) { fonction = "mixte"; }
 
-            string[] fichier_sortie_existants = Directory.GetFiles(savePath, fonction + "*");
-            nom_fichier = fonction + Convert.ToString(fichier_sortie_existants.Length);
-            image.ToFile(savePath+"\\"+nom_fichier+".bmp");
-            ImageBox.Source = new BitmapImage(new Uri(savePath + "\\" + nom_fichier + ".bmp"));
+            if (fonction != "FcnLc") 
+            {
+                string[] fichier_sortie_existants = Directory.GetFiles(savePath, fonction + "*");
+                nom_fichier = fonction + Convert.ToString(fichier_sortie_existants.Length);
+                image.ToFile(savePath + "\\" + nom_fichier + ".bmp");
+                ImageBox.Source = new BitmapImage(new Uri(savePath + "\\" + nom_fichier + ".bmp"));
+            }
+           
 
 
             foreach(var element in SpMenu.Children.OfType<Button>())
@@ -530,6 +553,9 @@ namespace AppProjetSemestre4
             {
                 button_pressed[i] = false;
             }
+
+            ImageBox.MaxHeight = 10000;
+            ImageBox.MaxWidth = 10000;
         }
         public void FermerMain_Click(object sender, RoutedEventArgs e)
         {
