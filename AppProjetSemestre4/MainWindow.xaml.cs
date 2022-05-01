@@ -535,9 +535,9 @@ namespace AppProjetSemestre4
                             {
                                 MessageBox.Show("La phrase doit comprendre au maximum 47 caractères", "erreur", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
-                            byte[] donnee = image.Convertir_Chaine_Char(textQR, version);
+                            byte[] donnee = MyImage.Convertir_Chaine_Char(textQR, version);
                             int[] masquage = { 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
-                            image_fcn = image.QRCode(version, masquage, donnee, true);
+                            image_fcn = MyImage.QRCode(version, masquage, donnee, true);
 
                             ImageBorder.MaxHeight = 150;
                             ImageBorder.MaxWidth = 150;
