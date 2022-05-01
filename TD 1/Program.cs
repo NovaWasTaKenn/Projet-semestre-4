@@ -108,7 +108,6 @@ namespace TD_1
 
             //#endregion
             #endregion
-
             #region Afficher fichier bmp
             /*byte[] myFile = File.ReadAllBytes("bmp-icon.bmp");
 
@@ -133,10 +132,12 @@ namespace TD_1
                 Console.WriteLine();
             }*/
             #endregion
+
+
             string name = "foret1600par900.bmp";
             MyImage image = new MyImage(name);
     
-            Console.WriteLine("Type de l'image : "+image.Type);
+            Console.WriteLine("Type de l'image : "+ image.Type);
             Console.WriteLine("Taille en octets de l'image : " + image.Size);
             Console.WriteLine("Largeur en pixels de l'image : " + image.Width);
             Console.WriteLine("Hauteur en pixels de l'image : " + image.Height);
@@ -183,8 +184,8 @@ namespace TD_1
             //Process.Start("testN&B.bmp");
             //Process.Start("TestRétrecissement.bmp");
 
-            //image.Histogramme().ToFile("TestHistogramme","bmp");
-            //Process.Start("TestHistogramme.bmp");
+            image.Histogramme().ToFile("TestHistogramme","bmp");
+            Process.Start("TestHistogramme.bmp");
 
             //for (int i = 0; i < 15; i++)
             //{
@@ -201,7 +202,7 @@ namespace TD_1
 
             //bool[] tab = { false, false, false, false, false, true, false, true, true };
 
-            string Hello = "faut que je trouve un truc a ecrire";
+            string Hello = "faut que je trouve un truc a eczqdqzdzqdzqdzqdsdqfghdsdfgbdfsfgffddqfsgdddsfd";
             Hello = Hello.ToUpper();
 
             ////int entier_hello = 45*image.Convertir_Char_En_Int('H')+image.Convertir_Char_En_Int('E');
@@ -211,26 +212,23 @@ namespace TD_1
             ////Console.WriteLine(Convert.ToString(tab[1],2));
 
 
-            byte[] Hello_byte = image.Convertir_Chaine_Char(Hello, 1);
+            byte[] Hello_byte = image.Convertir_Chaine_Char(Hello, 2);
 
             int[] masque= {1,1,1,0,1,1,1,1,1,0,0,0,1,0,0};
             //image.QRCode(1, masque, Hello_byte, false).ToFile("QRCodeSansMasque","bmp");
             //image.QRCode(1, masque, Hello_byte, true).ToFile("QRCodeAvecMasque", "bmp");
             image.QRCode(2, masque, Hello_byte, false).ToFile("QRCodeSansMasque1", "bmp");
             image.QRCode(2, masque, Hello_byte, true).ToFile("QRCodeAvecMasque1", "bmp");
-            //MyImage qrcode = new MyImage("QRCodeSansMasque1.bmp");
-            //MyImage qr = new MyImage("QRCodeAvecMasque1.bmp");
-            //qrcode.Aggrandir(10).ToFile("QRGrandSansMasque1","bmp");
-            //qr.Aggrandir(10).ToFile("QRGrandAvecMasque1", "bmp");
+            MyImage qrcode = new MyImage("QRCodeSansMasque1.bmp");
+            MyImage qr = new MyImage("QRCodeAvecMasque1.bmp");
+            qrcode.Aggrandir(10).ToFile("QRGrandSansMasque1","bmp");
+            qr.Aggrandir(10).ToFile("QRGrandAvecMasque1", "bmp");
             //Process.Start("QRCode.bmp");
             Process.Start("QRGrandSansMasque1.bmp");
             Process.Start("QRGrandAvecMasque1.bmp");
 
             //Console.WriteLine(qr.Decoder_QRCode());
             Console.ReadLine();
-
-
-
         }
     }
 }
