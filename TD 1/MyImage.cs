@@ -19,11 +19,14 @@ namespace TD_1
         int bits_per_color;
         Pixel[,] image;
 
-        //Rotation fct pour les multiples de 90° mais artefacts blancs sur les rotations quelconques
-        //refaire convolution plus proprement
-        //Try catch sur les entrées sorties znes à pbs acces fichier
+        //Try catch sur les entrées sorties znes à pbs acces fichier  Voir plus tard
 
         #region Constructeurs
+        /// <summary>
+        /// Crée un nouvelle instance de la classe MyImage utilisant les parmètres <paramref name="height"/> et <paramref name="width"/>
+        /// </summary>
+        /// <param name="height"></param>
+        /// <param name="width"></param>
         public MyImage (int height, int width)
         {
             this.type = "bmp";
@@ -39,6 +42,13 @@ namespace TD_1
             this.bits_per_color = 24;
             this.image = new Pixel[height, width];
         }
+
+        /// <summary>
+        /// Crée une copie de l'instance MyImage <paramref name="myImage"/> en remplacant ses attributs height et width par les paramètres <paramref name="height"/> et <paramref name="width"/>
+        /// </summary>
+        /// <param name="myImage"></param>
+        /// <param name="height"></param>
+        /// <param name="width"></param>
         public MyImage(MyImage myImage, int height, int width)
         {
             this.type = myImage.type;
@@ -57,6 +67,10 @@ namespace TD_1
         #endregion
 
         #region Fichier vers classe | Classe vers fichier
+        /// <summary>
+        /// Crée une nouvelle instance de la classe MyImage à partir du fichier bmp <paramref name="file"/>
+        /// </summary>
+        /// <param name="file"></param>
         public MyImage(string file)
         {
 
@@ -107,6 +121,13 @@ namespace TD_1
             catch (Exception e) { Console.WriteLine(e.Message); };
         }
 
+        /// <summary>
+        /// Crée un fichier à partir de l'instance de MyImage.
+        /// Le nom du fichier est <paramref name="name"/>. Son type est <paramref name="type"/>
+        /// N'est utilisé que dans le déboguage
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="type"></param>
         public void ToFile(string name, string type)//Penser à supprimer, utilisé que pour les tests manuels
         {    
             string path = name + "." + type;
@@ -181,7 +202,12 @@ namespace TD_1
                 File.WriteAllBytes(path, bytesToWrite);
             }
             catch(Exception e) { Console.WriteLine(e.Message); };
-        }        
+        }
+        /// <summary>
+        /// Crée un fichier à partir de l'instance de MyImage.
+        /// Le chemin du fichier est <paramref name="path"/>
+        /// </summary>
+        /// <param name="path"></param>
         public void ToFile(string path)
         {
 
@@ -314,6 +340,9 @@ namespace TD_1
 
             return Puissance(x, exp - 1, valeur * x);
         }
+        /// <summary>
+        ///  Applique un fond blanc à l'image
+        /// </summary>
         public void FondBlanc()
         {
             for(int i = 0; i<this.image.GetLength(0); i++)
@@ -324,6 +353,9 @@ namespace TD_1
                 }
             }
         }
+        /// <summary>
+        ///  Applique un fond Gris à l'image
+        /// </summary>
         public void FondGris()
         {
             for (int i = 0; i < this.image.GetLength(0); i++)
@@ -334,6 +366,9 @@ namespace TD_1
                 }
             }
         }
+        /// <summary>
+        ///  Applique un fond gris clair à l'image
+        /// </summary>
         public void FondGrisClair()
         {
             for (int i = 0; i < this.image.GetLength(0); i++)
@@ -371,25 +406,6 @@ namespace TD_1
             }
             return retour;
         }
-
-        #region Utilisation de BitConverter
-        //public int Convertir_Endian_To_Int32(byte[] tab)
-        //{
-        //    tab.Reverse<byte>();
-        //    return BitConverter.ToInt32(tab, 0);
-        //}
-        //public int Convertir_Endian_To_Int16(byte[] tab)
-        //{
-        //    tab.Reverse<byte>();
-        //    return BitConverter.ToInt16(tab, 0);
-        //}
-        //public byte[] Convertir_Int_To_Endian(int nb)
-        //{
-        //    byte[] retour = BitConverter.GetBytes(nb);
-        //    retour.Reverse<byte>();
-        //    return retour;
-        //}
-        #endregion
 
         public int Convertir_Endian_To_Int(byte[] tab)
         {            
@@ -534,6 +550,10 @@ namespace TD_1
         #endregion
 
         #region TD 3
+        /// <summary>
+        /// Applique un filtre nnoir et blanc sur l'image 
+        /// </summary>
+        /// <returns>Retourne l'image résultante</returns>
         public MyImage CouleurToNoiretBlanc()
         {
             MyImage copie = new MyImage(this, this.height, this.width);
@@ -548,6 +568,12 @@ namespace TD_1
             }
             return copie;
         }
+        /// <summary>
+        /// Applique une rotation de l'angle <paramref name="angle"/> spécifié dans le sens <paramref name="sens_horaire"/>
+        /// </summary>
+        /// <param name="angle"></param>
+        /// <param name="sens_horaire"></param>
+        /// <returns>Retourne l'image résultante</returns>
         public MyImage RotationV2(double angle, bool sens_horaire) //essayer avec x' = x*cos O + y*sin O et y' = -x*sin 0 + y * sin O
         {
 
@@ -664,6 +690,11 @@ namespace TD_1
             }
             return copie;
         }
+        /// <summary>
+        /// Applique un effet miroir sur l'image 
+        /// </summary>
+        /// <param name="multiplicateur"></param>
+        /// <returns>Retourne une instance de MyImgage contennant l'image résultante</returns>
         public MyImage Aggrandir(int multiplicateur)
         {
             MyImage copie = new MyImage(this, image.GetLength(0) * multiplicateur, image.GetLength(1) * multiplicateur);
@@ -688,7 +719,13 @@ namespace TD_1
             }
             return copie;
         }
-        public MyImage Rétrecissement(double val_rétrecissement)  // Finir la possibilité de rétrecir par des valeurs nn entières ou enlever la possibilité et simplifier code
+
+        /// <summary>
+        /// Rétreci l'image en la divisant par le paramètre <paramref name="val_rétrecissement"/>.
+        /// </summary>
+        /// <param name="val_rétrecissement"></param>
+        /// <returns> Une instance de MyImage contennant l'image rétrecie</returns>
+        public MyImage Rétrecissement(double val_rétrecissement)  //Peut etre utiliser pour retrecir par des valeurs décimales supérieures à 2 mais ne fonctionne pas pour les valeurs inférieures à 2 dans notre projet on n'utilise que des valeurs entieres
         {
             MyImage copie = new MyImage(this, (int)((double)this.image.GetLength(0) / val_rétrecissement), (int)(((double)this.image.GetLength(1)) / val_rétrecissement));
             List<int> valeurs_rectangles = new List<int>();
@@ -1165,6 +1202,27 @@ namespace TD_1
             return fractale;
         }
 
+        /// <summary>
+        /// <para>
+        /// Crée un fractale.
+        /// </para>
+        /// <para>
+        /// Si <paramref name="fractale_Random"/> est true alors la fonction crée un fractale aléatoire parmis la liste existante. Si <paramref name="fractale_Random"/> et <paramref name="im_Personnalisé"/> 
+        /// sont false alors la fonction crée le fractale à l'index <paramref name="index_Fractale" /> spécifié. Si <paramref name="fractale_Personnalisé"/> est true alors la fonction crée un fractale ayant 
+        /// pour paramètre le nombre réel défini par <paramref name="reel_Personnalisé"/>, <paramref name="im_Personnalisé"/> ainsi que la profondeur d'itération <paramref name="itérations_Personnalisé"/> 
+        /// et le multiplicateur  <paramref name="mult_Couleurs_Personnalisé"/> permet de crée la palette de couleur
+        /// </para>
+        /// </summary>
+        /// <param name="coté"></param>
+        /// <param name="fractale_Random"></param>
+        /// <param name="index_Fractale"></param>
+        /// <param name="fractale_Personnalisé"></param>
+        /// <param name="reel_Personnalisé"></param>
+        /// <param name="im_Personnalisé"></param>
+        /// <param name="itérations_Personnalisé"></param>
+        /// <param name="mult_Couleurs_Personnalisé"></param>
+        /// <returns> Un fractale en tant qu'innstance de MyImage</returns>
+
         public static MyImage FractaleJulia(
             int coté, 
             bool fractale_Random = true, 
@@ -1175,7 +1233,6 @@ namespace TD_1
             int itérations_Personnalisé = 0, 
             int mult_Couleurs_Personnalisé = 0)
         {
-            // rajouter des valeurs d'itération et des mult pr les valeurs RGB des les tableaux
             #region Liste_Fractales
             List<double[]> Complexes_Julia = new List<double[]>();
             //0
@@ -1246,7 +1303,6 @@ namespace TD_1
 
             if (fractale_Random) { index_Fractale = rnd.Next(0, 15); }
             if (fractale_Personnalisé) {
-                //15
                 double[] fractale_perso = { reel_Personnalisé, im_Personnalisé, itérations_Personnalisé, mult_Couleurs_Personnalisé };
                 Complexes_Julia.Add(fractale_perso);
                 index_Fractale = 15;
@@ -1479,7 +1535,7 @@ namespace TD_1
         }
 
         /// <summary>
-        /// Récupère l'image à décoder et on fait apparaitre côte à côte les deux images
+        /// Récupère l'image à décoder et fait apparaitre côte à côte les deux images
         /// </summary>
         /// <returns></returns>
         public MyImage DecoderImageCachee()
