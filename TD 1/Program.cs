@@ -201,7 +201,7 @@ namespace TD_1
 
             //bool[] tab = { false, false, false, false, false, true, false, true, true };
 
-            string Hello = "HELLO WORLD";
+            string Hello = "NOUS SOMMES";
             Hello = Hello.ToUpper();
 
             ////int entier_hello = 45*image.Convertir_Char_En_Int('H')+image.Convertir_Char_En_Int('E');
@@ -218,13 +218,13 @@ namespace TD_1
             image.QRCode(1, masque, Hello_byte, true).ToFile("QRCodeAvecMasque", "bmp");
             image.QRCode(2, masque, Hello_byte, false).ToFile("QRCodeSansMasque1", "bmp");
             image.QRCode(2, masque, Hello_byte, true).ToFile("QRCodeAvecMasque1", "bmp");
-            MyImage qrcode = new MyImage("QRCodeSansMasque.bmp");
-            MyImage qr = new MyImage("QRCodeAvecMasque.bmp");
-            qrcode.Aggrandir(10).ToFile("QRGrandSansMasque","bmp");
-            qr.Aggrandir(10).ToFile("QRGrandAvecMasque", "bmp");
+            MyImage qrcode = new MyImage("QRCodeSansMasque1.bmp");
+            MyImage qr = new MyImage("QRCodeAvecMasque1.bmp");
+            qrcode.Aggrandir(10).ToFile("QRGrandSansMasque1","bmp");
+            qr.Aggrandir(10).ToFile("QRGrandAvecMasque1", "bmp");
             //Process.Start("QRCode.bmp");
-            Process.Start("QRGrandSansMasque.bmp");
-            Process.Start("QRGrandAvecMasque.bmp");
+            //Process.Start("QRGrandSansMasque.bmp");
+            //Process.Start("QRGrandAvecMasque.bmp");
 
             Console.WriteLine(qr.Decoder_QRCode());
             Console.ReadLine();
