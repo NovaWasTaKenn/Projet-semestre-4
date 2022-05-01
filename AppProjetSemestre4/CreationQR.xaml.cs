@@ -26,12 +26,26 @@ namespace AppProjetSemestre4
 
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
-            this.Owner = null;
-            MainWindow.TextQR = Convert.ToString(TbxQR.Text);
-            this.Close();
+            
+            bool erreur = false;
+            try
+            {
+                MainWindow.TextQR = Convert.ToString(TbxQR.Text);
+            }
+            catch
+            {
+                MessageBox.Show("Le texte saisi est incorrect, Veuillez recommencer", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                erreur = true;
+            }
+            if (erreur == false)
+            {
+                this.Owner = null;
+                this.Close();
+            }
         }
         public void Window2_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            this.Owner = null;
             DragMove();
         }
     }

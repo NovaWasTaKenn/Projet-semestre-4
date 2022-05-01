@@ -40,10 +40,13 @@ namespace AppProjetSemestre4
 
                 MainWindow.ImagePath = imagePath;
                 MainWindow.ImageName = nom;
+                
+            }
+            if (MainWindow.ImagePath != "" && MainWindow.ImagePath != null && MainWindow.ImagePath != "/foret riviere.bmp")
+            {
+                mainWindow.ImageBox.Source = new BitmapImage(new Uri(MainWindow.ImagePath));
                 TblCheminImage1.Text = MainWindow.ImageName;
             }
-
-            mainWindow.ImageBox.Source = new BitmapImage(new Uri(MainWindow.ImagePath));
         }
 
         public void Cachée_Click(object sender, RoutedEventArgs e)
@@ -65,13 +68,14 @@ namespace AppProjetSemestre4
         }
         public void BtnFermer_Click(object sender, RoutedEventArgs e)
         {
-            this.Owner = null;
+            
             if (MainWindow.ImagePath == "/foret riviere.bmp")
             {
                 MessageBox.Show("Aucune image n'est sélectionnée, veuillez cliquer sur \"Parcourir\" pour en sélectionner une", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             else
             {
+                this.Owner = null;
                 this.Close();
             }
             

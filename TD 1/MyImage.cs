@@ -19,7 +19,11 @@ namespace TD_1
         int bits_per_color;
         Pixel[,] image;
 
+
         //Try catch sur les entrées sorties znes à pbs acces fichier  Voir plus tard
+
+        //Try catch sur les entrées sorties znes à pbs acces fichier
+
 
         #region Constructeurs
         /// <summary>
@@ -120,7 +124,6 @@ namespace TD_1
             }
             catch (Exception e) { Console.WriteLine(e.Message); };
         }
-
         /// <summary>
         /// Crée un fichier à partir de l'instance de MyImage.
         /// Le nom du fichier est <paramref name="name"/>. Son type est <paramref name="type"/>
@@ -128,7 +131,8 @@ namespace TD_1
         /// </summary>
         /// <param name="name"></param>
         /// <param name="type"></param>
-        public void ToFile(string name, string type)//Penser à supprimer, utilisé que pour les tests manuels
+
+        public void ToFile(string name, string type)
         {    
             string path = name + "." + type;
             try
@@ -340,9 +344,13 @@ namespace TD_1
 
             return Puissance(x, exp - 1, valeur * x);
         }
+
         /// <summary>
         ///  Applique un fond blanc à l'image
         /// </summary>
+
+
+
         public void FondBlanc()
         {
             for(int i = 0; i<this.image.GetLength(0); i++)
@@ -528,11 +536,14 @@ namespace TD_1
 
         #endregion
 
-        #region TD 3
+
         /// <summary>
         /// Applique un filtre nnoir et blanc sur l'image 
         /// </summary>
         /// <returns>Retourne l'image résultante</returns>
+
+        #region TD 3 (Traiter une image)
+
         public MyImage CouleurToNoiretBlanc()
         {
             MyImage copie = new MyImage(this, this.height, this.width);
@@ -656,14 +667,18 @@ namespace TD_1
             }
             return copie;
         }
-
+        /// <summary>
+        /// Applique un effet miroir sur l'image 
+        /// </summary>
+        /// <param name="multiplicateur"></param>
+        /// <returns>Retourne une instance de MyImgage contennant l'image résultante</returns>
         public MyImage EffetMiroir()
         {
             MyImage copie = new MyImage(this, this.height, this.width);
 
-            for(int i = 0; i < this.height; i++)
+            for (int i = 0; i < this.height; i++)
             {
-                for(int j = 0; j < this.width; j++)
+                for (int j = 0; j < this.width; j++)
                 {
                     copie.image[i, j] = this.image[i, this.width - 1 - j];
                 }
@@ -676,6 +691,7 @@ namespace TD_1
         /// </summary>
         /// <param name="multiplicateur"></param> 
         /// <returns></returns>
+
         public MyImage Aggrandir(int multiplicateur)
         {
             MyImage copie = new MyImage(this, image.GetLength(0) * multiplicateur, image.GetLength(1) * multiplicateur);
@@ -701,12 +717,13 @@ namespace TD_1
             return copie;
         }
 
+
         /// <summary>
         /// Rétreci l'image en la divisant par le paramètre <paramref name="val_rétrecissement"/>.
         /// </summary>
         /// <param name="val_rétrecissement"></param>
         /// <returns> Une instance de MyImage contennant l'image rétrecie</returns>
-        public MyImage Rétrecissement(double val_rétrecissement)  //Peut etre utiliser pour retrecir par des valeurs décimales supérieures à 2 mais ne fonctionne pas pour les valeurs inférieures à 2 dans notre projet on n'utilise que des valeurs entieres
+        public MyImage Rétrecissement(double val_rétrecissement)  // Finir la possibilité de rétrecir par des valeurs nn entières ou enlever la possibilité et simplifier code
         {
             MyImage copie = new MyImage(this, (int)((double)this.image.GetLength(0) / val_rétrecissement), (int)(((double)this.image.GetLength(1)) / val_rétrecissement));
             List<int> valeurs_rectangles = new List<int>();
@@ -777,7 +794,7 @@ namespace TD_1
         }
         #endregion
 
-        #region TD 4 (Flitrer une image)  
+        #region TD 4 (Appliquer un Filtre sur une image)  
         /// <summary>
         /// <para>
         /// Applique la matrice de convolution <paramref name="matrice_convolution"/> à l'image. 

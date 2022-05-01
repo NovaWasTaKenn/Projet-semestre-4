@@ -21,28 +21,26 @@ namespace AppProjetSemestre4
         - Possibilité de faire plusieurs traitements à la fois                                                                  OK
                 - Gérer lancer                                                                                                  OK
         Fractale à impémenter : menu déroulant a finir peut etre un bouton qui fait apparaitre un Sp de bouton, code intéraction + back    OK
+    sur le image_click parfois mainWindow.ImageBox.Source sort ue nullexception avec mainWindow null qd on selectionnne une image                               OK placer le owner = null ds le if blabla ok on ferme
+    Retrecissement sort div par 0 qd poucentage = 50                                ok je suis unn débile
+    Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove       Geré A voir au cours de l'utilisation pas de pb poour l'instant    : la event pour activé doit etre MouseLeftDown le bouton gauche pas le droit doit activé la méthode   Nnormalement OK
         */
 
 
     /*Reste à faire
-        Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove       Geré A voir au cours de l'utilisation pas de pb poour l'instant    : la event pour activé doit etre MouseLeftDown le bouton gauche pas le droit doit activé la méthode   Nnormalement OK
+        
 
-        Gérer les possibles pb d''IO avec try Catch + messagebox
-        POssibilité de fermer les fenetres secondaires sans rien rentrer dedans et sans crash --> soit avoir une valeur par défaut soit try catch + message pour indiquer que l'opération sélectionner ne pourra pas etre réalisée
+        Gérer les possibles pb d'IO avec try Catch + messagebox
+        POssibilité de fermer les fenetres secondaires sans rien rentrer dedans et sans crash --> soit avoir une valeur par défaut soit try catch + message pour indiquer que l'opération sélectionner ne pourra pas etre réalisée                          En cours jouer avec l'interface pour trouver
                 
                         -------->               Bien avancé géré sur entrée du dossier save + entrée image + entrée porcent angle coeff, ...
 
 
-        Retrecissement sort div par 0 qd poucentage = 50
-
-        sur le image_click parfois mainWindow.ImageBox.Source sort ue nullexception avec mainWindow null qd on selectionnne une image 32 try catch
-
+       
         - aide mode d'emploi (possiblité d'avoir des tips qui apparaissent qd on hover sur un controle (ToolTip propriété))
                 Indiquer que par défaut fractale fait le dernier fractale sélectionné ou l'index 0
                 Pour Coder Décoder, l'image cachée ne doit pas être trop petite par rapport à l'image cachette sinon on ne la voie pas 
         
-        
-
        Bouton croix pour fermer les fenetres secondaires sans faire d'autres actions
 
 
@@ -58,12 +56,13 @@ namespace AppProjetSemestre4
 
 
     /*A faire projet entier
-     Commentaire 
      Clean le code 
             Peut impliqué de refaire certaines chose 
-     Rétrecissement revoir, 
-     rotation peut etre
-     Histogramme Faudrait faire en sorte que a sortie n'ai pas une hauteur abérrante
+     Rétrecissement revoir,                                                                         OK
+     rotation peut etre                                                                             Fonctioonne on touche pas
+     Histogramme Faudrait faire en sorte que a sortie n'ai pas une hauteur abérrante                la mm
+
+
      Test unitaire 
      
      */

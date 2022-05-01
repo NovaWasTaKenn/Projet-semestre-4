@@ -217,8 +217,8 @@ namespace TD_1
             int[] masque= {1,1,1,0,1,1,1,1,1,0,0,0,1,0,0};
             //image.QRCode(1, masque, Hello_byte, false).ToFile("QRCodeSansMasque","bmp");
             //image.QRCode(1, masque, Hello_byte, true).ToFile("QRCodeAvecMasque", "bmp");
-            image.QRCode(2, masque, Hello_byte, false).ToFile("QRCodeSansMasque1", "bmp");
-            image.QRCode(2, masque, Hello_byte, true).ToFile("QRCodeAvecMasque1", "bmp");
+            //image.QRCode(2, masque, Hello_byte, false).ToFile("QRCodeSansMasque1", "bmp");
+            //image.QRCode(2, masque, Hello_byte, true).ToFile("QRCodeAvecMasque1", "bmp");
             MyImage qrcode = new MyImage("QRCodeSansMasque1.bmp");
             MyImage qr = new MyImage("QRCodeAvecMasque1.bmp");
             qrcode.Aggrandir(10).ToFile("QRGrandSansMasque1","bmp");
