@@ -207,11 +207,11 @@ namespace TD_1
             //string Hello = "faut que je trouve un truc a eczqdqzdzqdzqdzqdsdqfghdsdfgbdfsfgffddqfsgdddsfd";
             //Hello = Hello.ToUpper();
 
-            ////int entier_hello = 45*image.Convertir_Char_En_Int('H')+image.Convertir_Char_En_Int('E');
-            ////Console.WriteLine(entier_hello);
-            ////byte[] tab = image.Convertir_Int_En_Tab_De_Byte(entier_hello, 3, 2, 11);
-            ////Console.WriteLine(Convert.ToString(tab[0],2));
-            ////Console.WriteLine(Convert.ToString(tab[1],2));
+            //////int entier_hello = 45*image.Convertir_Char_En_Int('H')+image.Convertir_Char_En_Int('E');
+            //////Console.WriteLine(entier_hello);
+            //////byte[] tab = image.Convertir_Int_En_Tab_De_Byte(entier_hello, 3, 2, 11);
+            //////Console.WriteLine(Convert.ToString(tab[0],2));
+            //////Console.WriteLine(Convert.ToString(tab[1],2));
 
 
             //byte[] Hello_byte = image.Convertir_Chaine_Char(Hello, 2);

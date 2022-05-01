@@ -45,6 +45,9 @@ namespace AppProjetSemestre4
 
        Bouton croix pour fermer les fenetres secondaires sans faire d'autres actions
 
+
+        Attention a quelles actions peuvent etre faites les unes apres les autres
+
      */
 
     /*Pas important
@@ -442,106 +445,124 @@ namespace AppProjetSemestre4
 
         public void Lancer_Click(object sender, RoutedEventArgs e)//Gérer me cas ou la queue est vide
         {
-            MyImage image = new MyImage(ImagePath);
-            MyImage image_fcn = null;
-            string fonction = "";
-            string nom_fichier;
-            int queueCount = queue_fonctions.Count;
-
-            if(queueCount < 1)  // Cas ou queue vide
+            MyImage image = null;
+            bool tests = true;
+            try
             {
-
+                image = new MyImage(ImagePath);
             }
-           
-
-            for (int i =0; i<queueCount; i++)
+            catch
             {
-                fonction = queue_fonctions.Dequeue();
+                MessageBox.Show("L'image sélectionnée est invalide ou aucune image n'est sélectionnée ", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                tests = false;
+            }
 
-                switch (fonction)
+            if (queue_fonctions.Count < 1)  // Cas ou queue vide
+            {
+                MessageBox.Show("Veuillez selectionner un traitement", "Erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                tests = false;
+            }
+
+            if (tests)
+            {
+                MyImage image_fcn = null;
+                string fonction = "";
+                string nom_fichier;
+                int queueCount = queue_fonctions.Count;
+
+               
+
+
+                for (int i = 0; i < queueCount; i++)
                 {
-                    case "FcnNeB":
-                        image_fcn = image.CouleurToNoiretBlanc();
-                        break;
-                    case "FcnRo":
-                        image_fcn = image.RotationV2(angle, sens);
-                        break;
-                    case "FcnAeR":
-                        if (pourcent_AeR >= 100)
-                        {
-                            image_fcn = image.Aggrandir((int) pourcent_AeR/100);
-                        }
-                        else
-                        {
-                            image_fcn = image.Rétrecissement((double) pourcent_AeR/100);
-                        }
-                        break;
-                    case "FcnEm":
-                        image_fcn = image.EffetMiroir();
-                        break;
-                    case "FcnDdC":
-                        int[,] DdC = { {0,1,0 },{1,-4,1 },{0,1,0 } };
-                        image_fcn = image.Convolution(DdC);
-                        break;
-                    case "FcnRdB":
-                        int[,] RdB = { { 0, 0, 0 }, { 1, -1, 0 }, { 0, 0, 0 } };
-                        image_fcn = image.Convolution(RdB);
-                        break;
-                    case "FcnRpg":
-                        int[,] Repoussage = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
-                        image_fcn = image.Convolution(Repoussage);
-                        break;
-                    case "FcnFl":
-                        int[,] Flou = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
-                        image_fcn = image.Convolution(Flou);
-                        break;
-                    case "FcnFrl":
-                        image_fcn = MyImage.FractaleJulia(coté, fractale_Random, index_Fractale, fractale_Personnalisé, reel_Personnalisé, im_Personnalisé, itérations_Personnalisé, mult_Couleurs_Personnalisé);
-                        break;
-                    case "FcnHst":
-                        image_fcn = image.Histogramme();
-                        break;
-                    case "FcnCo":
-                        MyImage imageCachée = new MyImage(imageCachéepath);
-                        image_fcn = image.CacherImage_dans_Image(imageCachée);
-                        break;
-                    case "FcnDc":
-                        image_fcn = image.DecoderImageCachee();
-                        break;
-                    case "FcnCr":
-                        int version = 1;
-                        Console.WriteLine(textQR);
-                        if(textQR.Length <= 25) { version = 1; }
-                        if(textQR.Length > 25 && textQR.Length <= 47) { version = 2; }
-                        if(textQR.Length < 47)
-                        {
-                            MessageBox.Show("La phrase doit comprendre au maximum 47 caractères", "erreur", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
-                        byte[] donnee = image.Convertir_Chaine_Char(textQR, version);
-                        int[] masquage = { 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
-                        image_fcn = image.QRCode(version, masquage,donnee, true);
+                    fonction = queue_fonctions.Dequeue();
 
-                        ImageBorder.MaxHeight = 150;
-                        ImageBorder.MaxWidth = 150;
-                        break;
-                    case "FcnLc":
-                        string message = image.Decoder_QRCode();
-                        MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+                    switch (fonction)
+                    {
+                        case "FcnNeB":
+                            image_fcn = image.CouleurToNoiretBlanc();
+                            break;
+                        case "FcnRo":
+                            image_fcn = image.RotationV2(angle, sens);
+                            break;
+                        case "FcnAeR":
+                            if (pourcent_AeR >= 100)
+                            {
+                                image_fcn = image.Aggrandir((int)pourcent_AeR / 100);
+                            }
+                            else
+                            {
+                                image_fcn = image.Rétrecissement((int) 100/pourcent_AeR );
+                            }
+                            break;
+                        case "FcnEm":
+                            image_fcn = image.EffetMiroir();
+                            break;
+                        case "FcnDdC":
+                            int[,] DdC = { { 0, 1, 0 }, { 1, -4, 1 }, { 0, 1, 0 } };
+                            image_fcn = image.Convolution(DdC);
+                            break;
+                        case "FcnRdB":
+                            int[,] RdB = { { 0, 0, 0 }, { 1, -1, 0 }, { 0, 0, 0 } };
+                            image_fcn = image.Convolution(RdB);
+                            break;
+                        case "FcnRpg":
+                            int[,] Repoussage = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
+                            image_fcn = image.Convolution(Repoussage);
+                            break;
+                        case "FcnFl":
+                            int[,] Flou = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
+                            image_fcn = image.Convolution(Flou);
+                            break;
+                        case "FcnFrl":
+                            image_fcn = MyImage.FractaleJulia(coté, fractale_Random, index_Fractale, fractale_Personnalisé, reel_Personnalisé, im_Personnalisé, itérations_Personnalisé, mult_Couleurs_Personnalisé);
+                            break;
+                        case "FcnHst":
+                            image_fcn = image.Histogramme();
+                            break;
+                        case "FcnCo":
+                            MyImage imageCachée = new MyImage(imageCachéepath);
+                            image_fcn = image.CacherImage_dans_Image(imageCachée);
+                            break;
+                        case "FcnDc":
+                            image_fcn = image.DecoderImageCachee();
+                            break;
+                        case "FcnCr":
+                            int version = 1;
+                            Console.WriteLine(textQR);
+                            if (textQR.Length <= 25) { version = 1; }
+                            if (textQR.Length > 25 && textQR.Length <= 47) { version = 2; }
+                            if (textQR.Length > 47)
+                            {
+                                MessageBox.Show("La phrase doit comprendre au maximum 47 caractères", "erreur", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
+                            byte[] donnee = image.Convertir_Chaine_Char(textQR, version);
+                            int[] masquage = { 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0 };
+                            image_fcn = image.QRCode(version, masquage, donnee, true);
 
-                        break;
+                            ImageBorder.MaxHeight = 150;
+                            ImageBorder.MaxWidth = 150;
+                            break;
+                        case "FcnLc":
+                            string message = image.Decoder_QRCode();
+                            MessageBox.Show(message, "Message", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                            break;
+                    }
+                    image = image_fcn;
                 }
-                image = image_fcn;
-            }
 
-            if (queueCount > 1) { fonction = "mixte"; }
+                if (queueCount > 1) { fonction = "mixte"; }
 
-            if (fonction != "FcnLc") 
-            {
-                string[] fichier_sortie_existants = Directory.GetFiles(savePath, fonction + "*");
-                nom_fichier = fonction + Convert.ToString(fichier_sortie_existants.Length);
-                image.ToFile(savePath + "\\" + nom_fichier + ".bmp");
-                ImageBox.Source = new BitmapImage(new Uri(savePath + "\\" + nom_fichier + ".bmp"));
+                if (fonction != "FcnLc")
+                {
+                    string[] fichier_sortie_existants = Directory.GetFiles(savePath, fonction + "*");
+                    nom_fichier = fonction + Convert.ToString(fichier_sortie_existants.Length);
+                    image.ToFile(savePath + "\\" + nom_fichier + ".bmp");
+                    ImageBox.Source = new BitmapImage(new Uri(savePath + "\\" + nom_fichier + ".bmp"));
+                }
             }
+            
            
 
 
