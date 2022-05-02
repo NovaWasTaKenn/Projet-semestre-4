@@ -353,24 +353,28 @@ namespace TD_1
                         {
                             Console.WriteLine("QRCode Version 1");
                             phraseEncodee = MyImage.Convertir_Chaine_Char(phrase, 1);
-                            MyImage.QRCode(1, masque_de_format, phraseEncodee, false).Aggrandir(10).ToFile("QRCodeV1_SansMasque", "bmp");
-                            MyImage.QRCode(1, masque_de_format, phraseEncodee, true).Aggrandir(10).ToFile("QRCodeV1_AvecMasque", "bmp");
+                            MyImage.QRCode(1, masque_de_format, phraseEncodee, false).ToFile("QRCodeV1_SansMasque", "bmp");
+                            MyImage.QRCode(1, masque_de_format, phraseEncodee, true).ToFile("QRCodeV1_AvecMasque", "bmp");
+                            MyImage.QRCode(1, masque_de_format, phraseEncodee, false).Aggrandir(10).ToFile("QRCodeV1_Aggrandi_SansMasque", "bmp");
+                            MyImage.QRCode(1, masque_de_format, phraseEncodee, true).Aggrandir(10).ToFile("QRCodeV1_Aggrandi_AvecMasque", "bmp");
                             Console.WriteLine("Nom du fichier sans masque : QRCodeV1_SansMasque");
                             Console.WriteLine("Nom du fichier avec masque : QRCodeV1_AvecMasque");
-                            Process.Start("QRCodeV1_SansMasque.bmp");
-                            Process.Start("QRCodeV1_AvecMasque.bmp");
+                            Process.Start("QRCodeV1_Aggrandi_SansMasque.bmp");
+                            Process.Start("QRCodeV1_Aggrandi_AvecMasque.bmp");
                         }
 
                         else
                         {
                             Console.WriteLine("QRCode Version 2");
                             phraseEncodee = MyImage.Convertir_Chaine_Char(phrase, 2);
-                            MyImage.QRCode(2, masque_de_format, phraseEncodee, false).Aggrandir(10).ToFile("QRCodeV2_SansMasque", "bmp");
-                            MyImage.QRCode(2, masque_de_format, phraseEncodee, true).Aggrandir(10).ToFile("QRCodeV2_AvecMasque", "bmp");
+                            MyImage.QRCode(2, masque_de_format, phraseEncodee, false).ToFile("QRCodeV2_SansMasque", "bmp");
+                            MyImage.QRCode(2, masque_de_format, phraseEncodee, true).ToFile("QRCodeV2_AvecMasque", "bmp");
+                            MyImage.QRCode(2, masque_de_format, phraseEncodee, false).Aggrandir(10).ToFile("QRCodeV2_Aggrandi_SansMasque", "bmp");
+                            MyImage.QRCode(2, masque_de_format, phraseEncodee, true).Aggrandir(10).ToFile("QRCodeV2_Aggrandi_AvecMasque", "bmp");
                             Console.WriteLine("Nom du fichier sans masque : QRCodeV2_SansMasque");
                             Console.WriteLine("Nom du fichier avec masque : QRCodeV2_AvecMasque");
-                            Process.Start("QRCodeV2_SansMasque.bmp");
-                            Process.Start("QRCodeV2_AvecMasque.bmp");
+                            Process.Start("QRCodeV2_Aggrandi_SansMasque.bmp");
+                            Process.Start("QRCodeV2_Aggrandi_AvecMasque.bmp");
 
                         }
                         break;
