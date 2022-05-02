@@ -852,7 +852,7 @@ namespace TD_1
         #endregion
 
         #region TD 5 (Créer ou extraire une image nouvelle)
-
+        // fait des fractales de mandelbrot pas utilisé
         public static MyImage Fractale_MandelBrot(int coté)
         {
             MyImage fractale = new MyImage(coté,coté);

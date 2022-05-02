@@ -24,6 +24,7 @@ namespace AppProjetSemestre4
     sur le image_click parfois mainWindow.ImageBox.Source sort ue nullexception avec mainWindow null qd on selectionnne une image                               OK placer le owner = null ds le if blabla ok on ferme
     Retrecissement sort div par 0 qd poucentage = 50                                ok je suis unn débile
     Parfois en tapant le bouton gauche dragmove est activé et renvoie "La méthode DragMove ne peut être appelée que lorsque le bouton principal de la souris est enfoncé"   ca active MainWindow_MouseDow qui active dragmove       Geré A voir au cours de l'utilisation pas de pb poour l'instant    : la event pour activé doit etre MouseLeftDown le bouton gauche pas le droit doit activé la méthode   Nnormalement OK
+    Attention a quelles actions peuvent etre faites les unes apres les autres      avoir un bool qui indique si un autre traitement peu etre fait pour bloquer le après (rien après décodage)   et queue count pour verifier que avant bbon
         */
 
 
@@ -44,7 +45,7 @@ namespace AppProjetSemestre4
        
 
 
-        Attention a quelles actions peuvent etre faites les unes apres les autres      avoir un bool qui indique si un autre traitement peu etre fait pour bloquer le après (rien après décodage)   et queue count pour verifier que avant bbon
+       
 
      */
 

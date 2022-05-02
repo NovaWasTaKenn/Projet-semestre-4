@@ -190,7 +190,6 @@ namespace TD_1
                 Console.WriteLine();
 
                 int reponse = Convert.ToInt32(Console.ReadLine());
-                Console.ReadKey();
                 Console.Clear();
 
                 switch(reponse)
@@ -230,14 +229,22 @@ namespace TD_1
 
                     case 3:
                         Console.WriteLine("Aggrandissement et Rétrécissement\n".ToUpper());
-                        Console.Write("Saisir une valeur d'aggradissement et de rétrécissement :");
-                        int valeur = Convert.ToInt32(Console.ReadLine());
-                        while (valeur < 0)
+                        bool test = true;
+                        int valeur = 0;
+                        do
                         {
-                            Console.Write("Saisir une valeur d'aggradissement et de rétrécissement :");
-                            valeur = Convert.ToInt32(Console.ReadLine());
-                        }
-
+                            test = true;
+                            try
+                            {
+                                Console.Write("Saisir une valeur d'aggrandissement et de rétrécissement :");
+                                valeur = Convert.ToInt32(Console.ReadLine());
+                            }
+                            catch
+                            {
+                                test = false;
+                            }
+                        } while (!test || valeur<=0);
+                       
                         image.Aggrandir(valeur).ToFile(nomFichier + "_Aggrandie", "bmp");
                         Console.WriteLine("\nNom du fichier : " + nomFichier + "_Aggrandie");
                         Process.Start(nomFichier + "_Aggrandie.bmp");
@@ -288,6 +295,8 @@ namespace TD_1
 
                     case 9:
                         Console.WriteLine("Fractale".ToUpper());
+                        MyImage.FractaleJulia(1200).ToFile("Fractale.bmp");
+                        Process.Start("Fractale.bmp");
                         break;
 
                     case 10:
@@ -403,91 +412,7 @@ namespace TD_1
                         break;
                 }
             }
-            //Console.WriteLine("Convertir un format little endian en entier : {214 , 5 , 0 , 0} en entier ");
-            //byte[] test_convert1 = {214, 5, 0, 0};
-            //Console.WriteLine(image.Convertir_Endian_To_Int(test_convert1));
-            //Console.WriteLine();
-            //Console.WriteLine("Convertir_Int_To_Endian : convertir 1494 en format little endian ");
-            //byte[] test_convert2 = image.Convertir_Int_to_Endian(1494);
-            //Console.WriteLine(test_convert2[0]+" "+ test_convert2[1]+ " "+test_convert2[2]+" "+test_convert2[3] );
-            //Console.WriteLine();
-            //image.ToFile("TestToFile", "bmp");
-
-            //image.RotationV2(97.00, true).ToFile("testRotation","bmp");
-            //image.CouleurToNoiretBlanc().ToFile("testN&B","bmp");
-            //image.Rétrecissement(1.2).ToFile("TestRétrecissement","bmp");
-
-            //int[,] Repoussage = { { -2, -1, 0 }, { -1, 1, 1 }, { 0, 1, 2 } };
-            //int[,] Flou = { { 1, 1, 1 }, { 1, 1, 1 }, { 1, 1, 1 } };
-
-            //image.Convolution(Flou, 9).ToFile("TestConvo.bmp");
-            //MyImage image1 = new MyImage("carre.bmp");
-            //image.CacherImage_dans_Image(image1).ToFile("TestCache", "bmp");
-            //Process.Start("TestCache.bmp");
-
-            //MyImage image2 = new MyImage("TestCache.bmp");
-
-            //image2.DecoderImageCachee().ToFile("TestDecoder", "bmp");
-            //Process.Start("TestDecoder.bmp");
-            //Process.Start("TestConvo.bmp");
-
-            //image.Flou(Flou, 15).ToFile("TestBords","bmp");
-
-            //image.Aggrandir(5).ToFile("TestAgrandi","bmp");
-
-            //MyImage.FractaleJulia(300).ToFile("TestFractale", "bmp");
-            //Process.Start("TestFractale.bmp");
-
-            //Process.Start(name);
-            //Process.Start("TestBords.bmp");
-            //Process.Start("testRotation.bmp");
-            //Process.Start("testN&B.bmp");
-            //Process.Start("TestRétrecissement.bmp");
-
-            //image.Histogramme().ToFile("TestHistogramme","bmp");
-            //Process.Start("TestHistogramme.bmp");
-
-            //for (int i = 0; i < 15; i++)
-            //{
-            //    MyImage.FractaleJulia(10000).ToFile("TestFractale", "bmp");
-            //    Process.Start("TestFractale.bmp");
-            //}
-
-            //byte b = 0b_0000_0000;
-            //b += 0b_1000_0000;
-
-
-            //b += (byte)(System.Math.Abs(System.Convert.ToInt32(true) * System.Math.Pow(2, 3)));
-            //Console.WriteLine(Convert.ToString(b, 2));
-
-            //bool[] tab = { false, false, false, false, false, true, false, true, true };
-
-            //string Hello = "faut que je trouve un truc a eczqdqzdzqdzqdzqdsdqfghdsdfgbdfsfgffddqfsgdddsfd";
-            //Hello = Hello.ToUpper();
-
-            //////int entier_hello = 45*image.Convertir_Char_En_Int('H')+image.Convertir_Char_En_Int('E');
-            //////Console.WriteLine(entier_hello);
-            //////byte[] tab = image.Convertir_Int_En_Tab_De_Byte(entier_hello, 3, 2, 11);
-            //////Console.WriteLine(Convert.ToString(tab[0],2));
-            //////Console.WriteLine(Convert.ToString(tab[1],2));
-
-
-            //byte[] Hello_byte = image.Convertir_Chaine_Char(Hello, 2);
-
-            //int[] masque= {1,1,1,0,1,1,1,1,1,0,0,0,1,0,0};
-            //image.QRCode(1, masque, Hello_byte, false).ToFile("QRCodeSansMasque","bmp");
-            //image.QRCode(1, masque, Hello_byte, true).ToFile("QRCodeAvecMasque", "bmp");
-            //image.QRCode(2, masque, Hello_byte, false).ToFile("QRCodeSansMasque1", "bmp");
-            //image.QRCode(2, masque, Hello_byte, true).ToFile("QRCodeAvecMasque1", "bmp");
-            //MyImage qrcode = new MyImage("QRCodeSansMasque1.bmp");
-            //MyImage qr = new MyImage("QRCodeAvecMasque1.bmp");
-            //qrcode.Aggrandir(10).ToFile("QRGrandSansMasque1","bmp");
-            //qr.Aggrandir(10).ToFile("QRGrandAvecMasque1", "bmp");
-            //Process.Start("QRCode.bmp");
-            //Process.Start("QRGrandSansMasque1.bmp");
-            //Process.Start("QRGrandAvecMasque1.bmp");
-
-            //Console.WriteLine(qr.Decoder_QRCode());
+            
             Console.ReadLine();
         }
     }

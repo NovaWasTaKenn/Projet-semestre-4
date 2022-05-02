@@ -43,7 +43,7 @@
                         <Underline>Mode d'emploi</Underline>
                         <LineBreak/>
                         <LineBreak/>
-                        <Run>Pour utiliser l'interface, vous devez tout d'abbord sélectionner un dossier où seront créés les images.</Run>
+                        <Run>Pour utiliser l'interface, vous devez tout d'abord sélectionner un dossier où seront créés les images.</Run>
                         <LineBreak/>
                         <LineBreak/>
                         <Run>Vous pouvez ensuite sélectionner un traitement dans le menu à gauche en cliquant. 
@@ -86,7 +86,10 @@
                         <Run>Vous devez sélectionner l'image à traiter en cliquant sur "Parcourir en haut puis saisir le pourcentage 
                             d'agrandissement/ rétrecissement dans la boite de texte. ( Les fonnctions d'agrandissment/rétrecissement utilise un 
                             multiplicateur/diviseur entier. Un arrondi peut donc être fait)</Run>
-
+                        <Underline>Encoder une image dans une autre :</Underline>
+                        <LineBreak/>
+                        <LineBreak/>
+                        <Run>Vous devez sélectionner une image dans laquelle cacher l'autre image </Run>
 
 
                     </Paragraph>
