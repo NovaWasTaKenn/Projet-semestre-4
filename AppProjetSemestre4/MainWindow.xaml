@@ -21,7 +21,7 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border Name="border" 
-                        BorderThickness="1"
+                        BorderThickness="{TemplateBinding BorderThickness}"
                         Padding="4.2" 
                         BorderBrush="#FF828282" 
                         CornerRadius="3" 
@@ -76,10 +76,10 @@
         
         <!--#region Fermer Minimiser-->
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Top" Orientation="Horizontal">
-            <Button Click="MinimiserMain_Click" Width="25" Height="25" Background="#FF4B4B4B" Style="{StaticResource CloseMinimizeStyle}">
+            <Button Click="MinimiserMain_Click" Width="25" Height="25" Background="#FF4B4B4B" BorderThickness="1" Style="{StaticResource CloseMinimizeStyle}">
                 <Image Source="/Trait.bmp" />
             </Button>
-            <Button Click="FermerMain_Click" Width="25" Height="25" Background="#FF4B4B4B" Style="{StaticResource CloseMinimizeStyle}">
+            <Button Click="FermerMain_Click" Width="25" Height="25" Background="#FF4B4B4B" BorderThickness="1" Style="{StaticResource CloseMinimizeStyle}">
                 <Image Source="/Croix2.bmp" Width="15" Height="15"/>
             </Button>
         </StackPanel>
@@ -132,9 +132,21 @@
             <!--#endregion-->
 
             <!--#region Image-->
-            <Border x:Name="ImageBorder" Grid.Column="3" Grid.Row="1" BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Background="#FF828282" VerticalAlignment="Center" HorizontalAlignment="Center"  MaxWidth="10000" MaxHeight="10000">
-                <Image Name="ImageBox" Source="/foret riviere.bmp" Stretch="Uniform"/>
-            </Border>
+            <Grid Grid.Column="3" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="10*"/>
+                </Grid.RowDefinitions>
+
+                <Button Click="MinimiserMain_Click" Width="40" Height="30" Content="Aide" Foreground="White" Background="#FF4B4B4B" HorizontalAlignment="Right" BorderThickness="1" Style="{StaticResource CloseMinimizeStyle}">
+
+                </Button>
+
+                <Border Grid.Row="1" x:Name="ImageBorder"  BorderBrush="#FF828282" BorderThickness="3" CornerRadius="6" Background="#FF828282" VerticalAlignment="Center" HorizontalAlignment="Center"  MaxWidth="10000" MaxHeight="10000">
+                    <Image Name="ImageBox" Source="/foret riviere.bmp" Stretch="Uniform"/>
+                </Border>
+            </Grid>
+            
             <!--#endregion-->
 
         </Grid>

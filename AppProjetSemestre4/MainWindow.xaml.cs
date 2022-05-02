@@ -41,10 +41,10 @@ namespace AppProjetSemestre4
                 Indiquer que par défaut fractale fait le dernier fractale sélectionné ou l'index 0
                 Pour Coder Décoder, l'image cachée ne doit pas être trop petite par rapport à l'image cachette sinon on ne la voie pas 
         
-       Bouton croix pour fermer les fenetres secondaires sans faire d'autres actions
+       
 
 
-        Attention a quelles actions peuvent etre faites les unes apres les autres
+        Attention a quelles actions peuvent etre faites les unes apres les autres      avoir un bool qui indique si un autre traitement peu etre fait pour bloquer le après (rien après décodage)   et queue count pour verifier que avant bbon
 
      */
 
@@ -52,6 +52,7 @@ namespace AppProjetSemestre4
      - créer des nouvelles images pr croix fermer et trait pour avoir les symboles en blanc
         - Activable depuis un menu option
         - Resize Soit technique des tailles en mode auto soit calculer le ratio de resize et l'appliquer a ttes les tailles    Commencé à verif mettre une taille min mainwindow le menu resize pas
+    Bouton croix pour fermer les fenetres secondaires sans faire d'autres actions
      */
 
 
@@ -1280,6 +1281,12 @@ namespace AppProjetSemestre4
             {
                 savePath = openFileDialog.FileName;
             }
+        }
+        private void Help_Click(object sender, RoutedEventArgs e)
+        {
+            Window7 window7 = new Window7();
+            window7.Owner = this;
+            window7.Show();
         }
     }
 }
