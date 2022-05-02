@@ -21,7 +21,7 @@ namespace AppProjetSemestre4
         public Window6()
         {
             InitializeComponent();
-            TblCheminImage2.Text = MainWindow.ImageName;
+            TblCheminImage1.Text = MainWindow.ImageName;
 
         }
         public void Image_Click(object sender, RoutedEventArgs e)

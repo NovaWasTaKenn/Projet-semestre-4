@@ -89,7 +89,7 @@
                         <Underline>Encoder une image dans une autre :</Underline>
                         <LineBreak/>
                         <LineBreak/>
-                        <Run>Vous devez sélectionner une image dans laquelle cacher l'autre image </Run>
+                        <Run>Vous devez sélectionner l'image dans laquelle l'autre image sera cachée avec le bouton parcourir du haut et l'image à cacher avec le bouton pacourir du bas. Si l'image cachée est beaucoup plus petite que l'image cachette alors l'image cachée sera difficilement visible</Run>
 
 
                     </Paragraph>
