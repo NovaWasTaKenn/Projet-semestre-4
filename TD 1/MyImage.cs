@@ -1569,7 +1569,9 @@ namespace TD_1
 
                         if (8 - remplissage_Octet_Chaine_Finale < reste_Bytes_Couple_Char)
                         {
-                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale; remplissage_Octet_Chaine_Finale = 0; j++;
+                            reste_Bytes_Couple_Char -= 8 - remplissage_Octet_Chaine_Finale;
+                            remplissage_Octet_Chaine_Finale = 0;
+                            j++;
                         }
                         else { remplissage_Octet_Chaine_Finale = reste_Bytes_Couple_Char; reste_Bytes_Couple_Char = 0; }
                     }
