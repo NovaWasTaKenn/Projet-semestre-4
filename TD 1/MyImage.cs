@@ -3263,9 +3263,7 @@ namespace TD_1
             }
             #endregion
 
-            texte = "Masque de format appliqué : " + masque_de_format + "\n"
-                + "Version du QRCode : " + version + "\n"
-                + "Chaine de caractères : " + chaine;
+            texte = chaine;
             return texte;
         }
         #endregion

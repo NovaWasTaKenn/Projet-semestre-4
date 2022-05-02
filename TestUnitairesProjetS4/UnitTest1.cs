@@ -1,4 +1,12 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Drawing;
+using System.Diagnostics;
+using System.IO;
 
 namespace TestUnitairesProjetS4
 {
@@ -40,5 +48,16 @@ namespace TestUnitairesProjetS4
             Assert.AreEqual(125, bytes2[0]);
             Assert.AreEqual(5, bytes2[1]);
         }
+        
+        [TestMethod]
+        public void Decoder_QRCode()
+        {
+            string file = "QRCode.bmp"
+            TD_1.MyImage Qrcode =new TD_1.MyImage(file);
+            string expected = "hello world".ToUpper();
+            Process.Start(Qrcode);
+            Assert.AreEqual(expected, Qrcode.Decoder_QRCode());
+        }
+        
     }
 }
