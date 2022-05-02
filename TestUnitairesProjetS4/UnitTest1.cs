@@ -49,15 +49,36 @@ namespace TestUnitairesProjetS4
             Assert.AreEqual(5, bytes2[1]);
         }
         
+
         [TestMethod]
-        public void Decoder_QRCode()
+        public void ConvertirBinaire_To_Int()
         {
-            string file = "QRCode.bmp"
-            TD_1.MyImage Qrcode =new TD_1.MyImage(file);
-            string expected = "hello world".ToUpper();
-            Process.Start(Qrcode);
-            Assert.AreEqual(expected, Qrcode.Decoder_QRCode());
+            int[] binaire = { 1, 0, 1, 1, 1, 0, 1, 0 };
+            int result = TD_1.MyImage.ConvertirBinaire_To_Int(binaire);
+            int expected = 186;
+            Assert.AreEqual(expected, result);
         }
-        
+
+        [TestMethod]
+        public void ConvertirInt_To_Binaire()
+        {
+            int entier = 128;
+            int[] result = TD_1.MyImage.ConvertirInt_To_Binaire(entier);
+            int[] expected = { 1, 0, 0, 0, 0, 0, 0, 0 };
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                Assert.AreEqual(expected[i], result[i]);
+            }
+        }
+
+        [TestMethod]
+        public void ConvertirChar_To_Char()
+        {
+            char caractere = 'A';
+            int entier_du_caractère = TD_1.MyImage.Convertir_Char_En_Int(caractere);
+            int expected = 10;
+            Assert.AreEqual(expected, entier_du_caractère);
+        }
     }
 }

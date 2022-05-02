@@ -138,7 +138,7 @@
                     <RowDefinition Height="10*"/>
                 </Grid.RowDefinitions>
 
-                <Button Click="MinimiserMain_Click" Width="40" Height="30" Content="Aide" Foreground="White" Background="#FF4B4B4B" HorizontalAlignment="Right" BorderThickness="1" Style="{StaticResource CloseMinimizeStyle}">
+                <Button Click="Help_Click" Width="40" Height="30" Content="Aide" Foreground="White" Background="#FF4B4B4B" HorizontalAlignment="Right" BorderThickness="1" Style="{StaticResource CloseMinimizeStyle}">
 
                 </Button>
 

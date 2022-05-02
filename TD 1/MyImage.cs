@@ -487,7 +487,7 @@ namespace TD_1
             return retour;
         }
        
-        public int[] ConvertirInt_To_Binaire(int nb)
+        static public int[] ConvertirInt_To_Binaire(int nb)
         {
             int[] binaire = new int[8];
             for (int i = 0; i < binaire.Length; i++)
@@ -520,7 +520,7 @@ namespace TD_1
             return binaire;
         }
 
-        public int ConvertirBinaire_To_Int(int[] binaire)
+        static public int ConvertirBinaire_To_Int(int[] binaire)
         {
             int retour = 0;
             for(int i = 0; i < binaire.Length; i++)
